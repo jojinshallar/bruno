@@ -121,7 +121,7 @@ class _ActionSheetEntryPageState extends State<ActionSheetEntryPage> {
   }
 
   void _showCommonStyle(BuildContext context) {
-    List<BrnCommonActionSheetItem> actions = List();
+    List<BrnCommonActionSheetItem> actions = [];
     actions.add(BrnCommonActionSheetItem(
       '选项一（警示项）',
       desc: '辅助信息辅助信息辅助信息',
@@ -156,7 +156,7 @@ class _ActionSheetEntryPageState extends State<ActionSheetEntryPage> {
   }
 
   void _showCommonStylex(){
-    List<BrnCommonActionSheetItem> actions = List();
+    List<BrnCommonActionSheetItem> actions = [];
     // 构建标题+辅助信息的普通项
     actions.add(BrnCommonActionSheetItem(
     '选项一（警示项）',
@@ -191,7 +191,7 @@ class _ActionSheetEntryPageState extends State<ActionSheetEntryPage> {
   }
 
   void _showCommonStyle1(BuildContext context) {
-    List<BrnCommonActionSheetItem> actions = List();
+    List<BrnCommonActionSheetItem> actions = [];
     actions.add(BrnCommonActionSheetItem(
       '选项一（警示项）',
       actionStyle: BrnCommonActionSheetItemStyle.alert,
@@ -224,7 +224,7 @@ class _ActionSheetEntryPageState extends State<ActionSheetEntryPage> {
   }
 
   void _showCommonStyle2(BuildContext context) {
-    List<BrnCommonActionSheetItem> actions = List();
+    List<BrnCommonActionSheetItem> actions = [];
     actions.add(BrnCommonActionSheetItem(
       '选项一: （010）1234567',
       actionStyle: BrnCommonActionSheetItemStyle.link,
@@ -258,7 +258,7 @@ class _ActionSheetEntryPageState extends State<ActionSheetEntryPage> {
   }
 
   void _showCommonCustomStyle(BuildContext context) {
-    List<BrnCommonActionSheetItem> actions = List();
+    List<BrnCommonActionSheetItem> actions = [];
     actions.add(
       BrnCommonActionSheetItem(
         '选项一: 自定义主标题样式',
@@ -332,8 +332,8 @@ class _ActionSheetEntryPageState extends State<ActionSheetEntryPage> {
     // 用于控制timer只加载一次
     var started = false;
     // 计时器
-    var periodTimer;
-    List<BrnCommonActionSheetItem> actions = List();
+    Timer periodTimer;
+    List<BrnCommonActionSheetItem> actions = [];
     actions.add(BrnCommonActionSheetItem(
       '倒计时:$countdown',
       actionStyle: BrnCommonActionSheetItemStyle.alert,
@@ -367,7 +367,7 @@ class _ActionSheetEntryPageState extends State<ActionSheetEntryPage> {
                     actions[0].desc = '倒计时:$times';
                   });
                 } else if (countdown == 0) {
-                  periodTimer.onCancel();
+                  periodTimer.cancel();
                 }
               });
             }
@@ -378,7 +378,7 @@ class _ActionSheetEntryPageState extends State<ActionSheetEntryPage> {
                 BrnCommonActionSheetItem actionEle,
               ) {
                 // 点击后立即停止计时
-                periodTimer.onCancel();
+                periodTimer.cancel();
                 var title = actionEle.title;
                 BrnToast.show("title: $title, index: $index", context);
               },
@@ -386,12 +386,12 @@ class _ActionSheetEntryPageState extends State<ActionSheetEntryPage> {
           });
           // then用来在pop折后停止timer，如果不需要在pop后进行操作，不需要使用then
         }).then((value) {
-      periodTimer.onCancel();
+      periodTimer.cancel();
     });
   }
 
   void _showShareSevenStyle(BuildContext context) {
-    List<BrnShareItem> firstRowList = List();
+    List<BrnShareItem> firstRowList = [];
     firstRowList.add(BrnShareItem(
       BrnShareItemConstants.SHARE_WEIXIN,
       canClick: true,
@@ -434,8 +434,8 @@ class _ActionSheetEntryPageState extends State<ActionSheetEntryPage> {
   }
 
   void _showShareFourStyle(BuildContext context) {
-    List<BrnShareItem> firstRowList = List();
-    List<BrnShareItem> secondRowList = List();
+    List<BrnShareItem> firstRowList = [];
+    List<BrnShareItem> secondRowList = [];
     firstRowList.add(BrnShareItem(
       BrnShareItemConstants.SHARE_QZONE,
       canClick: true,
@@ -488,8 +488,8 @@ class _ActionSheetEntryPageState extends State<ActionSheetEntryPage> {
   }
 
   void _showShareThreeStyle(BuildContext context) {
-    List<BrnShareItem> firstRowList = List();
-    List<BrnShareItem> secondRowList = List();
+    List<BrnShareItem> firstRowList = [];
+    List<BrnShareItem> secondRowList = [];
     firstRowList.add(BrnShareItem(
       BrnShareItemConstants.SHARE_WEIXIN,
       canClick: true,
@@ -516,7 +516,7 @@ class _ActionSheetEntryPageState extends State<ActionSheetEntryPage> {
   }
 
   void _showShareTwoStyle(BuildContext context) {
-    List<BrnShareItem> firstRowList = List();
+    List<BrnShareItem> firstRowList = [];
     firstRowList.add(BrnShareItem(
       BrnShareItemConstants.SHARE_WEIXIN,
       canClick: true,

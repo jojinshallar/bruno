@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'package:bruno/src/components/appraise/brn_flutter_gif_image.dart';
 import 'package:bruno/src/constants/brn_strings_constants.dart';
 import 'package:flutter/material.dart';
@@ -27,23 +25,23 @@ class BrnAppraiseEmojiItem extends StatefulWidget {
   final int selectedIndex;
 
   /// 表情图片下面的说明
-  final String title;
+  final String? title;
 
   /// 加载的gif图帧数
   final double frameCount;
 
   /// 点击的回调
-  final BrnAppraiseEmojiClickCallback onTap;
+  final BrnAppraiseEmojiClickCallback? onTap;
 
   /// item的padding
-  final EdgeInsets padding;
+  final EdgeInsets? padding;
 
   BrnAppraiseEmojiItem(
-      {this.selectedName,
-      this.unselectedName,
-      this.defaultName,
-      this.index,
-      this.selectedIndex,
+      {required this.selectedName,
+      required this.unselectedName,
+      required this.defaultName,
+      required this.index,
+      required this.selectedIndex,
       this.title,
       this.frameCount = 24,
       this.onTap,
@@ -55,11 +53,11 @@ class BrnAppraiseEmojiItem extends StatefulWidget {
 
 class _BrnAppraiseEmojiItemState extends State<BrnAppraiseEmojiItem>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
+  late AnimationController _controller;
 
-  int _selectedIndex;
+  late int _selectedIndex;
 
-  GifImage _gif;
+  late GifImage _gif;
 
   @override
   void initState() {
@@ -120,7 +118,7 @@ class _BrnAppraiseEmojiItemState extends State<BrnAppraiseEmojiItem>
       onTap: () {
         if (_selectedIndex != widget.index) {
           if (widget.onTap != null) {
-            widget.onTap(widget.index);
+            widget.onTap!(widget.index);
           }
           _selectedIndex = widget.index;
           _reset();

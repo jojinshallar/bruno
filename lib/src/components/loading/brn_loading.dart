@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'package:flutter/material.dart';
 
 /// 页面或者弹窗中间的圆形加载框，左侧是可定制的加载文案[content]，比如：加载中、提交中等等
@@ -29,7 +27,7 @@ import 'package:flutter/material.dart';
 ///  * [BrnLoadingDialog], 加载对话框。
 
 class BrnPageLoading extends StatelessWidget {
-  final String content;
+  final String? content;
 
   BrnPageLoading({this.content});
 
@@ -78,9 +76,9 @@ class BrnPageLoading extends StatelessWidget {
 /// 过 [BrnLoadingDialog.show] 和 [BrnLoadingDialog.dismiss] 控制弹窗的显示和关闭。不会自动关闭。
 class BrnLoadingDialog extends Dialog {
   /// 加载时的提示文案，默认为 `加载中...`
-  final String content;
+  final String? content;
 
-  BrnLoadingDialog({Key key, this.content = "加载中..."}) : super(key: key);
+  BrnLoadingDialog({Key? key, this.content = "加载中..."}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -96,7 +94,7 @@ class BrnLoadingDialog extends Dialog {
   ///    rootNavigator，详见 [showDialog] 中的 [useRootNavigator]。
   static void show(
     BuildContext context, {
-    String content,
+    String? content,
     bool barrierDismissible = true,
     bool useRootNavigator = true,
   }) {

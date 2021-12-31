@@ -1,4 +1,3 @@
-// @dart=2.9
 
 import 'package:bruno/src/theme/brn_theme_configurator.dart';
 import 'package:flutter/material.dart';
@@ -42,32 +41,32 @@ class BrnDashedLine extends StatelessWidget {
       BrnDashedLinePosition.DashedLineLeading;
 
   /// 虚线方向，默认值[_normalAxis]
-  final Axis axis;
+  final Axis? axis;
 
   /// 虚线长度，默认值[_normalDashedLength]
-  final double dashedLength;
+  final double? dashedLength;
 
   /// 虚线厚度，默认值[_normalDashedThickness]
-  final double dashedThickness;
+  final double? dashedThickness;
 
   /// 虚线间距，默认值[_normalDashedSpacing]
-  final double dashedSpacing;
+  final double? dashedSpacing;
 
   /// 颜色，默认值[_normalColor]
-  final Color color;
+  final Color? color;
 
   /// 虚线的Widget
   final Widget contentWidget;
 
   /// 距离边缘的位置（偏移量），默认值为0
-  final double dashedOffset;
+  final double? dashedOffset;
 
   /// 分割线所在位置，默认值[_normalPosition]
-  final BrnDashedLinePosition position;
+  final BrnDashedLinePosition? position;
 
   BrnDashedLine({
-    Key key,
-    @required this.contentWidget,
+    Key? key,
+    required this.contentWidget,
     this.axis,
     this.dashedLength,
     this.dashedThickness,
@@ -116,13 +115,13 @@ class BrnDashedPainter extends CustomPainter {
   final BrnDashedLinePosition position;
 
   BrnDashedPainter({
-    this.axis,
-    this.dashedLength,
-    this.dashedThickness,
-    this.dashedSpacing,
-    this.color,
-    this.dashedOffset,
-    this.position,
+    required this.axis,
+    required this.dashedLength,
+    required this.dashedThickness,
+    required this.dashedSpacing,
+    required this.color,
+    required this.dashedOffset,
+    required this.position,
   });
 
   @override

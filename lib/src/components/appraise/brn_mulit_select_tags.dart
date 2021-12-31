@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'package:bruno/src/components/picker/brn_tags_picker_config.dart';
 import 'package:bruno/src/theme/brn_theme_configurator.dart';
 import 'package:flutter/material.dart';
@@ -25,10 +23,10 @@ typedef BrnMultiSelectedTagsCallback = void Function(
 
 class BrnMultiSelectTags extends StatefulWidget {
   ///当点击到最大数目时的点击事件
-  final VoidCallback onMaxSelectClick;
+  final VoidCallback? onMaxSelectClick;
 
   ///一行多少个数据
-  final int brnCrossAxisCount;
+  final int? brnCrossAxisCount;
 
   ///最多选择多少个item - 默认可以无限选
   final int maxSelectItemCount;
@@ -40,13 +38,13 @@ class BrnMultiSelectTags extends StatefulWidget {
   final BrnMultiSelectTagText<BrnTagItemBean> tagText;
 
   /// 已选中列表
-  final BrnMultiSelectedTagsCallback selectedTagsCallback;
+  final BrnMultiSelectedTagsCallback? selectedTagsCallback;
 
   /// 没有数据时的样式
-  final Widget emptyWidget;
+  final Widget? emptyWidget;
 
   /// 没有数据时的样式
-  final EdgeInsets padding;
+  final EdgeInsets? padding;
 
   ///是等分样式还是流式布局样式 默认等分
   final BrnMultiSelectStyle tagStyle;
@@ -55,14 +53,14 @@ class BrnMultiSelectTags extends StatefulWidget {
   final bool multiSelect;
 
   /// 滑动选项
-  final ScrollPhysics physics;
+  final ScrollPhysics? physics;
 
   /// 最小宽度
-  final double minWidth;
+  final double? minWidth;
 
   BrnMultiSelectTags({
-    @required this.tagPickerBean,
-    @required this.tagText,
+    required this.tagPickerBean,
+    required this.tagText,
     this.onMaxSelectClick,
     this.maxSelectItemCount = 0,
     this.brnCrossAxisCount,
@@ -81,8 +79,8 @@ class BrnMultiSelectTags extends StatefulWidget {
 
 class _BrnMultiSelectTagsState extends State<BrnMultiSelectTags> {
   /// 操作类型属性
-  List<BrnTagItemBean> _selectedTags;
-  List<BrnTagItemBean> _sourceTags;
+  late List<BrnTagItemBean> _selectedTags;
+  late List<BrnTagItemBean> _sourceTags;
 
   @override
   void initState() {
@@ -92,7 +90,7 @@ class _BrnMultiSelectTagsState extends State<BrnMultiSelectTags> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.tagPickerBean?.tagItemSource?.isNotEmpty ?? false) {
+    if (widget.tagPickerBean.tagItemSource?.isNotEmpty ?? false) {
       return _buildContent(context);
     } else {
       return widget.emptyWidget ??
@@ -160,8 +158,8 @@ class _BrnMultiSelectTagsState extends State<BrnMultiSelectTags> {
   }
 
   void _dataSetup() {
-    List<BrnTagItemBean> tagItems = List();
-    List<BrnTagItemBean> tagSelectItems = List();
+    List<BrnTagItemBean> tagItems = [];
+    List<BrnTagItemBean> tagSelectItems = [];
     for (BrnTagItemBean item in widget.tagPickerBean.tagItemSource) {
       tagItems.add(item);
       //选中的按钮
@@ -178,14 +176,14 @@ class _BrnMultiSelectTagsState extends State<BrnMultiSelectTags> {
   void _clickTag(bool selected, BrnTagItemBean tagName) {
     if (!widget.multiSelect) {
       /// 单选
-      _sourceTags?.forEach((tag) {
+      _sourceTags.forEach((tag) {
         tag.isSelect = false;
       });
-      _selectedTags?.clear();
+      _selectedTags.clear();
       tagName.isSelect = true;
       _selectedTags.add(tagName);
       if (widget.selectedTagsCallback != null) {
-        widget.selectedTagsCallback(_selectedTags);
+        widget.selectedTagsCallback!(_selectedTags);
       }
     } else {
       /// 多选
@@ -197,7 +195,7 @@ class _BrnMultiSelectTagsState extends State<BrnMultiSelectTags> {
         _selectedTags.remove(tagName);
       }
       if (widget.selectedTagsCallback != null) {
-        widget.selectedTagsCallback(_selectedTags);
+        widget.selectedTagsCallback!(_selectedTags);
       }
     }
   }

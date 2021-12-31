@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'package:bruno/bruno.dart';
 import 'package:bruno/src/constants/brn_asset_constants.dart';
 import 'package:bruno/src/theme/brn_theme_configurator.dart';
@@ -20,7 +18,7 @@ const List<String> _defaultWeekNames = ['日', '一', '二', '三', '四', '五'
 /// 2、日历组件支持时间范围展示，仅展示范围内的日历视图，范围外日期置灰不可点击。日期范围边界后不可再翻页。
 class BrnCalendarView extends StatefulWidget {
   const BrnCalendarView(
-      {Key key,
+      {Key? key,
       this.selectMode = SelectMode.SINGLE,
       this.displayMode = DisplayMode.Month,
       this.weekNames = _defaultWeekNames,
@@ -31,7 +29,7 @@ class BrnCalendarView extends StatefulWidget {
       this.startEndDateChange,
       this.minDate,
       this.maxDate})
-      : assert(weekNames != null && weekNames.length > 0),
+      : assert(weekNames.length > 0),
         super(key: key);
 
   /// 展示模式， Week, Month
@@ -41,16 +39,16 @@ class BrnCalendarView extends StatefulWidget {
   final SelectMode selectMode;
 
   /// 日历日期选择范围最小值
-  final DateTime minDate;
+  final DateTime? minDate;
 
   /// 日历日期选择范围最大值
-  final DateTime maxDate;
+  final DateTime? maxDate;
 
   /// 日历日期初始选中最小值
-  final DateTime initStartSelectedDate;
+  final DateTime? initStartSelectedDate;
 
   /// 日历日期初始选中最大值
-  final DateTime initEndSelectedDate;
+  final DateTime? initEndSelectedDate;
 
   /// 是否展示顶部控制按钮
   final bool showControllerBar;
@@ -59,9 +57,9 @@ class BrnCalendarView extends StatefulWidget {
   final List<String> weekNames;
 
   /// 初始展示月份
-  final DateTime initDisplayDate;
+  final DateTime? initDisplayDate;
 
-  final Function(DateTime startSelectedDate, DateTime endSelectedDate)
+  final Function(DateTime startSelectedDate, DateTime endSelectedDate)?
       startEndDateChange;
 
   @override
@@ -70,12 +68,10 @@ class BrnCalendarView extends StatefulWidget {
 
 class _CustomCalendarViewState extends State<BrnCalendarView> {
   List<DateTime> dateList = <DateTime>[];
-  DateTime _currentDate;
-  DisplayMode _displayMode;
-  DateTime _minDate,
-      _maxDate,
-      _currentStartSelectedDate,
-      _currentEndSelectedDate;
+  late DateTime _currentDate;
+  late DisplayMode _displayMode;
+  late DateTime _minDate, _maxDate;
+  late DateTime? _currentStartSelectedDate, _currentEndSelectedDate;
 
   @override
   void initState() {
@@ -101,7 +97,7 @@ class _CustomCalendarViewState extends State<BrnCalendarView> {
 
   void _setListOfWeekDate(DateTime weekDate) {
     dateList.clear();
-    List<DateTime> tmpDateList = List();
+    List<DateTime> tmpDateList = [];
     int previousDay = weekDate.weekday % 7;
     for (int i = 0; i < weekDate.weekday; i++) {
       tmpDateList.add(weekDate.subtract(Duration(days: previousDay - i)));
@@ -116,7 +112,7 @@ class _CustomCalendarViewState extends State<BrnCalendarView> {
 
   void _setListOfMonthDate(DateTime monthDate) {
     dateList.clear();
-    List<DateTime> tmpDateList = List();
+    List<DateTime> tmpDateList = [];
     final DateTime newDate = DateTime(monthDate.year, monthDate.month, 0);
     int previousMonthDay = (newDate.weekday + 1) % 7;
     for (int i = 1; i <= previousMonthDay; i++) {
@@ -493,8 +489,8 @@ class _CustomCalendarViewState extends State<BrnCalendarView> {
 
   bool _getIsInRange(DateTime date) {
     if (_currentStartSelectedDate != null && _currentEndSelectedDate != null) {
-      if (date.isAfter(_currentStartSelectedDate) &&
-          date.isBefore(_currentEndSelectedDate)) {
+      if (date.isAfter(_currentStartSelectedDate!) &&
+          date.isBefore(_currentEndSelectedDate!)) {
         return true;
       } else {
         return false;
@@ -506,14 +502,14 @@ class _CustomCalendarViewState extends State<BrnCalendarView> {
 
   bool _getIsItStartAndEndDate(DateTime date) {
     if (_currentStartSelectedDate != null &&
-        _currentStartSelectedDate.day == date.day &&
-        _currentStartSelectedDate.month == date.month &&
-        _currentStartSelectedDate.year == date.year) {
+        _currentStartSelectedDate!.day == date.day &&
+        _currentStartSelectedDate!.month == date.month &&
+        _currentStartSelectedDate!.year == date.year) {
       return true;
     } else if (_currentEndSelectedDate != null &&
-        _currentEndSelectedDate.day == date.day &&
-        _currentEndSelectedDate.month == date.month &&
-        _currentEndSelectedDate.year == date.year) {
+        _currentEndSelectedDate!.day == date.day &&
+        _currentEndSelectedDate!.month == date.month &&
+        _currentEndSelectedDate!.year == date.year) {
       return true;
     } else {
       return false;
@@ -522,8 +518,8 @@ class _CustomCalendarViewState extends State<BrnCalendarView> {
 
   bool _isStartDateRadius(DateTime date) {
     if (_currentStartSelectedDate != null &&
-        _currentStartSelectedDate.day == date.day &&
-        _currentStartSelectedDate.month == date.month) {
+        _currentStartSelectedDate!.day == date.day &&
+        _currentStartSelectedDate!.month == date.month) {
       return true;
     } else if (date.weekday == 7) {
       return true;
@@ -534,8 +530,8 @@ class _CustomCalendarViewState extends State<BrnCalendarView> {
 
   bool _isEndDateRadius(DateTime date) {
     if (_currentEndSelectedDate != null &&
-        _currentEndSelectedDate.day == date.day &&
-        _currentEndSelectedDate.month == date.month) {
+        _currentEndSelectedDate!.day == date.day &&
+        _currentEndSelectedDate!.month == date.month) {
       return true;
     } else if (date.weekday == 6) {
       return true;
@@ -547,12 +543,7 @@ class _CustomCalendarViewState extends State<BrnCalendarView> {
   void _onSingleDateClick(DateTime date) {
     _currentStartSelectedDate = date;
     _currentEndSelectedDate = date;
-    setState(() {
-      try {
-        widget.startEndDateChange(
-            _currentStartSelectedDate, _currentEndSelectedDate);
-      } catch (_) {}
-    });
+    _notifyStartEndDateChange();
   }
 
   void _onRangeDateClick(DateTime date) {
@@ -571,24 +562,30 @@ class _CustomCalendarViewState extends State<BrnCalendarView> {
     }
 
     if (_currentStartSelectedDate != null && _currentEndSelectedDate != null) {
-      if (!_currentEndSelectedDate.isAfter(_currentStartSelectedDate)) {
-        final DateTime d = _currentStartSelectedDate;
+      if (!_currentEndSelectedDate!.isAfter(_currentStartSelectedDate!)) {
+        final DateTime d = _currentStartSelectedDate!;
         _currentStartSelectedDate = _currentEndSelectedDate;
         _currentEndSelectedDate = d;
       }
-      if (date.isBefore(_currentStartSelectedDate)) {
+      if (date.isBefore(_currentStartSelectedDate!)) {
         _currentStartSelectedDate = date;
       }
-      if (date.isAfter(_currentEndSelectedDate)) {
+      if (date.isAfter(_currentEndSelectedDate!)) {
         _currentEndSelectedDate = date;
       }
     }
-    setState(() {
-      try {
-        widget.startEndDateChange(
-            _currentStartSelectedDate, _currentEndSelectedDate);
-      } catch (_) {}
-    });
+    _notifyStartEndDateChange();
+  }
+
+  void _notifyStartEndDateChange() {
+    if (widget.startEndDateChange != null) {
+      setState(() {
+        try {
+          widget.startEndDateChange!(
+              _currentStartSelectedDate!, _currentEndSelectedDate!);
+        } catch (_) {}
+      });
+    }
   }
 
   String _getChinaWeekName(int weekOfDay) {

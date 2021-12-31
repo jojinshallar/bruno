@@ -30,7 +30,7 @@ abstract class BaseAZListViewPage extends StatefulWidget {
   Widget buildSuspensionWidget(String tag);
 
   List<ISuspensionBean> getTopData() {
-    return List<ISuspensionBean>();
+    return <ISuspensionBean>[];
   }
 
   //item的高度 默认50
@@ -49,7 +49,7 @@ abstract class BaseAZListViewPage extends StatefulWidget {
 class _BaseAZListViewPageState extends State<BaseAZListViewPage> {
   String suspensionTag = "";
 
-  List<ISuspensionBean> _dataList = List();
+  List<ISuspensionBean> _dataList = [];
   StreamController<String> streamController;
 
   @override

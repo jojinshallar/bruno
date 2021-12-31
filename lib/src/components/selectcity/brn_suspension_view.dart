@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'package:bruno/src/components/selectcity/brn_az_common.dart';
 import 'package:flutter/material.dart';
 
@@ -27,27 +25,25 @@ class SuspensionView extends StatefulWidget {
   final int itemHeight;
 
   /// on sus tag change callback.
-  final ValueChanged<String> onSusTagChanged;
+  final ValueChanged<String>? onSusTagChanged;
 
   /// on sus section callback.
-  final OnSusSectionCallBack onSusSectionInited;
+  final OnSusSectionCallBack? onSusSectionInited;
 
-  final AzListViewHeader header;
+  final AzListViewHeader? header;
 
   SuspensionView({
-    Key key,
-    @required this.data,
-    @required this.contentWidget,
-    @required this.suspensionWidget,
-    @required this.controller,
+    Key? key,
+    required this.data,
+    required this.contentWidget,
+    required this.suspensionWidget,
+    required this.controller,
     this.suspensionHeight = 40,
     this.itemHeight = 50,
     this.onSusTagChanged,
     this.onSusSectionInited,
     this.header,
-  })  : assert(contentWidget != null),
-        assert(controller != null),
-        super(key: key);
+  })  : super(key: key);
 
   @override
   _SuspensionWidgetState createState() => _SuspensionWidgetState();
@@ -55,25 +51,25 @@ class SuspensionView extends StatefulWidget {
 
 class _SuspensionWidgetState extends State<SuspensionView> {
   int _suspensionTop = 0;
-  int _lastIndex;
-  int _suSectionListLength;
+  int _lastIndex = -1;
+  late int _suSectionListLength;
 
-  List<int> _suspensionSectionList = List();
+  List<int> _suspensionSectionList = [];
   Map<String, int> _suspensionSectionMap = Map();
 
   @override
   void initState() {
     super.initState();
     if (widget.header != null) {
-      _suspensionTop = -widget.header.height;
+      _suspensionTop = -widget.header!.height;
     }
-    widget.controller?.addListener(_handleScrollerListenerTick);
+    widget.controller.addListener(_handleScrollerListenerTick);
   }
 
   @override
   void dispose() {
     super.dispose();
-    widget.controller?.removeListener(_handleScrollerListenerTick);
+    widget.controller.removeListener(_handleScrollerListenerTick);
   }
 
   void _handleScrollerListenerTick() {
@@ -82,17 +78,17 @@ class _SuspensionWidgetState extends State<SuspensionView> {
     if (_index != -1 && _lastIndex != _index) {
       _lastIndex = _index;
       if (widget.onSusTagChanged != null) {
-        widget.onSusTagChanged(_suspensionSectionMap.keys.toList()[_index]);
+        widget.onSusTagChanged!(_suspensionSectionMap.keys.toList()[_index]);
       }
     }
   }
 
   int _getIndex(int offset) {
-    if (widget.header != null && offset < widget.header.height) {
-      if (_suspensionTop != -widget.header.height &&
+    if (widget.header != null && offset < widget.header!.height) {
+      if (_suspensionTop != -widget.header!.height &&
           widget.suspensionWidget != null) {
         setState(() {
-          _suspensionTop = -widget.header.height;
+          _suspensionTop = -widget.header!.height;
         });
       }
       return 0;
@@ -124,15 +120,15 @@ class _SuspensionWidgetState extends State<SuspensionView> {
   void _init() {
     _suspensionSectionMap.clear();
     int offset = 0;
-    String tag;
+    String? tag;
     if (widget.header != null) {
-      _suspensionSectionMap[widget.header.tag] = 0;
-      offset = widget.header.height;
+      _suspensionSectionMap[widget.header!.tag] = 0;
+      offset = widget.header!.height;
     }
-    widget.data?.forEach((v) {
+    widget.data.forEach((v) {
       if (tag != v.tag) {
         tag = v.tag;
-        _suspensionSectionMap.putIfAbsent(tag, () => offset);
+        _suspensionSectionMap.putIfAbsent(tag!, () => offset);
         offset = offset + widget.suspensionHeight + widget.itemHeight;
       } else {
         offset = offset + widget.itemHeight;
@@ -143,7 +139,7 @@ class _SuspensionWidgetState extends State<SuspensionView> {
       ..addAll(_suspensionSectionMap.values);
     _suSectionListLength = _suspensionSectionList.length;
     if (widget.onSusSectionInited != null) {
-      widget.onSusSectionInited(_suspensionSectionMap);
+      widget.onSusSectionInited!(_suspensionSectionMap);
     }
   }
 
