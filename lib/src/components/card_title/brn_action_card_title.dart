@@ -1,4 +1,3 @@
-
 import 'package:bruno/bruno.dart';
 import 'package:bruno/src/constants/brn_strings_constants.dart';
 import 'package:bruno/src/theme/brn_theme_configurator.dart';
@@ -36,7 +35,7 @@ import 'package:flutter/material.dart';
 ///
 class BrnActionCardTitle extends StatelessWidget {
   ///标题显示文案：必填参数
-  final String? title;
+  final String title;
 
   ///箭头左边的文字
   final String? accessoryText;
@@ -60,8 +59,7 @@ class BrnActionCardTitle extends StatelessWidget {
     this.subTitle,
     this.subTitleWidget,
     this.themeData,
-  })  : assert(null != title),
-        super(key: key);
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -113,10 +111,10 @@ class BrnActionCardTitle extends StatelessWidget {
     return Container(
       padding: EdgeInsets.only(right: 8),
       child: Text(
-        this.title ?? "",
+        this.title,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
-        style: defaultConfig?.titleTextStyle?.generateTextStyle(),
+        style: defaultConfig?.titleTextStyle.generateTextStyle(),
       ),
     );
   }
@@ -157,7 +155,7 @@ class BrnActionCardTitle extends StatelessWidget {
             child: Text(
               accessoryText ?? "",
               overflow: TextOverflow.ellipsis,
-              style: defaultConfig?.accessoryTextStyle?.generateTextStyle(),
+              style: defaultConfig?.accessoryTextStyle.generateTextStyle(),
             ),
           ),
           _arrowWidget()
@@ -168,5 +166,5 @@ class BrnActionCardTitle extends StatelessWidget {
 
   //标题右侧的小文字 样式
   TextStyle? subTextStyle(BrnCardTitleConfig? defaultConfig) =>
-      defaultConfig?.subtitleTextStyle?.generateTextStyle();
+      defaultConfig?.subtitleTextStyle.generateTextStyle();
 }

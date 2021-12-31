@@ -58,7 +58,7 @@ class _BrnTextButtonPanelState extends State<BrnTextButtonPanel> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.nameList != null && widget.nameList.length > 0) {
+    if (widget.nameList.length > 0) {
       Row row = Row(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -81,7 +81,7 @@ class _BrnTextButtonPanelState extends State<BrnTextButtonPanel> {
       widgetList.add(operationWidget);
     }
 
-    if (widget.nameList != null && widget.nameList.length > _maxNum) {
+    if (widget.nameList.length > _maxNum) {
       widgetList.add(_moreButton());
     }
 
@@ -136,7 +136,7 @@ class _BrnTextButtonPanelState extends State<BrnTextButtonPanel> {
 
   /// 更多按钮
   Widget _moreButton() {
-    if (widget.nameList != null && widget.nameList.length > _maxNum) {
+    if (widget.nameList.length > _maxNum) {
       List<String> list = [];
       for (int i = _maxNum - 1; i < widget.nameList.length; i++) {
         list.add(widget.nameList[i]);

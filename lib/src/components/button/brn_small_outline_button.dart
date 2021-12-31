@@ -33,7 +33,7 @@ const double _BBorderWith = 1;
 
 class BrnSmallOutlineButton extends StatelessWidget {
   /// 按钮显示文案,默认'确认'
-  final String? title;
+  final String title;
 
   /// 点击的回调
   final VoidCallback? onTap;
@@ -121,7 +121,7 @@ class BrnSmallOutlineButton extends StatelessWidget {
           ),
           borderWith: _BBorderWith,
           radius: defaultThemeConfig.smallButtonRadius,
-          text: title ?? "",
+          text: title,
           disableLineColor: defaultThemeConfig.commonConfig.borderColorBase,
           lineColor: defaultThemeConfig.commonConfig.borderColorBase,
           textColor: textColor ?? defaultThemeConfig.commonConfig.colorTextBase,

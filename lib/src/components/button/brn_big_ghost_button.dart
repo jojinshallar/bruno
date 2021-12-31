@@ -25,7 +25,7 @@ const double _BVerticalPadding = 8;
 
 class BrnBigGhostButton extends StatelessWidget {
   ///按钮文案，默认'确认'
-  final String? title;
+  final String title;
 
   ///文案颜色
   final Color? titleColor;
@@ -67,7 +67,7 @@ class BrnBigGhostButton extends StatelessWidget {
           defaultThemeConfig.commonConfig.brandPrimary.withOpacity(0.05),
       onTap: onTap,
       alignment: Alignment.center,
-      text: title ?? '确认',
+      text: title,
       textColor: titleColor ?? defaultThemeConfig.commonConfig.brandPrimary,
       fontSize: defaultThemeConfig.bigButtonFontSize,
       insertPadding: EdgeInsets.symmetric(

@@ -25,7 +25,7 @@ class BrnButtonPanel extends StatefulWidget {
 
   /// 主按enable状态
   /// 默认值为true
-  final bool? isMainBtnEnable;
+  final bool isMainBtnEnable;
 
   /// 默认状态下，次按钮的文案集合。如果需要改变按钮的可用状态，请使用 [secondaryButtonList] 初始化。
   final List<String>? secondaryButtonNameList;
@@ -38,10 +38,10 @@ class BrnButtonPanel extends StatefulWidget {
 
   /// 控件的左右的padding
   /// 默认值为20
-  final double? horizontalPadding;
+  final double horizontalPadding;
 
   /// popUpWindow位于targetView的方向,默认在下面
-  final BrnPopupDirection? popDirection;
+  final BrnPopupDirection popDirection;
 
   const BrnButtonPanel(
       {Key? key,
@@ -141,7 +141,7 @@ class _BrnButtonPanelState extends State<BrnButtonPanel> {
 
     return Padding(
       padding: EdgeInsets.fromLTRB(
-          widget.horizontalPadding ?? 20, 0, widget.horizontalPadding ?? 20, 0),
+          widget.horizontalPadding, 0, widget.horizontalPadding, 0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: list,
@@ -153,7 +153,7 @@ class _BrnButtonPanelState extends State<BrnButtonPanel> {
     return BrnSmallMainButton(
       title: widget.mainButtonName,
       onTap: widget.mainButtonOnTap,
-      isEnable: widget.isMainBtnEnable ?? true,
+      isEnable: widget.isMainBtnEnable,
       maxWidth: 132,
     );
   }

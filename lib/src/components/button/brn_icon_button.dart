@@ -31,25 +31,25 @@ class BrnIconButton extends StatefulWidget {
   final VoidCallback? onTap;
 
   /// 文字相对于图片的位置
-  final Direction? direction;
+  final Direction direction;
 
   /// 图片宽度，默认 24
-  final double? iconWidth;
+  final double iconWidth;
 
   /// 图片高度，默认 24
-  final double? iconHeight;
+  final double iconHeight;
 
   /// 字体大小，默认 11
-  final double? fontSize;
+  final double fontSize;
 
   ///  文字样式
   final TextStyle? style;
 
   /// 图文组合的宽度，默认 80
-  final double? widgetWidth;
+  final double widgetWidth;
 
   /// 图文组合的高度，默认 80
-  final double? widgetHeight;
+  final double widgetHeight;
 
   /// 文字和图片的间距，默认 4
   final double padding;
@@ -85,8 +85,8 @@ class _BrnIconButtonState extends State<BrnIconButton> {
     // Left、文字在左 icon在右 right、文字在右 icon在左
     if (widget.direction == Direction.bottom) {
       ctn = Container(
-          height: widget.widgetHeight ?? 80,
-          width: widget.widgetWidth ?? 80,
+          height: widget.widgetHeight,
+          width: widget.widgetWidth,
           child: Column(
             mainAxisAlignment: widget.mainAxisAlignment,
             mainAxisSize: MainAxisSize.min,
@@ -115,8 +115,8 @@ class _BrnIconButtonState extends State<BrnIconButton> {
           ));
     } else if (widget.direction == Direction.top) {
       ctn = Container(
-          height: widget.widgetHeight ?? 80,
-          width: widget.widgetWidth ?? 80,
+          height: widget.widgetHeight,
+          width: widget.widgetWidth,
           child: Column(
             mainAxisAlignment: widget.mainAxisAlignment,
             mainAxisSize: MainAxisSize.min,
@@ -147,8 +147,8 @@ class _BrnIconButtonState extends State<BrnIconButton> {
           ));
     } else if (widget.direction == Direction.left) {
       ctn = Container(
-          height: widget.widgetHeight ?? 80,
-          width: widget.widgetWidth ?? 80,
+          height: widget.widgetHeight,
+          width: widget.widgetWidth,
           child: Row(
             mainAxisAlignment: widget.mainAxisAlignment,
             mainAxisSize: MainAxisSize.min,
@@ -177,8 +177,8 @@ class _BrnIconButtonState extends State<BrnIconButton> {
           ));
     } else if (widget.direction == Direction.right) {
       ctn = Container(
-          height: widget.widgetHeight ?? 80,
-          width: widget.widgetWidth ?? 80,
+          height: widget.widgetHeight,
+          width: widget.widgetWidth,
           child: Row(
             mainAxisAlignment: widget.mainAxisAlignment,
             mainAxisSize: MainAxisSize.min,

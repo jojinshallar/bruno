@@ -243,7 +243,7 @@ class _OutlineBoxDecorationCreator {
       Color? backgroundColor,
       double radius = 6,
       double borderWith = 1.0}) {
-    Color? _lineColor = isEnable ? lineColor : disableLineColor;
+    Color _lineColor = isEnable ? lineColor : disableLineColor;
     Color? _bgColor = isEnable ? backgroundColor : disableBackgroundColor;
 
     return BoxDecoration(

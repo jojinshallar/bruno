@@ -38,7 +38,7 @@ const double _BBorderWith = 1;
 
 class BrnBigOutlineButton extends StatelessWidget {
   ///按钮显示文案,默认'确认'
-  final String? title;
+  final String title;
 
   ///边框的颜色
   final Color? lineColor;
@@ -82,7 +82,7 @@ class BrnBigOutlineButton extends StatelessWidget {
     return BrnNormalButton.outline(
       borderWith: _BBorderWith,
       radius: defaultThemeConfig.bigButtonRadius,
-      text: title ?? "",
+      text: title,
       disableLineColor: _lineColor,
       lineColor: _lineColor,
       textColor: textColor ?? defaultThemeConfig.commonConfig.colorTextBase,

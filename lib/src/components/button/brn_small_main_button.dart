@@ -31,13 +31,13 @@ const double _BMinWidth = 84;
 
 class BrnSmallMainButton extends StatelessWidget {
   /// 按钮显示文案,默认'确认'
-  final String? title;
+  final String title;
 
   ///点击回调
   final VoidCallback? onTap;
 
   ///是否可用，默认为true。false为不可用：置灰、不可点击。
-  final bool? isEnable;
+  final bool isEnable;
   final Color? textColor;
   final Color? bgColor;
   final double? radius;
@@ -110,13 +110,13 @@ class BrnSmallMainButton extends StatelessWidget {
         }
 
         return BrnNormalButton(
-          isEnable: isEnable ?? true,
+          isEnable: isEnable,
           constraints: BoxConstraints(
             minWidth: this.width ?? _minWidth,
             maxWidth: this.width ?? _maxWidth,
           ),
           alignment: Alignment.center,
-          text: title ?? '确认',
+          text: title,
           backgroundColor:
               bgColor ?? defaultThemeConfig.commonConfig.brandPrimary,
           disableBackgroundColor: Color(0xFFCCCCCC),

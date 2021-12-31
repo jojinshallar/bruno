@@ -24,7 +24,7 @@ import 'package:flutter/material.dart';
 ///
 class BrnInsertInfo extends StatelessWidget {
   final String infoText;
-  final int? maxLines;
+  final int maxLines;
 
   const BrnInsertInfo({Key? key, required this.infoText, this.maxLines = 2})
       : super(key: key);

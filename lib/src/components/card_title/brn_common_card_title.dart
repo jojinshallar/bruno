@@ -1,4 +1,3 @@
-
 import 'package:bruno/src/theme/base/brn_text_style.dart';
 import 'package:bruno/src/theme/brn_theme_configurator.dart';
 import 'package:bruno/src/theme/configs/brn_card_title_config.dart';
@@ -48,7 +47,7 @@ import 'package:flutter/material.dart';
 ///
 class BrnCommonCardTitle extends StatelessWidget {
   /// 标题
-  final String? title;
+  final String title;
 
   /// 最右侧的文字
   final String? accessoryText;
@@ -152,7 +151,7 @@ class BrnCommonCardTitle extends StatelessWidget {
   Widget _accessoryTextWidget(BrnCardTitleConfig? defaultConfig) {
     Text tx = Text(
       accessoryText ?? "",
-      style: defaultConfig?.accessoryTextStyle?.generateTextStyle(),
+      style: defaultConfig?.accessoryTextStyle.generateTextStyle(),
     );
 
     return Container(
@@ -184,7 +183,7 @@ class BrnCommonCardTitle extends StatelessWidget {
     var titleWidget = RichText(
       textScaleFactor: MediaQuery.maybeOf(context)?.textScaleFactor ?? 1.0,
       text: TextSpan(
-          text: title ?? "",
+          text: title,
           style: defaultConfig.titleWithHeightTextStyle.generateTextStyle(),
           children: <InlineSpan>[
             WidgetSpan(child: subWidget, alignment: defaultConfig.alignment),

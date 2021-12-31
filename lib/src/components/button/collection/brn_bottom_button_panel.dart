@@ -101,7 +101,7 @@ class BrnBottomButtonPanel extends StatelessWidget {
   /// mainButtonOnTap 主按钮的点击事件
   /// secondaryButtonOnTap 次按钮的点击事件
   /// iconButtonList icon按钮
-  static Widget createByList(List<String> buttonTitleList,
+  static Widget createByList(List<String>? buttonTitleList,
       {VoidCallback? mainButtonOnTap,
       VoidCallback? secondaryButtonOnTap,
       bool enableMainButton = true,
@@ -113,7 +113,7 @@ class BrnBottomButtonPanel extends StatelessWidget {
         width: 0,
       );
     }
-    if (buttonTitleList.length >= 2) {
+    if (buttonTitleList!.length >= 2) {
       return BrnBottomButtonPanel(
         mainButtonName: buttonTitleList[0],
         enableMainButton: enableMainButton,

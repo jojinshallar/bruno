@@ -38,7 +38,7 @@ class BrnBubbleText extends StatelessWidget {
   final TextExpandedCallback? onExpanded;
 
   ///气泡的圆角 默认是4
-  final double? radius;
+  final double radius;
 
   const BrnBubbleText(
       {Key? key, this.text, this.maxLines, this.onExpanded, this.radius = 4})
@@ -70,9 +70,9 @@ class BrnBubbleText extends StatelessWidget {
                 shape: BoxShape.rectangle,
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(0),
-                    topRight: Radius.circular(radius ?? 4),
-                    bottomLeft: Radius.circular(radius ?? 4),
-                    bottomRight: Radius.circular(radius ?? 4))),
+                    topRight: Radius.circular(radius),
+                    bottomLeft: Radius.circular(radius),
+                    bottomRight: Radius.circular(radius))),
             padding: EdgeInsets.only(left: 20, right: 20, top: 12, bottom: 12),
             child: BrnExpandableText(
               text: text ?? "",
