@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'package:bruno/src/components/button/brn_big_ghost_button.dart';
 import 'package:bruno/src/components/button/brn_normal_button.dart';
 import 'package:bruno/src/theme/brn_theme.dart';
@@ -40,26 +38,26 @@ const double _BBorderWith = 1;
 
 class BrnBigOutlineButton extends StatelessWidget {
   ///按钮显示文案,默认'确认'
-  final String title;
+  final String? title;
 
   ///边框的颜色
-  final Color lineColor;
+  final Color? lineColor;
 
   ///点击回调
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   ///显示的文案的颜色
-  final Color textColor;
+  final Color? textColor;
 
   ///是否可用，默认为true。false为不可用：置灰、不可点击。
   final bool isEnable;
 
   ///默认父布局可用空间
-  final double width;
-  final BrnButtonConfig themeData;
+  final double? width;
+  final BrnButtonConfig? themeData;
 
   const BrnBigOutlineButton({
-    Key key,
+    Key? key,
     this.title = '确认',
     this.lineColor,
     this.textColor,

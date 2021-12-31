@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'dart:math';
 
 import 'package:bruno/src/components/button/brn_normal_button.dart';
@@ -33,23 +31,23 @@ const double _BMinWidth = 84;
 
 class BrnSmallMainButton extends StatelessWidget {
   /// 按钮显示文案,默认'确认'
-  final String title;
+  final String? title;
 
   ///点击回调
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   ///是否可用，默认为true。false为不可用：置灰、不可点击。
-  final bool isEnable;
-  final Color textColor;
-  final Color bgColor;
-  final double radius;
-  final FontWeight fontWeight;
-  final double fontSize;
-  final double maxWidth;
-  final double width;
+  final bool? isEnable;
+  final Color? textColor;
+  final Color? bgColor;
+  final double? radius;
+  final FontWeight? fontWeight;
+  final double? fontSize;
+  final double? maxWidth;
+  final double? width;
 
   /// 配置样式
-  final BrnButtonConfig themeData;
+  final BrnButtonConfig? themeData;
 
   /// 传入属性优先级最高，未传入的走默认配置，更多请看[BrnSmallMainButtonConfig.defaultConfig]
   const BrnSmallMainButton({
@@ -101,8 +99,8 @@ class BrnSmallMainButton extends StatelessWidget {
         } else {
           //外部要求最大宽度
           if (maxWidth != null) {
-            if (_maxWidth > maxWidth) {
-              _maxWidth = maxWidth;
+            if (_maxWidth > maxWidth!) {
+              _maxWidth = maxWidth!;
             }
           }
         }

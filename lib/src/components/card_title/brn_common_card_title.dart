@@ -1,4 +1,3 @@
-// @dart=2.9
 
 import 'package:bruno/src/theme/base/brn_text_style.dart';
 import 'package:bruno/src/theme/brn_theme_configurator.dart';
@@ -49,37 +48,37 @@ import 'package:flutter/material.dart';
 ///
 class BrnCommonCardTitle extends StatelessWidget {
   /// 标题
-  final String title;
+  final String? title;
 
   /// 最右侧的文字
-  final String accessoryText;
+  final String? accessoryText;
 
   /// 最右侧的widget 如果两者同时存在 则以widget为主
-  final Widget accessoryWidget;
+  final Widget? accessoryWidget;
 
   /// 整个区域点击的回调
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   /// 标题右侧的显示widget
-  final Widget subTitleWidget;
+  final Widget? subTitleWidget;
 
   /// 标题下面的文字
-  final String detailTextString;
+  final String? detailTextString;
 
   /// title的流式文本的对齐方式
-  final PlaceholderAlignment alignment;
+  final PlaceholderAlignment? alignment;
 
   /// 标题下方文字 默认是深色的222222
-  final Color detailColor;
+  final Color? detailColor;
 
   /// 内容的padding 默认上下16 左右0
-  final EdgeInsetsGeometry padding;
+  final EdgeInsets? padding;
 
-  final BrnCardTitleConfig themeData;
+  final BrnCardTitleConfig? themeData;
 
   BrnCommonCardTitle(
-      {Key key,
-      @required this.title,
+      {Key? key,
+      required this.title,
       this.accessoryText,
       this.accessoryWidget,
       this.onTap,
@@ -108,18 +107,18 @@ class BrnCommonCardTitle extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         if (onTap != null) {
-          onTap();
+          onTap!();
         }
       },
       child: Container(
-        color: defaultConfig?.cardBackgroundColor,
+        color: defaultConfig.cardBackgroundColor,
         child: _rowWidget(context, defaultConfig),
       ),
     );
   }
 
   Widget _rowWidget(BuildContext context, BrnCardTitleConfig defaultConfig) {
-    List<Widget> children = List<Widget>();
+    List<Widget> children = <Widget>[];
     children.add(Expanded(child: _titleWidget(context, defaultConfig)));
 
     Widget accessory = Container(
@@ -150,7 +149,7 @@ class BrnCommonCardTitle extends StatelessWidget {
   }
 
   ///标题最右侧的widget
-  Widget _accessoryTextWidget(BrnCardTitleConfig defaultConfig) {
+  Widget _accessoryTextWidget(BrnCardTitleConfig? defaultConfig) {
     Text tx = Text(
       accessoryText ?? "",
       style: defaultConfig?.accessoryTextStyle?.generateTextStyle(),
@@ -183,19 +182,19 @@ class BrnCommonCardTitle extends StatelessWidget {
       subWidget = _subTitleWidgetFromWidget();
     }
     var titleWidget = RichText(
-      textScaleFactor: MediaQuery.of(context)?.textScaleFactor ?? 1.0,
+      textScaleFactor: MediaQuery.maybeOf(context)?.textScaleFactor ?? 1.0,
       text: TextSpan(
           text: title ?? "",
-          style: defaultConfig?.titleWithHeightTextStyle?.generateTextStyle(),
+          style: defaultConfig.titleWithHeightTextStyle.generateTextStyle(),
           children: <InlineSpan>[
             WidgetSpan(child: subWidget, alignment: defaultConfig.alignment),
           ]),
     );
 
-    List<Widget> colChildren = List<Widget>();
+    List<Widget> colChildren = <Widget>[];
     colChildren.add(titleWidget);
 
-    if (null != detailTextString && detailTextString.isNotEmpty) {
+    if (null != detailTextString && detailTextString!.isNotEmpty) {
       Widget detailWidget = _detailTextWidget(defaultConfig);
       colChildren.add(detailWidget);
     }
@@ -214,7 +213,7 @@ class BrnCommonCardTitle extends StatelessWidget {
       detailTextString ?? "",
       overflow: TextOverflow.ellipsis,
       maxLines: 2,
-      style: defaultConfig?.detailTextStyle?.generateTextStyle(),
+      style: defaultConfig.detailTextStyle.generateTextStyle(),
     );
     return Container(
       child: tx,

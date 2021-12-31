@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'package:bruno/src/components/button/brn_normal_button.dart';
 import 'package:bruno/src/theme/brn_theme.dart';
 import 'package:flutter/material.dart';
@@ -27,23 +25,23 @@ const double _BVerticalPadding = 8;
 
 class BrnBigGhostButton extends StatelessWidget {
   ///按钮文案，默认'确认'
-  final String title;
+  final String? title;
 
   ///文案颜色
-  final Color titleColor;
+  final Color? titleColor;
 
   ///按钮背景颜色
-  final Color bgColor;
+  final Color? bgColor;
 
   ///点击回调
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   ///默认父布局可用空间
-  final double width;
-  final BrnButtonConfig themeData;
+  final double? width;
+  final BrnButtonConfig? themeData;
 
   const BrnBigGhostButton({
-    Key key,
+    Key? key,
     this.title = '确认',
     this.titleColor,
     this.bgColor,

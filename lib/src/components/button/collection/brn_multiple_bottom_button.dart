@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'package:bruno/src/components/radio/brn_checkbox.dart';
 import 'package:bruno/src/components/radio/brn_radio_core.dart';
 import 'package:bruno/src/constants/brn_asset_constants.dart';
@@ -26,10 +24,10 @@ enum BrnMultipleButtonArrowState {
 /// 支持 **[全选]+[选中状态]+[次要按钮]+[主要按钮]** 的组合（中括号代表可选）
 class BrnMultipleBottomButton extends StatefulWidget {
   /// 全选的点击回调，不传则不展示多选按钮，回传参数 true 表示选中全选，false 表示取消全选
-  final void Function(bool) onSelectAll;
+  final void Function(bool)? onSelectAll;
 
   /// selectedButtonOnTap, 点击已选的回调，存在三种状态：-1:不可展开（当 value 为 0 的时候），0：收起，1：展开
-  final void Function(BrnMultipleButtonArrowState) onSelectedButtonTap;
+  final void Function(BrnMultipleButtonArrowState)? onSelectedButtonTap;
 
   /// 主按钮的文案，默认为主题色 可以传入自定义 Widget，不传则不展示
   final dynamic mainButton;
@@ -38,19 +36,19 @@ class BrnMultipleBottomButton extends StatefulWidget {
   final dynamic subButton;
 
   /// 主按钮点击回调
-  final VoidCallback onMainButtonTap;
+  final VoidCallback? onMainButtonTap;
 
   /// 次按钮点击回调
-  final VoidCallback onSubButtonTap;
+  final VoidCallback? onSubButtonTap;
 
   /// 已选后面是否需要带小箭头。默认 false
   final bool hasArrow;
 
   /// 暴露给外界设置多选状态的控制器
-  final BrnMultipleBottomController bottomController;
+  final BrnMultipleBottomController? bottomController;
 
   const BrnMultipleBottomButton(
-      {Key key,
+      {Key? key,
       this.mainButton,
       this.subButton,
       this.onMainButtonTap,
@@ -67,7 +65,7 @@ class BrnMultipleBottomButton extends StatefulWidget {
 }
 
 class _BrnMultipleBottomButtonState extends State<BrnMultipleBottomButton> {
-  BrnMultipleBottomController _controller;
+  late BrnMultipleBottomController _controller;
   bool _unfoldState = false;
 
   @override
@@ -78,7 +76,7 @@ class _BrnMultipleBottomButtonState extends State<BrnMultipleBottomButton> {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> rowChildren = List<Widget>()
+    List<Widget> rowChildren = <Widget>[]
       ..add(_allSelectedWidget())
       ..add(_selectedCountWidget())
       ..add(_buttonArea());
@@ -101,7 +99,7 @@ class _BrnMultipleBottomButtonState extends State<BrnMultipleBottomButton> {
               bool currentState =
                   !_controller.valueNotifier.value.selectAllState;
               _controller.setState(selectAllState: currentState);
-              if (widget.onSelectAll != null) widget.onSelectAll(currentState);
+              if (widget.onSelectAll != null) widget.onSelectAll!(currentState);
             },
             behavior: HitTestBehavior.opaque,
             child: Row(
@@ -120,7 +118,7 @@ class _BrnMultipleBottomButtonState extends State<BrnMultipleBottomButton> {
                           //同步到外界的当前的全选状态
                           _controller.setState(selectAllState: value);
                           if (widget.onSelectAll != null)
-                            widget.onSelectAll(value);
+                            widget.onSelectAll!(value);
                         },
                         key: Key(DateTime.now().toString()),
                       );
@@ -158,14 +156,14 @@ class _BrnMultipleBottomButtonState extends State<BrnMultipleBottomButton> {
             if (_controller.valueNotifier.value.selectedCount == 0) {
               _unfoldState = false;
               widget
-                  .onSelectedButtonTap(BrnMultipleButtonArrowState.cantUnfold);
+                  .onSelectedButtonTap!(BrnMultipleButtonArrowState.cantUnfold);
               return;
             }
             _unfoldState = !_unfoldState;
             if (_unfoldState) {
-              widget.onSelectedButtonTap(BrnMultipleButtonArrowState.unfold);
+              widget.onSelectedButtonTap!(BrnMultipleButtonArrowState.unfold);
             } else {
-              widget.onSelectedButtonTap(BrnMultipleButtonArrowState.fold);
+              widget.onSelectedButtonTap!(BrnMultipleButtonArrowState.fold);
             }
           }
         });
@@ -181,7 +179,7 @@ class _BrnMultipleBottomButtonState extends State<BrnMultipleBottomButton> {
             ValueListenableBuilder<MultiSelectState>(
               valueListenable: _controller.valueNotifier,
               builder: (context, value, _) {
-                List<Widget> rowChildren = List<Widget>();
+                List<Widget> rowChildren = <Widget>[];
                 rowChildren.add(Text(
                   '(${value.selectedCount})',
                   style: TextStyle(
@@ -198,7 +196,7 @@ class _BrnMultipleBottomButtonState extends State<BrnMultipleBottomButton> {
                   if (value.arrowStatus !=
                       BrnMultipleButtonArrowState.defaultStatus) {
                     //使用方主动设置箭头状态的时候
-                    Widget arrow;
+                    Widget? arrow;
                     switch (value.arrowStatus) {
                       case BrnMultipleButtonArrowState.cantUnfold:
                         arrow = cantFoldWidget;
@@ -266,7 +264,7 @@ class _BrnMultipleBottomButtonState extends State<BrnMultipleBottomButton> {
         ? Expanded(
             child: GestureDetector(
               onTap: () {
-                if (widget.onMainButtonTap != null) widget.onMainButtonTap();
+                if (widget.onMainButtonTap != null) widget.onMainButtonTap!();
               },
               child: ValueListenableBuilder<MultiSelectState>(
                 valueListenable: _controller.valueNotifier,
@@ -309,7 +307,7 @@ class _BrnMultipleBottomButtonState extends State<BrnMultipleBottomButton> {
         ? Expanded(
             child: GestureDetector(
               onTap: () {
-                if (widget.onSubButtonTap != null) widget.onSubButtonTap();
+                if (widget.onSubButtonTap != null) widget.onSubButtonTap!();
               },
               child: ValueListenableBuilder<MultiSelectState>(
                 valueListenable: _controller.valueNotifier,
@@ -354,9 +352,9 @@ class BrnMultipleBottomController {
     valueNotifier = ValueNotifier(initMultiSelectState ?? MultiSelectState());
   }
 
-  final MultiSelectState initMultiSelectState;
+  final MultiSelectState? initMultiSelectState;
 
-  ValueNotifier<MultiSelectState> valueNotifier;
+  late ValueNotifier<MultiSelectState> valueNotifier;
 
   /// 设置按钮的状态,当主按钮或者此按钮置灰的时候，对应的点击任然会回调，控件只做按钮置灰
   /// [selectedCount] 已选括号中的数目
@@ -365,18 +363,17 @@ class BrnMultipleBottomController {
   /// [subButtonState] 次按钮是否置灰
   /// [arrowStatus] 控制箭头的状态
   void setState(
-      {int selectedCount,
-      bool selectAllState,
-      bool mainButtonState,
-      bool subButtonState,
-      BrnMultipleButtonArrowState arrowStatus}) {
+      {int? selectedCount,
+      bool? selectAllState,
+      bool? mainButtonState,
+      bool? subButtonState,
+      BrnMultipleButtonArrowState? arrowStatus}) {
     MultiSelectState data = MultiSelectState(
-        selectedCount: selectedCount ?? valueNotifier?.value?.selectedCount,
-        selectAllState: selectAllState ?? valueNotifier?.value?.selectAllState,
-        mainButtonState:
-            mainButtonState ?? valueNotifier?.value?.mainButtonState,
-        subButtonState: subButtonState ?? valueNotifier?.value?.subButtonState,
-        arrowStatus: arrowStatus ?? valueNotifier?.value?.arrowStatus);
+        selectedCount: selectedCount ?? valueNotifier.value.selectedCount,
+        selectAllState: selectAllState ?? valueNotifier.value.selectAllState,
+        mainButtonState: mainButtonState ?? valueNotifier.value.mainButtonState,
+        subButtonState: subButtonState ?? valueNotifier.value.subButtonState,
+        arrowStatus: arrowStatus ?? valueNotifier.value.arrowStatus);
     valueNotifier.value = data;
   }
 }

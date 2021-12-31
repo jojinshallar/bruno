@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'package:bruno/src/components/button/brn_small_main_button.dart';
 import 'package:bruno/src/components/button/brn_small_outline_button.dart';
 import 'package:bruno/src/components/popup/brn_popup_window.dart';
@@ -23,32 +21,32 @@ class BrnButtonPanel extends StatefulWidget {
   final String mainButtonName;
 
   /// 主按钮点击的回调
-  final VoidCallback mainButtonOnTap;
+  final VoidCallback? mainButtonOnTap;
 
   /// 主按enable状态
   /// 默认值为true
-  final bool isMainBtnEnable;
+  final bool? isMainBtnEnable;
 
   /// 默认状态下，次按钮的文案集合。如果需要改变按钮的可用状态，请使用 [secondaryButtonList] 初始化。
-  final List<String> secondaryButtonNameList;
+  final List<String>? secondaryButtonNameList;
 
   /// 包含config状态的次按钮，默认状态的话直接传[secondaryButtonNameList]即可
-  final List<BrnButtonPanelConfig> secondaryButtonList;
+  final List<BrnButtonPanelConfig>? secondaryButtonList;
 
   /// 次按钮的点击回调
-  final void Function(int) secondaryButtonOnTap;
+  final void Function(int)? secondaryButtonOnTap;
 
   /// 控件的左右的padding
   /// 默认值为20
-  final double horizontalPadding;
+  final double? horizontalPadding;
 
   /// popUpWindow位于targetView的方向,默认在下面
-  final BrnPopupDirection popDirection;
+  final BrnPopupDirection? popDirection;
 
   const BrnButtonPanel(
-      {Key key,
-      @required this.mainButtonName,
-      @required this.mainButtonOnTap,
+      {Key? key,
+      required this.mainButtonName,
+      required this.mainButtonOnTap,
       this.isMainBtnEnable = true,
       this.secondaryButtonNameList,
       this.secondaryButtonOnTap,
@@ -62,9 +60,9 @@ class BrnButtonPanel extends StatefulWidget {
 }
 
 class _BrnButtonPanelState extends State<BrnButtonPanel> {
-  GlobalKey _popWindowKey;
+  late GlobalKey _popWindowKey;
 
-  List<BrnButtonPanelConfig> _secondaryButtonList = List();
+  List<BrnButtonPanelConfig> _secondaryButtonList = [];
 
   @override
   void initState() {
@@ -81,11 +79,11 @@ class _BrnButtonPanelState extends State<BrnButtonPanel> {
 
   /// 初始化次按钮列表
   void initSecondaryButton() {
-    _secondaryButtonList = List();
+    _secondaryButtonList = [];
     if (widget.secondaryButtonList?.isNotEmpty ?? false) {
-      _secondaryButtonList = widget.secondaryButtonList;
+      _secondaryButtonList = widget.secondaryButtonList!;
     } else if (widget.secondaryButtonNameList?.isNotEmpty ?? false) {
-      widget.secondaryButtonNameList.forEach((name) {
+      widget.secondaryButtonNameList!.forEach((name) {
         _secondaryButtonList
             .add(BrnButtonPanelConfig(name: name, isEnable: true));
       });
@@ -94,7 +92,7 @@ class _BrnButtonPanelState extends State<BrnButtonPanel> {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> list = List<Widget>();
+    List<Widget> list = <Widget>[];
 
     if (_secondaryButtonList.length > 2) {
       //次按钮两个以上特殊处理，所有button等分
@@ -164,10 +162,10 @@ class _BrnButtonPanelState extends State<BrnButtonPanel> {
     String name = _secondaryButtonList[btnIndex].name;
     BrnSmallOutlineButton button = BrnSmallOutlineButton(
       title: name,
-      isEnable: _secondaryButtonList[btnIndex].isEnable ?? true,
+      isEnable: _secondaryButtonList[btnIndex].isEnable,
       onTap: () {
         if (widget.secondaryButtonOnTap != null) {
-          widget.secondaryButtonOnTap(btnIndex);
+          widget.secondaryButtonOnTap!(btnIndex);
         }
       },
     );
@@ -180,7 +178,7 @@ class _BrnButtonPanelState extends State<BrnButtonPanel> {
   /// 更多按钮
   Widget _moreButton() {
     if (null != _secondaryButtonList && _secondaryButtonList.length > 2) {
-      List<String> list = List();
+      List<String> list = [];
       for (int i = 2; i < _secondaryButtonList.length; i++) {
         list.add(_secondaryButtonList[i].name);
       }
@@ -216,7 +214,7 @@ class _BrnButtonPanelState extends State<BrnButtonPanel> {
                 // 按钮不可用的时候，点击无响应；
                 if (widget.secondaryButtonOnTap != null) {
                   if (_secondaryButtonList[index + 2].isEnable) {
-                    widget.secondaryButtonOnTap(index + 2);
+                    widget.secondaryButtonOnTap!(index + 2);
                     return false;
                   } else {
                     return true;
@@ -241,7 +239,7 @@ class BrnButtonPanelConfig {
   final bool isEnable;
 
   BrnButtonPanelConfig({
-    this.name,
+    required this.name,
     this.isEnable = true,
   });
 }

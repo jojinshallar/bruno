@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'package:bruno/src/theme/brn_theme_configurator.dart';
 import 'package:flutter/material.dart';
 
@@ -30,28 +28,28 @@ class BrnIconButton extends StatefulWidget {
   final Widget iconWidget;
 
   /// 点击的回调
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   /// 文字相对于图片的位置
-  final Direction direction;
+  final Direction? direction;
 
   /// 图片宽度，默认 24
-  final double iconWidth;
+  final double? iconWidth;
 
   /// 图片高度，默认 24
-  final double iconHeight;
+  final double? iconHeight;
 
   /// 字体大小，默认 11
-  final double fontSize;
+  final double? fontSize;
 
   ///  文字样式
-  final TextStyle style;
+  final TextStyle? style;
 
   /// 图文组合的宽度，默认 80
-  final double widgetWidth;
+  final double? widgetWidth;
 
   /// 图文组合的高度，默认 80
-  final double widgetHeight;
+  final double? widgetHeight;
 
   /// 文字和图片的间距，默认 4
   final double padding;
@@ -60,9 +58,9 @@ class BrnIconButton extends StatefulWidget {
   final MainAxisAlignment mainAxisAlignment;
 
   const BrnIconButton({
-    Key key,
-    @required this.name,
-    this.iconWidget,
+    Key? key,
+    required this.name,
+    required this.iconWidget,
     this.onTap,
     this.iconWidth = 24,
     this.iconHeight = 24,
@@ -207,13 +205,15 @@ class _BrnIconButtonState extends State<BrnIconButton> {
                   child: widget.iconWidget),
             ],
           ));
+    } else {
+      throw ArgumentError('Unexpected type for widget.direction');
     }
 
     if (widget.onTap != null) {
       return GestureDetector(
         child: ctn,
         onTap: () {
-          widget?.onTap();
+          widget.onTap!();
         },
       );
     }

@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'package:bruno/src/components/button/brn_vertical_icon_button.dart';
 import 'package:bruno/src/theme/brn_theme_configurator.dart';
 import 'package:flutter/material.dart';
@@ -60,19 +58,19 @@ import 'package:flutter/material.dart';
 ///
 class BrnBottomButtonPanel extends StatelessWidget {
   /// 主按钮的文案
-  final String mainButtonName;
+  final String? mainButtonName;
 
   /// 主按钮点击的回调
-  final VoidCallback mainButtonOnTap;
+  final VoidCallback? mainButtonOnTap;
 
   /// 次按钮的文案
-  final String secondaryButtonName;
+  final String? secondaryButtonName;
 
   /// 次按钮的点击回调
-  final VoidCallback secondaryButtonOnTap;
+  final VoidCallback? secondaryButtonOnTap;
 
   /// icon按钮的集合
-  final List<BrnVerticalIconButton> iconButtonList;
+  final List<BrnVerticalIconButton>? iconButtonList;
 
   /// 主按钮是否可用 默认可用
   /// 如果设置为false，按钮置灰且不响应[mainButtonOnTap]
@@ -83,9 +81,9 @@ class BrnBottomButtonPanel extends StatelessWidget {
   final bool enableSecondaryButton;
 
   const BrnBottomButtonPanel(
-      {Key key,
-      @required this.mainButtonName,
-      @required this.mainButtonOnTap,
+      {Key? key,
+      required this.mainButtonName,
+      required this.mainButtonOnTap,
       this.secondaryButtonName,
       this.secondaryButtonOnTap,
       this.enableMainButton = true,
@@ -104,10 +102,10 @@ class BrnBottomButtonPanel extends StatelessWidget {
   /// secondaryButtonOnTap 次按钮的点击事件
   /// iconButtonList icon按钮
   static Widget createByList(List<String> buttonTitleList,
-      {VoidCallback mainButtonOnTap,
-      VoidCallback secondaryButtonOnTap,
+      {VoidCallback? mainButtonOnTap,
+      VoidCallback? secondaryButtonOnTap,
       bool enableMainButton = true,
-      List<BrnVerticalIconButton> iconButtonList}) {
+      List<BrnVerticalIconButton>? iconButtonList}) {
     if ((buttonTitleList == null || buttonTitleList.isEmpty) &&
         iconButtonList == null) {
       return Container(
@@ -154,7 +152,7 @@ class BrnBottomButtonPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> rowChildren = List<Widget>();
+    List<Widget> rowChildren = <Widget>[];
     if (null != iconButtonList) {
       Widget iconListWidget = _iconWidgetListWidget();
       rowChildren.add(iconListWidget);
@@ -173,7 +171,7 @@ class BrnBottomButtonPanel extends StatelessWidget {
   }
 
   Widget _buttonListWidget() {
-    List<Widget> btnList = List<Widget>();
+    List<Widget> btnList = <Widget>[];
     Widget mBtn = _mainButtonWidget();
     btnList.add(mBtn);
     if (secondaryButtonName != null) {
@@ -189,7 +187,7 @@ class BrnBottomButtonPanel extends StatelessWidget {
   }
 
   Widget _iconWidgetListWidget() {
-    List<Widget> finalIconList = iconButtonList.map((wdt) {
+    List<Widget> finalIconList = iconButtonList!.map((wdt) {
       return Padding(padding: EdgeInsets.only(left: 0), child: wdt);
     }).toList();
     return Row(
@@ -205,7 +203,7 @@ class BrnBottomButtonPanel extends StatelessWidget {
         child: GestureDetector(
           onTap: () {
             if (secondaryButtonOnTap != null && enableSecondaryButton) {
-              secondaryButtonOnTap();
+              secondaryButtonOnTap!();
             }
           },
           child: Container(
@@ -248,7 +246,7 @@ class BrnBottomButtonPanel extends StatelessWidget {
     Widget mainWidget = GestureDetector(
       onTap: () {
         if (mainButtonOnTap != null && enableMainButton) {
-          mainButtonOnTap();
+          mainButtonOnTap!();
         }
       },
       child: Container(
@@ -294,7 +292,7 @@ class BrnBottomButtonPanel extends StatelessWidget {
   }
 
   bool _isEmptyIcon() {
-    return iconButtonList == null || iconButtonList.isEmpty;
+    return iconButtonList == null || iconButtonList!.isEmpty;
   }
 
   bool _isEmptySecondary() {

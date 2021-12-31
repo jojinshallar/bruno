@@ -33,7 +33,9 @@ class EventBus {
   static EventBus? _instance;
 
   factory EventBus.init() {
-    _instance = EventBus();
+    if (_instance == null) {
+      _instance = EventBus();
+    }
     return _instance!;
   }
 
@@ -79,20 +81,5 @@ class EventBus {
   /// Destroy this [EventBus]. This is generally only in a testing context.
   void destroy() {
     _streamController.close();
-  }
-  static EventBus? _instance;
-
-  factory EventBus.init() {
-    if (_instance == null) {
-      _instance = EventBus();
-    }
-    return _instance!;
-  }
-
-  static EventBus get instance {
-    if (_instance == null) {
-      EventBus.init();
-    }
-    return _instance!;
   }
 }

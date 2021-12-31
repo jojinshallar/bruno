@@ -87,9 +87,7 @@ class _BrnSelectionRangeItemWidgetState
       widget.item.isSelected = true;
     });
 
-    EventBus.instance
-        .on<ClearSelectionFocusEvent>()
-        .listen((ClearSelectionFocusEvent event) {
+    EventBus.instance.on<ClearSelectionFocusEvent>().listen((event) {
       _minFocusNode?.unfocus();
       _maxFocusNode?.unfocus();
     });

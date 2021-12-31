@@ -75,16 +75,14 @@ class _BrnSelectionMenuWidgetState extends State<BrnSelectionMenuWidget> {
   @override
   void initState() {
     super.initState();
-    _refreshTitleSubscription = EventBus.instance
-        .on<RefreshMenuTitleEvent>()
-        .listen((RefreshMenuTitleEvent event) {
+    _refreshTitleSubscription =
+        EventBus.instance.on<RefreshMenuTitleEvent>().listen((event) {
       _needRefreshTitle = true;
       setState(() {});
     });
 
-    _closeSelectionPopupWindowSubscription = EventBus.instance
-        .on<CloseSelectionViewEvent>()
-        .listen((CloseSelectionViewEvent event) {
+    _closeSelectionPopupWindowSubscription =
+        EventBus.instance.on<CloseSelectionViewEvent>().listen((event) {
       _closeSelectionPopupWindow();
     });
 
@@ -396,8 +394,8 @@ class _BrnSelectionMenuWidgetState extends State<BrnSelectionMenuWidget> {
     if (entity != null) {
       List<BrnSelectionEntity> firstColumn =
           BrnSelectionUtil.currentSelectListForEntity(entity);
-      List<BrnSelectionEntity> secondColumn = List();
-      List<BrnSelectionEntity> thirdColumn = List();
+      List<BrnSelectionEntity> secondColumn = [];
+      List<BrnSelectionEntity> thirdColumn = [];
       if (firstColumn != null && firstColumn.length > 0) {
         for (BrnSelectionEntity firstEntity in firstColumn) {
           if (firstEntity != null) {

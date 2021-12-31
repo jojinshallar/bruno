@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'package:bruno/src/components/popup/brn_popup_window.dart';
 import 'package:bruno/src/constants/brn_asset_constants.dart';
 import 'package:bruno/src/theme/brn_theme_configurator.dart';
@@ -19,7 +17,7 @@ class BrnTextButtonPanel extends StatefulWidget {
   final List<String> nameList;
 
   /// 点击某个文本按钮的回调
-  final void Function(int index) onTap;
+  final void Function(int index)? onTap;
 
   /// popUpWindow位于targetView的方向
   /// 取[BrnPopupDirection]里面的值
@@ -27,8 +25,8 @@ class BrnTextButtonPanel extends StatefulWidget {
   final BrnPopupDirection popDirection;
 
   const BrnTextButtonPanel(
-      {Key key,
-      @required this.nameList,
+      {Key? key,
+      required this.nameList,
       this.onTap,
       this.popDirection = BrnPopupDirection.bottom})
       : super(key: key);
@@ -38,7 +36,7 @@ class BrnTextButtonPanel extends StatefulWidget {
 }
 
 class _BrnTextButtonPanelState extends State<BrnTextButtonPanel> {
-  GlobalKey _popWindowKey;
+  late GlobalKey _popWindowKey;
 
   /// 更多按钮的展开收起状态
   bool _isExpanded = false;
@@ -72,7 +70,7 @@ class _BrnTextButtonPanelState extends State<BrnTextButtonPanel> {
   }
 
   List<Widget> _textOperationWidgetList(context) {
-    List<Widget> widgetList = List<Widget>();
+    List<Widget> widgetList = <Widget>[];
     //文本按钮不超过4个，就全不显示
     //超过4个的话，就只显示3个，剩下的显示在更多里
     int length = widget.nameList.length <= _maxNum
@@ -87,7 +85,7 @@ class _BrnTextButtonPanelState extends State<BrnTextButtonPanel> {
       widgetList.add(_moreButton());
     }
 
-    List<Widget> showWidget = List();
+    List<Widget> showWidget = [];
     for (int i = 0, n = widgetList.length; i < n; ++i) {
       showWidget.add(Expanded(
         child: Center(
@@ -131,7 +129,7 @@ class _BrnTextButtonPanelState extends State<BrnTextButtonPanel> {
             return;
           }
           if (null != widget.onTap) {
-            widget.onTap(index);
+            widget.onTap!(index);
           }
         });
   }
@@ -139,7 +137,7 @@ class _BrnTextButtonPanelState extends State<BrnTextButtonPanel> {
   /// 更多按钮
   Widget _moreButton() {
     if (widget.nameList != null && widget.nameList.length > _maxNum) {
-      List<String> list = List();
+      List<String> list = [];
       for (int i = _maxNum - 1; i < widget.nameList.length; i++) {
         list.add(widget.nameList[i]);
       }
@@ -176,7 +174,7 @@ class _BrnTextButtonPanelState extends State<BrnTextButtonPanel> {
                 popDirection: widget.popDirection,
                 data: list, onItemClick: (index, item) {
               if (widget.onTap != null) {
-                widget.onTap(index + 3);
+                widget.onTap!(index + 3);
               }
             }, onDismiss: () {
               setState(() {

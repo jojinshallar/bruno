@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'dart:math';
 import 'dart:ui' as ui;
 
@@ -87,21 +85,21 @@ class BrnPairInfoTable extends StatefulWidget {
   final bool isFolded;
 
   /// 每一行的间距 默认4
-  final double rowDistance;
+  final double? rowDistance;
 
   /// key和value的间距 默认2
-  final double itemSpacing;
+  final double? itemSpacing;
 
-  final BrnPairInfoTableConfig themeData;
+  final BrnPairInfoTableConfig? themeData;
 
   ///对齐情况下，自定义的key展示规则
   ///默认是最大的Key展示长度是107
   ///可以参考[_MaxWrapTableWidth]实现自定义的展示规则，指定长度等
-  final TableColumnWidth customKeyWidth;
+  final TableColumnWidth? customKeyWidth;
 
   BrnPairInfoTable({
-    Key key,
-    @required this.children,
+    Key? key,
+    required this.children,
     this.isValueAlign = true,
     this.expandAtIndex = -1,
     this.rowDistance,
@@ -117,35 +115,35 @@ class BrnPairInfoTable extends StatefulWidget {
 
 class _BrnPairInfoTableState extends State<BrnPairInfoTable> {
   //当前的展示状态
-  bool _isFolded;
+  late bool _isFolded;
 
   //指定索引位置去具备展开功能
-  int _expandAtIndex;
+  late int _expandAtIndex;
 
   // 收起状态显示的孩子
-  List<BrnInfoModal> foldList;
+  late List<BrnInfoModal> foldList;
 
   // 展开状态显示的孩子
-  List<BrnInfoModal> expandedList;
+  late List<BrnInfoModal> expandedList;
 
   // 在页面呈现的孩子
-  List<BrnInfoModal> showList;
+  late List<BrnInfoModal> showList;
 
   // 指定位置的最原始 modal
-  BrnInfoModal indexModal;
+  late BrnInfoModal indexModal;
 
   // 是否具备展开收起功能 如果不展示则显示全部
   bool canExpanded = false;
 
-  BrnPairInfoTableConfig themeData;
+  BrnPairInfoTableConfig? themeData;
 
   @override
   void initState() {
     themeData = widget.themeData ?? BrnPairInfoTableConfig();
-    themeData =
-        themeData.merge(BrnPairInfoTableConfig(rowSpacing: widget.rowDistance));
+    themeData = themeData!
+        .merge(BrnPairInfoTableConfig(rowSpacing: widget.rowDistance));
     themeData = BrnThemeConfigurator.instance
-        .getConfig(configId: themeData.configId)
+        .getConfig(configId: themeData?.configId)
         .pairInfoTableConfig
         .merge(themeData);
 
@@ -170,10 +168,10 @@ class _BrnPairInfoTableState extends State<BrnPairInfoTable> {
   void didUpdateWidget(BrnPairInfoTable oldWidget) {
     super.didUpdateWidget(oldWidget);
     themeData ??= BrnPairInfoTableConfig();
-    themeData =
-        themeData.merge(BrnPairInfoTableConfig(rowSpacing: widget.rowDistance));
+    themeData = themeData!
+        .merge(BrnPairInfoTableConfig(rowSpacing: widget.rowDistance));
     themeData = BrnThemeConfigurator.instance
-        .getConfig(configId: themeData.configId)
+        .getConfig(configId: themeData?.configId)
         .pairInfoTableConfig
         .merge(themeData);
   }
@@ -211,7 +209,7 @@ class _BrnPairInfoTableState extends State<BrnPairInfoTable> {
     return showWidget;
   }
 
-  Widget _finalValueWidget(BrnInfoModal data, {double itemSpacing}) {
+  Widget _finalValueWidget(BrnInfoModal data, {double? itemSpacing}) {
     Widget valueWidget;
 
     if (data.valuePart is String) {
@@ -225,7 +223,7 @@ class _BrnPairInfoTableState extends State<BrnPairInfoTable> {
       if (valueWidget == null) {
         valueWidget = Text(
           '--',
-          style: themeData.valueTextStyle?.generateTextStyle(),
+          style: themeData?.valueTextStyle?.generateTextStyle(),
         );
       }
     }
@@ -241,7 +239,8 @@ class _BrnPairInfoTableState extends State<BrnPairInfoTable> {
       );
     }
     return Padding(
-      padding: EdgeInsets.only(left: itemSpacing ?? themeData.itemSpacing),
+      padding:
+          EdgeInsets.only(left: itemSpacing ?? (themeData?.itemSpacing ?? 0.0)),
       child: valueWidget,
     );
   }
@@ -281,7 +280,7 @@ class _BrnPairInfoTableState extends State<BrnPairInfoTable> {
             '展开',
             style: TextStyle(
               fontSize: 14,
-              color: themeData.commonConfig.colorTextSecondary,
+              color: themeData?.commonConfig.colorTextSecondary,
             ),
           ),
         ),
@@ -339,7 +338,7 @@ class _BrnPairInfoTableState extends State<BrnPairInfoTable> {
             '收起',
             style: TextStyle(
               fontSize: 14,
-              color: themeData.commonConfig.colorTextSecondary,
+              color: themeData?.commonConfig.colorTextSecondary,
             ),
           ),
         ),
@@ -391,7 +390,7 @@ class _BrnPairInfoTableState extends State<BrnPairInfoTable> {
   Widget _valueTitleText(String text,
       {bool isValueAlign = true,
       bool isArrow = false,
-      BrnPairInfoTableConfig themeData}) {
+      BrnPairInfoTableConfig? themeData}) {
     bool isSingle;
     if (isArrow) {
       isSingle = true;
@@ -410,7 +409,7 @@ class _BrnPairInfoTableState extends State<BrnPairInfoTable> {
       show,
       overflow: isSingle ? TextOverflow.ellipsis : TextOverflow.clip,
       maxLines: isSingle ? 1 : null,
-      style: themeData.valueTextStyle?.generateTextStyle(),
+      style: themeData?.valueTextStyle?.generateTextStyle(),
     );
     return keyOrValue;
   }
@@ -420,9 +419,9 @@ mixin PairInfoPart {
   bool isValueAlign();
 
   BrnPairInfoTableConfig configDefaultThemeData(
-      BrnPairInfoTableConfig themeData,
-      {double rowDistance,
-      double itemSpacing}) {
+      BrnPairInfoTableConfig? themeData,
+      {double? rowDistance,
+      double? itemSpacing}) {
     BrnPairInfoTableConfig defaultThemeData;
     defaultThemeData = themeData ?? BrnPairInfoTableConfig();
     defaultThemeData = defaultThemeData.merge(BrnPairInfoTableConfig(
@@ -448,7 +447,7 @@ mixin PairInfoPart {
   }
 
   Widget finalValueWidget(BrnInfoModal data, BrnPairInfoTableConfig themeData,
-      {double itemSpacing}) {
+      {double? itemSpacing}) {
     Widget valueWidget;
 
     if (data.valuePart is String) {
@@ -462,7 +461,7 @@ mixin PairInfoPart {
       if (valueWidget == null) {
         valueWidget = Text(
           '--',
-          style: themeData.valueTextStyle?.generateTextStyle(),
+          style: themeData.valueTextStyle.generateTextStyle(),
         );
       }
     }
@@ -486,7 +485,7 @@ mixin PairInfoPart {
   Widget keyOrValueTitleText(bool isKey, String text,
       {bool isValueAlign = true,
       bool isArrow = false,
-      BrnPairInfoTableConfig themeData}) {
+      BrnPairInfoTableConfig? themeData}) {
     bool isSingle;
     if (isArrow) {
       isSingle = true;
@@ -510,8 +509,8 @@ mixin PairInfoPart {
       overflow: isSingle ? TextOverflow.ellipsis : TextOverflow.clip,
       maxLines: isSingle ? 1 : null,
       style: isKey
-          ? themeData.keyTextStyle?.generateTextStyle()
-          : themeData.valueTextStyle?.generateTextStyle(),
+          ? themeData?.keyTextStyle?.generateTextStyle()
+          : themeData?.valueTextStyle?.generateTextStyle(),
     );
     return keyOrValue;
   }
@@ -522,16 +521,16 @@ class BrnFollowPairInfo extends StatelessWidget with PairInfoPart {
   final List<BrnInfoModal> children;
 
   /// 每一行的间距
-  final double rowDistance;
+  final double? rowDistance;
 
   /// key和value的间距
-  final double itemSpacing;
+  final double? itemSpacing;
 
-  final BrnPairInfoTableConfig themeData;
+  final BrnPairInfoTableConfig? themeData;
 
   BrnFollowPairInfo({
-    Key key,
-    @required this.children,
+    Key? key,
+    required this.children,
     this.rowDistance,
     this.itemSpacing,
     this.themeData,
@@ -556,8 +555,8 @@ class BrnFollowPairInfo extends StatelessWidget with PairInfoPart {
           children: children.map((data) {
             index++;
             return Padding(
-              padding:
-                  EdgeInsets.only(top: (index == 0) ? 0 : themeData.rowSpacing),
+              padding: EdgeInsets.only(
+                  top: (index == 0) ? 0 : themeData!.rowSpacing),
               child: _buildSingleInfo(
                   data, constraints.maxWidth / 2, defaultThemeConfig),
             );
@@ -574,7 +573,7 @@ class BrnFollowPairInfo extends StatelessWidget with PairInfoPart {
       value = GestureDetector(
         onTap: () {
           if (infoModal.valueClickCallback != null) {
-            infoModal.valueClickCallback();
+            infoModal.valueClickCallback!();
           }
         },
         child: value,
@@ -606,20 +605,20 @@ class BrnAlignPairInfo extends StatelessWidget with PairInfoPart {
   final List<BrnInfoModal> children;
 
   ///控件的背景色 默认为白色
-  final Color backgroundColor;
+  final Color? backgroundColor;
 
   /// 每一行的间距
-  final double rowDistance;
+  final double? rowDistance;
 
   /// key和value的间距
-  final double itemSpacing;
+  final double? itemSpacing;
 
-  final TableColumnWidth customKeyWidth;
+  final TableColumnWidth? customKeyWidth;
 
-  final BrnPairInfoTableConfig themeData;
+  final BrnPairInfoTableConfig? themeData;
 
   BrnAlignPairInfo(
-      {this.children,
+      {required this.children,
       this.rowDistance,
       this.backgroundColor,
       this.itemSpacing,
@@ -677,7 +676,7 @@ class BrnAlignPairInfo extends StatelessWidget with PairInfoPart {
       value = GestureDetector(
         onTap: () {
           if (infoModal.valueClickCallback != null) {
-            infoModal.valueClickCallback();
+            infoModal.valueClickCallback!();
           }
         },
         child: value,
@@ -705,7 +704,7 @@ class BrnInfoModal {
   final bool isArrow;
 
   /// value的点击回调
-  final VoidCallback valueClickCallback;
+  final VoidCallback? valueClickCallback;
 
   BrnInfoModal(
       {this.keyPart,
@@ -729,14 +728,14 @@ class BrnInfoModal {
     String keyTitle,
     String valueTitle,
     String clickValue, {
-    double fontSize,
-    double itemSpacing,
-    TextStyle valueTextStyle,
-    Function(String clickValue) clickCallback,
+    double? fontSize,
+    double? itemSpacing,
+    TextStyle? valueTextStyle,
+    Function(String? clickValue)? clickCallback,
     bool isArrow = false,
-    VoidCallback valueClickCallback,
-    Color linkColor,
-    BrnPairInfoTableConfig themeData,
+    VoidCallback? valueClickCallback,
+    Color? linkColor,
+    BrnPairInfoTableConfig? themeData,
   }) {
     themeData ??= BrnPairInfoTableConfig();
     themeData = themeData.merge(BrnPairInfoTableConfig(
@@ -762,7 +761,7 @@ class BrnInfoModal {
               valueTitle,
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
-              style: themeData.valueTextStyle?.generateTextStyle(),
+              style: themeData?.valueTextStyle.generateTextStyle(),
             ),
           ),
           GestureDetector(
@@ -775,7 +774,7 @@ class BrnInfoModal {
               clickValue,
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
-              style: themeData.linkTextStyle?.generateTextStyle(),
+              style: themeData?.linkTextStyle.generateTextStyle(),
             ),
           )
         ],
@@ -784,11 +783,11 @@ class BrnInfoModal {
       valueWidget = BrnRichTextGenerator()
           .addText(
             valueTitle,
-            textStyle: themeData.valueTextStyle?.generateTextStyle(),
+            textStyle: themeData?.valueTextStyle.generateTextStyle(),
           )
           .addTextWithLink(
             clickValue,
-            textStyle: themeData.linkTextStyle?.generateTextStyle(),
+            textStyle: themeData?.linkTextStyle.generateTextStyle(),
             richTextLinkClick: (text, url) {
               if (clickCallback != null) {
                 clickCallback(text);
@@ -824,15 +823,15 @@ class BrnInfoModal {
     String valueTitle, {
     bool keyShow = false,
     bool valueShow = true,
-    double fontSize,
-    double itemSpacing,
-    TextStyle keyTextStyle,
-    TextStyle valueTextStyle,
-    Function keyCallback,
-    Function valueCallback,
+    double? fontSize,
+    double? itemSpacing,
+    TextStyle? keyTextStyle,
+    TextStyle? valueTextStyle,
+    Function? keyCallback,
+    Function? valueCallback,
     bool isArrow = false,
-    VoidCallback valueClickCallback,
-    BrnPairInfoTableConfig themeData,
+    VoidCallback? valueClickCallback,
+    BrnPairInfoTableConfig? themeData,
   }) {
     themeData ??= BrnPairInfoTableConfig();
     themeData = themeData.merge(BrnPairInfoTableConfig(
@@ -851,7 +850,8 @@ class BrnInfoModal {
 
     if (isArrow) {
       MediaQueryData mediaQuery = MediaQueryData.fromWindow(ui.window);
-      double screen = mediaQuery?.size?.width ?? 375;
+      double screen =
+          mediaQuery.size.width == 0.0 ? 375 : mediaQuery.size.width;
 
       if (keyShow) {
         keyWidget = Container(
@@ -865,7 +865,7 @@ class BrnInfoModal {
                   keyTitle,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
-                  style: themeData.keyTextStyle?.generateTextStyle(),
+                  style: themeData?.keyTextStyle?.generateTextStyle(),
                 ),
               ),
               GestureDetector(
@@ -880,7 +880,7 @@ class BrnInfoModal {
                 '：',
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
-                style: themeData.valueTextStyle?.generateTextStyle(),
+                style: themeData?.valueTextStyle.generateTextStyle(),
               )
             ],
           ),
@@ -898,7 +898,7 @@ class BrnInfoModal {
                 valueTitle,
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
-                style: themeData.keyTextStyle?.generateTextStyle(),
+                style: themeData?.keyTextStyle.generateTextStyle(),
               ),
             ),
             GestureDetector(
@@ -917,7 +917,7 @@ class BrnInfoModal {
     } else {
       BrnRichTextGenerator keyGen = BrnRichTextGenerator();
       keyGen.addText(keyTitle,
-          textStyle: themeData.keyTextStyle?.generateTextStyle());
+          textStyle: themeData?.keyTextStyle.generateTextStyle());
       if (keyShow) {
         keyGen.addIcon(GestureDetector(
           onTap: () {
@@ -928,13 +928,13 @@ class BrnInfoModal {
           child: BrunoTools.getAssetImage(BrnAsset.ICON_QUESTION),
         ));
         keyGen.addText('：',
-            textStyle: themeData.keyTextStyle?.generateTextStyle());
+            textStyle: themeData?.keyTextStyle.generateTextStyle());
       }
       keyWidget = keyGen.build();
 
       BrnRichTextGenerator valueGen = BrnRichTextGenerator();
       valueGen.addText(valueTitle,
-          textStyle: themeData.valueTextStyle?.generateTextStyle());
+          textStyle: themeData?.valueTextStyle.generateTextStyle());
       if (valueShow) {
         valueGen.addIcon(GestureDetector(
           onTap: () {
@@ -966,14 +966,14 @@ class BrnInfoModal {
   static BrnInfoModal keyHeadIconInfo(
     String keyTitle,
     String valueTitle, {
-    Widget headIcon,
-    double fontSize,
-    double itemSpacing,
-    TextStyle keyTextStyle,
-    TextStyle valueTextStyle,
+    Widget? headIcon,
+    double? fontSize,
+    double? itemSpacing,
+    TextStyle? keyTextStyle,
+    TextStyle? valueTextStyle,
     bool isArrow = false,
-    VoidCallback valueClickCallback,
-    BrnPairInfoTableConfig themeData,
+    VoidCallback? valueClickCallback,
+    BrnPairInfoTableConfig? themeData,
   }) {
     themeData ??= BrnPairInfoTableConfig();
     themeData = themeData.merge(BrnPairInfoTableConfig(
@@ -1004,7 +1004,7 @@ class BrnInfoModal {
     }
 
     keyGen.addText(keyTitle,
-        textStyle: themeData.keyTextStyle?.generateTextStyle());
+        textStyle: themeData?.keyTextStyle.generateTextStyle());
 
     return BrnInfoModal(
         keyPart: keyGen.build(),
@@ -1017,13 +1017,13 @@ class BrnInfoModal {
   static BrnInfoModal valueRichTextInfo(
     String keyTitle,
     String valueTitle, {
-    double fontSize,
-    double itemSpacing,
-    TextStyle valueTextStyle,
+    double? fontSize,
+    double? itemSpacing,
+    TextStyle? valueTextStyle,
     bool isArrow = false,
-    BrnHyperLinkCallback richTextLinkClick,
-    VoidCallback valueClickCallback,
-    BrnPairInfoTableConfig themeData,
+    BrnHyperLinkCallback? richTextLinkClick,
+    VoidCallback? valueClickCallback,
+    BrnPairInfoTableConfig? themeData,
   }) {
     themeData ??= BrnPairInfoTableConfig();
     themeData = themeData.merge(BrnPairInfoTableConfig(
@@ -1039,13 +1039,13 @@ class BrnInfoModal {
     return BrnInfoModal(
         keyPart: keyTitle,
         valuePart: Padding(
-          padding: EdgeInsets.only(left: itemSpacing),
+          padding: EdgeInsets.only(left: itemSpacing ?? 0.0),
           child: ExcludeSemantics(
             child: BrnCSS2Text.toTextView(valueTitle,
                 maxLines: isArrow ? 1 : null,
                 textOverflow:
                     isArrow ? TextOverflow.ellipsis : TextOverflow.clip,
-                defaultStyle: themeData.valueTextStyle?.generateTextStyle(),
+                defaultStyle: themeData?.valueTextStyle.generateTextStyle(),
                 linksCallback: (text, url) {
               if (richTextLinkClick != null) {
                 richTextLinkClick(text, url);
@@ -1086,5 +1086,5 @@ class _MaxWrapTableWidth extends TableColumnWidth {
     return 0;
   }
 
-  _MaxWrapTableWidth({this.maxWidth});
+  _MaxWrapTableWidth({required this.maxWidth});
 }

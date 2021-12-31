@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'package:bruno/bruno.dart';
 import 'package:bruno/src/utils/brn_multi_click_util.dart';
 import 'package:flutter/material.dart';
@@ -77,52 +75,52 @@ class BrnNormalButton extends StatelessWidget {
   final bool isEnable;
 
   /// 按钮点击的回调
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   /// 按钮显示的文案
   final String text;
 
   /// 按钮的文字颜色 默认白色[_BTextColor]
-  final Color textColor;
+  final Color? textColor;
 
   /// 按钮的文字大小 默认[_BFontSize]
-  final double fontSize;
+  final double? fontSize;
 
   /// 按钮不可用的文字颜色
-  final Color disableTextColor;
+  final Color? disableTextColor;
 
   /// 按钮不可用背景色 默认[_BDisableBackgroundColor]
-  final Color disableBackgroundColor;
+  final Color? disableBackgroundColor;
 
   /// 按钮背景色 默认[_BBackgroundColor]
-  final Color backgroundColor;
+  final Color? backgroundColor;
 
   /// 按钮内边距 默认水平[_BHorizontalPadding] 垂直[_BVerticalPadding]
-  final EdgeInsetsGeometry insertPadding;
+  final EdgeInsetsGeometry? insertPadding;
 
   /// 按钮的修饰 默认实色背景
-  final Decoration decoration;
+  final Decoration? decoration;
 
   /// 按钮的显示子节点 优先级高于[text]
-  final Widget child;
+  final Widget? child;
 
   /// 按钮的文本显示样式 优先级高于[textColor]等属性
-  final TextStyle textStyle;
+  final TextStyle? textStyle;
 
   /// 按钮的文本Weight 默认是[FontWeight.bold]
-  final FontWeight fontWeight;
+  final FontWeight? fontWeight;
 
   /// 按钮的布局约束 默认是自适应大小
-  final BoxConstraints constraints;
+  final BoxConstraints? constraints;
 
   /// 按钮的内部对齐 默认为null
-  final Alignment alignment;
+  final Alignment? alignment;
 
   /// 按钮圆角大小
-  final BorderRadiusGeometry borderRadius;
+  final BorderRadiusGeometry? borderRadius;
 
   BrnNormalButton(
-      {@required this.text,
+      {required this.text,
       this.backgroundColor,
       this.isEnable = true,
       this.onTap,
@@ -140,11 +138,11 @@ class BrnNormalButton extends StatelessWidget {
       this.alignment});
 
   BrnNormalButton.outline({
-    Color disableLineColor,
-    Color lineColor,
+    required Color disableLineColor,
+    required Color lineColor,
     double radius = 6,
     double borderWith = 1.0,
-    @required this.text,
+    required this.text,
     this.isEnable = true,
     this.backgroundColor,
     this.disableBackgroundColor,
@@ -178,7 +176,7 @@ class BrnNormalButton extends StatelessWidget {
           return;
         }
         if (isEnable && onTap != null) {
-          onTap();
+          onTap!();
         }
       },
       child: Container(
@@ -201,9 +199,9 @@ class BrnNormalButton extends StatelessWidget {
 
   TextStyle _getTextStyle() {
     if (textStyle != null) {
-      return textStyle;
+      return textStyle!;
     }
-    Color textColor;
+    Color? textColor;
     if (isEnable) {
       textColor = this.textColor;
       if (textColor == null) {
@@ -224,19 +222,8 @@ class BrnNormalButton extends StatelessWidget {
   }
 
   Color _getBackgroundColor() {
-    Color bgColor;
-    if (isEnable) {
-      bgColor = backgroundColor;
-      if (bgColor == null) {
-        bgColor = _BBackgroundColor;
-      }
-    } else {
-      bgColor = disableBackgroundColor;
-      if (bgColor == null) {
-        bgColor = _BDisableBackgroundColor;
-      }
-    }
-    return bgColor;
+    Color? bgColor = isEnable ? backgroundColor : disableBackgroundColor;
+    return bgColor ?? (isEnable ? _BBackgroundColor : _BDisableBackgroundColor);
   }
 
   BoxDecoration _getBoxDecoration(Color bgColor) {
@@ -249,15 +236,15 @@ class BrnNormalButton extends StatelessWidget {
 
 class _OutlineBoxDecorationCreator {
   static BoxDecoration createOutlineBoxDecoration(
-      {bool isEnable,
-      Color disableLineColor,
-      Color lineColor,
-      Color disableBackgroundColor,
-      Color backgroundColor,
+      {bool isEnable = true,
+      required Color disableLineColor,
+      required Color lineColor,
+      Color? disableBackgroundColor,
+      Color? backgroundColor,
       double radius = 6,
       double borderWith = 1.0}) {
-    Color _lineColor = isEnable ? lineColor : disableLineColor;
-    Color _bgColor = isEnable ? backgroundColor : disableBackgroundColor;
+    Color? _lineColor = isEnable ? lineColor : disableLineColor;
+    Color? _bgColor = isEnable ? backgroundColor : disableBackgroundColor;
 
     return BoxDecoration(
         border: Border.all(color: _lineColor, width: borderWith),
