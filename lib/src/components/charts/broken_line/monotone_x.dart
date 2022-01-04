@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'dart:math';
 import 'dart:ui';
 
@@ -25,7 +23,7 @@ class MonotoneX {
     double p = (s0 * h1 + s1 * h0) / (h0 + h1);
     var source = [s0.abs(), s1.abs(), 0.5 * p.abs()];
     source.sort();
-    return (sign(s0) + sign(s1)) * source.first ?? 0;
+    return (sign(s0) + sign(s1)) * source.first;
   }
 
   // According to https://en.wikipedia.org/wiki/Cubic_Hermite_spline#Representations
@@ -44,15 +42,15 @@ class MonotoneX {
     targetPoints.addAll(points);
     targetPoints.add(Point(
         points[points.length - 1].x * 2, points[points.length - 1].y * 2));
-    double x0, y0, x1, y1, t0;
+    double x0 = 0, y0 = 0, x1 = 0, y1 = 0, t0 = 0;
     if (path == null) {
       path = Path();
     }
     List<List<double>> arr = [];
     for (int i = 0; i < targetPoints.length; i++) {
-      double t1;
-      double x = targetPoints[i].x;
-      double y = targetPoints[i].y;
+      double t1 = 0;
+      double x = targetPoints[i].x.toDouble();
+      double y = targetPoints[i].y.toDouble();
       if (x == x1 && y == y1) continue;
       switch (i) {
         case 0:
