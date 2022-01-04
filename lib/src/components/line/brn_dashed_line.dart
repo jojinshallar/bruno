@@ -1,4 +1,3 @@
-
 import 'package:bruno/src/theme/brn_theme_configurator.dart';
 import 'package:flutter/material.dart';
 
@@ -56,7 +55,7 @@ class BrnDashedLine extends StatelessWidget {
   final Color? color;
 
   /// 虚线的Widget
-  final Widget contentWidget;
+  final Widget? contentWidget;
 
   /// 距离边缘的位置（偏移量），默认值为0
   final double? dashedOffset;
@@ -66,7 +65,7 @@ class BrnDashedLine extends StatelessWidget {
 
   BrnDashedLine({
     Key? key,
-    required this.contentWidget,
+    this.contentWidget,
     this.axis,
     this.dashedLength,
     this.dashedThickness,

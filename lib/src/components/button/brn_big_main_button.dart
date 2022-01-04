@@ -1,5 +1,4 @@
 import 'package:bruno/bruno.dart';
-import 'package:bruno/src/theme/brn_theme.dart';
 import 'package:flutter/material.dart';
 
 /// 页面中的主按钮,支持动态设置背景颜色，置灰

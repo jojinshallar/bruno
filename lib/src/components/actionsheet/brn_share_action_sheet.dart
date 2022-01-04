@@ -127,7 +127,7 @@ class BrnShareActionSheet extends StatelessWidget {
             : BrunoTools.getAssetImage(BrnShareItemConstants
                 .disableShareItemImagePathList[channel.shareType]));
     //如果没图或没文字则不显示
-    if (title == null || image == null) {
+    if (title.isEmpty || image == null) {
       return null;
     }
 

@@ -1193,7 +1193,7 @@ class _BrokenLineExampleState extends State<BrokenLineExample> {
 
   List<BrnPointsLine> _getPointsLineListWithShowPointText() {
     BrnPointsLine pointsLine, _pointsLine2;
-    List<BrnPointsLine> pointsLineList = List();
+    List<BrnPointsLine> pointsLineList = [];
     pointsLine = BrnPointsLine(
       isShowXDial: true,
       lineWidth: 3,

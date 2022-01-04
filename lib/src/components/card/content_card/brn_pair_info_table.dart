@@ -210,7 +210,7 @@ class _BrnPairInfoTableState extends State<BrnPairInfoTable> {
   }
 
   Widget _finalValueWidget(BrnInfoModal data, {double? itemSpacing}) {
-    Widget valueWidget;
+    Widget? valueWidget;
 
     if (data.valuePart is String) {
       valueWidget = _valueTitleText(data.valuePart,
@@ -223,7 +223,7 @@ class _BrnPairInfoTableState extends State<BrnPairInfoTable> {
       if (valueWidget == null) {
         valueWidget = Text(
           '--',
-          style: themeData?.valueTextStyle?.generateTextStyle(),
+          style: themeData?.valueTextStyle.generateTextStyle(),
         );
       }
     }
@@ -409,7 +409,7 @@ class _BrnPairInfoTableState extends State<BrnPairInfoTable> {
       show,
       overflow: isSingle ? TextOverflow.ellipsis : TextOverflow.clip,
       maxLines: isSingle ? 1 : null,
-      style: themeData?.valueTextStyle?.generateTextStyle(),
+      style: themeData?.valueTextStyle.generateTextStyle(),
     );
     return keyOrValue;
   }
@@ -448,7 +448,7 @@ mixin PairInfoPart {
 
   Widget finalValueWidget(BrnInfoModal data, BrnPairInfoTableConfig themeData,
       {double? itemSpacing}) {
-    Widget valueWidget;
+    Widget? valueWidget;
 
     if (data.valuePart is String) {
       valueWidget = keyOrValueTitleText(false, data.valuePart,
@@ -509,8 +509,8 @@ mixin PairInfoPart {
       overflow: isSingle ? TextOverflow.ellipsis : TextOverflow.clip,
       maxLines: isSingle ? 1 : null,
       style: isKey
-          ? themeData?.keyTextStyle?.generateTextStyle()
-          : themeData?.valueTextStyle?.generateTextStyle(),
+          ? themeData?.keyTextStyle.generateTextStyle()
+          : themeData?.valueTextStyle.generateTextStyle(),
     );
     return keyOrValue;
   }
@@ -712,8 +712,7 @@ class BrnInfoModal {
       this.isArrow = false,
       this.valueClickCallback})
       : assert(keyPart == null || keyPart is String || keyPart is Widget),
-        assert(
-            valuePart == null || valuePart is String || valuePart is Widget) {}
+        assert(valuePart == null || valuePart is String || valuePart is Widget);
 
   ///-----------以下静态方法为常见显示的快捷构造-----------
   /// value的最后一部分带有可点击的超链接
@@ -865,7 +864,7 @@ class BrnInfoModal {
                   keyTitle,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
-                  style: themeData?.keyTextStyle?.generateTextStyle(),
+                  style: themeData?.keyTextStyle.generateTextStyle(),
                 ),
               ),
               GestureDetector(

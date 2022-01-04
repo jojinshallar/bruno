@@ -136,7 +136,7 @@ class BrnRichInfoGrid extends StatelessWidget {
 
   Widget _getKeyWidget(BrnRichGridInfo info, double width, BuildContext context,
       BrnPairRichInfoGridConfig config) {
-    if (info == null || info.keyPart == null) {
+    if (info.keyPart == null) {
       return Container(
         height: 0,
         width: 0,
@@ -211,9 +211,9 @@ class BrnRichGridInfo {
   static BrnRichGridInfo valueLastClickInfo(
     String? keyTitle,
     String? valueTitle, {
-    required Function(String? key) keyQuestionCallback,
-    required Function(String? value) valueQuestionCallback,
-    required String? clickTitle,
+    Function(String? key)? keyQuestionCallback,
+    Function(String? value)? valueQuestionCallback,
+    String? clickTitle,
     Color? clickColor,
     Function(String? clickValue)? clickCallback,
     BrnPairRichInfoGridConfig? themeData,
@@ -230,9 +230,13 @@ class BrnRichGridInfo {
       return GestureDetector(
           onTap: () {
             if (isKey) {
-              keyQuestionCallback(keyTitle);
+              if (keyQuestionCallback != null) {
+                keyQuestionCallback(keyTitle);
+              }
             } else {
-              valueQuestionCallback(valueTitle);
+              if (valueQuestionCallback != null) {
+                valueQuestionCallback(valueTitle);
+              }
             }
           },
           child: Padding(
@@ -344,4 +348,4 @@ TextStyle? _getClickStyle(String? content, Color? clickColor,
 
 TextStyle? _getValueStyle(String? content,
         {BrnPairRichInfoGridConfig? themeData}) =>
-    themeData?.valueTextStyle?.generateTextStyle();
+    themeData?.valueTextStyle.generateTextStyle();

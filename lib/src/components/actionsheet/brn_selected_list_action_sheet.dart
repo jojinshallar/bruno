@@ -1,5 +1,4 @@
 import 'dart:math';
-import 'dart:ui';
 
 import 'package:bruno/src/components/dialog/brn_dialog.dart';
 import 'package:bruno/src/components/line/brn_line.dart';
@@ -264,12 +263,8 @@ class _BrnActionSheetSelectedItemListState<T>
   @override
   dispose() {
     //路由销毁时需要释放动画资源
-    if (widget._yAnimationController != null) {
-      widget._yAnimationController.dispose();
-    }
-    if (widget._alphaAnimationController != null) {
-      widget._alphaAnimationController.dispose();
-    }
+    widget._yAnimationController.dispose();
+    widget._alphaAnimationController.dispose();
     _controller?.removeListener(_onListenHandler);
     _controller = null;
     super.dispose();

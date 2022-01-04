@@ -1,7 +1,5 @@
 import 'dart:ui' as ui show Codec;
 import 'dart:ui';
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 /// 描述: 用于加载gif图，

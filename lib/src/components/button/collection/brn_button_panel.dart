@@ -5,7 +5,6 @@ import 'package:bruno/src/constants/brn_asset_constants.dart';
 import 'package:bruno/src/theme/brn_theme_configurator.dart';
 import 'package:bruno/src/utils/brn_tools.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 /// 描述: 主次按钮组成的横向面板
 /// 主按钮和边框按钮组成的集合
@@ -177,7 +176,7 @@ class _BrnButtonPanelState extends State<BrnButtonPanel> {
 
   /// 更多按钮
   Widget _moreButton() {
-    if (null != _secondaryButtonList && _secondaryButtonList.length > 2) {
+    if (_secondaryButtonList.length > 2) {
       List<String> list = [];
       for (int i = 2; i < _secondaryButtonList.length; i++) {
         list.add(_secondaryButtonList[i].name);
