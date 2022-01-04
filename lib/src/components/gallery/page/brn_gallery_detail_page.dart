@@ -75,7 +75,7 @@ class _BrnGalleryDetailPageState extends State<BrnGalleryDetailPage>
   String _indexTitle = "";
   PageController? _pageController;
   List<Widget> _pageViews = [];
-  Map<int,int> _groupStartPosition = Map<int,int>();
+  Map<int, int> _groupStartPosition = Map<int, int>();
   Map _groupCount = Map();
   int _allCount = 0;
   late BrnAppBarConfig _appBarConfig;
@@ -153,11 +153,11 @@ class _BrnGalleryDetailPageState extends State<BrnGalleryDetailPage>
     _allConfig.clear();
     // 过滤 config 中内容为空的选项
 
-      widget.allConfig.forEach((e) {
-        if ( e.configList.isNotEmpty) {
-          _allConfig.add(e);
-        }
-      });
+    widget.allConfig.forEach((e) {
+      if (e.configList.isNotEmpty) {
+        _allConfig.add(e);
+      }
+    });
 
     _allCount = 0;
     _groupCount.clear();
@@ -261,7 +261,7 @@ class _BrnGalleryDetailPageState extends State<BrnGalleryDetailPage>
         themeData: _appBarConfig,
         title: ValueListenableBuilder(
           valueListenable: _titleNotifier!,
-          builder: (c,String v, _) {
+          builder: (c, String v, _) {
             return Text(
               v,
               style: _appBarConfig.titleStyle.generateTextStyle(),
@@ -291,7 +291,8 @@ class _BrnGalleryDetailPageState extends State<BrnGalleryDetailPage>
                     })).then((result) {
                       if (result is List) {
                         _tabController!.animateTo(result[0]);
-                        _pageController?.jumpToPage(_getPagePosition(result[0], result[1]));
+                        _pageController?.jumpToPage(
+                            _getPagePosition(result[0], result[1]));
                       }
                     });
                   }

@@ -1,4 +1,3 @@
-
 import 'package:bruno/src/components/gallery/config/brn_basic_gallery_config.dart';
 import 'package:bruno/src/components/gallery/config/brn_bottom_card.dart';
 import 'package:bruno/src/components/loading/brn_loading.dart';
@@ -15,14 +14,17 @@ class BrnPhotoGroupConfig extends BrnBasicGroupConfig {
   final BrnGalleryDetailConfig? themeData;
 
   //通过url列表生成配置
-  BrnPhotoGroupConfig.url({this.title, required this.urls, this.themeData}):super(configList:[]) {
+  BrnPhotoGroupConfig.url({this.title, required this.urls, this.themeData})
+      : super(configList: []) {
     configList = [];
     urls!.forEach((item) =>
         configList.add(BrnPhotoItemConfig(url: item, themeData: themeData)));
   }
 
   //自定义配置列表
-  BrnPhotoGroupConfig({this.urls, this.title,required this.configList, this.themeData}):super(configList: configList);
+  BrnPhotoGroupConfig(
+      {this.urls, this.title, required this.configList, this.themeData})
+      : super(configList: configList);
 }
 
 //图片类的配置
