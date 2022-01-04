@@ -1,11 +1,9 @@
-// @dart=2.9
-
 part of brn_intro;
 
 /// 延时渲染一个 Widget
 class _DelayRenderedWidget extends StatefulWidget {
   /// Sub-elements that need to fade in and out
-  final Widget child;
+  final Widget? child;
 
   /// [child] Whether to continue rendering, that is, the animation will only be once
   final bool childPersist;
@@ -17,7 +15,7 @@ class _DelayRenderedWidget extends StatefulWidget {
   final bool removed;
 
   const _DelayRenderedWidget({
-    Key key,
+    Key? key,
     this.removed = false,
     this.duration = const Duration(milliseconds: 200),
     this.child,
@@ -30,8 +28,8 @@ class _DelayRenderedWidget extends StatefulWidget {
 
 class _DelayRenderedWidgetState extends State<_DelayRenderedWidget> {
   double opacity = 0;
-  Widget child;
-  Timer timer;
+  late Widget? child;
+  late Timer timer;
 
   /// Time interval between animations
   final Duration durationInterval = Duration(milliseconds: 100);

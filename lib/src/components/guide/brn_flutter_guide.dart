@@ -1,5 +1,3 @@
-// @dart=2.9
-
 library brn_intro;
 
 import 'dart:async';
@@ -19,13 +17,13 @@ part 'brn_throttling.dart';
 
 class BrnTipInfoBean {
   /// 引导标题
-  final String title;
+  final String? title;
 
   /// 引导信息
-  final String message;
+  final String? message;
 
   /// 引导图片
-  final String imgUrl;
+  final String? imgUrl;
 
   BrnTipInfoBean(this.title, this.message, this.imgUrl);
 }
@@ -34,18 +32,18 @@ class BrnTipInfoBean {
 /// 支持 强引导：界面变灰，引导框高亮| 弱引导：直接在界面浮现提示框两种
 class BrnGuide {
   bool _removed = false;
-  double _widgetWidth;
-  double _widgetHeight;
-  Offset _widgetOffset;
-  OverlayEntry _overlayEntry;
+  late double _widgetWidth;
+  late double _widgetHeight;
+  late Offset _widgetOffset;
+  OverlayEntry? _overlayEntry;
   int _currentStepIndex = 0;
-  Widget _stepWidget;
+  Widget? _stepWidget;
   List<Map> _configMap = [];
   List<GlobalKey> _globalKeys = [];
   final Color _maskColor = Colors.black.withOpacity(.6);
   final Duration _animationDuration = Duration(milliseconds: 300);
   final _th = _Throttling(duration: Duration(milliseconds: 500));
-  Size _lastScreenSize;
+  late Size _lastScreenSize;
 
   /// 当前处于第几步
   int get currentStepIndex => _currentStepIndex;
@@ -63,15 +61,15 @@ class BrnGuide {
   final int stepCount;
 
   /// 每次点击的下一步的时候的回调
-  final void Function(int nextIndex) onNextClick;
+  final void Function(int nextIndex)? onNextClick;
 
   /// 引导交互的模式
   GuideMode introMode;
 
   BrnGuide(
-      {@required this.introMode,
-      @required this.widgetBuilder,
-      @required this.stepCount,
+      {required this.introMode,
+      required this.widgetBuilder,
+      required this.stepCount,
       this.borderRadius = const BorderRadius.all(Radius.circular(4)),
       this.padding = const EdgeInsets.all(10),
       this.onNextClick})
@@ -91,8 +89,8 @@ class BrnGuide {
   /// [borderRadius] BorderRadius setting
   void setStepConfig(
     int stepIndex, {
-    EdgeInsets padding,
-    BorderRadiusGeometry borderRadius,
+    EdgeInsets? padding,
+    BorderRadiusGeometry? borderRadius,
   }) {
     assert(stepIndex >= 0 && stepIndex < stepCount);
     _configMap[stepIndex] = {
@@ -108,8 +106,8 @@ class BrnGuide {
   /// [borderRadius] BorderRadius setting
   void setStepsConfig(
     List<int> stepsIndex, {
-    EdgeInsets padding,
-    BorderRadiusGeometry borderRadius,
+    EdgeInsets? padding,
+    BorderRadiusGeometry? borderRadius,
   }) {
     assert(stepsIndex
         .every((stepIndex) => stepIndex >= 0 && stepIndex < stepCount));
@@ -124,9 +122,9 @@ class BrnGuide {
 
   void _getWidgetInfo(GlobalKey globalKey) {
     try {
-      EdgeInsets currentConfig = _configMap[_currentStepIndex]['padding'];
-      RenderBox renderBox;
-      renderBox = globalKey.currentContext.findRenderObject();
+      EdgeInsets? currentConfig = _configMap[_currentStepIndex]['padding'];
+      RenderBox renderBox =
+          globalKey.currentContext?.findRenderObject() as RenderBox;
       _widgetWidth = renderBox.size.width +
           (currentConfig?.horizontal ?? padding.horizontal);
       _widgetHeight =
@@ -146,15 +144,15 @@ class BrnGuide {
   }
 
   Widget _maskBuilder({
-    double width,
-    double height,
-    BlendMode backgroundBlendMode,
-    @required double left,
-    @required double top,
-    double bottom,
-    double right,
-    BorderRadiusGeometry borderRadiusGeometry,
-    Widget child,
+    double? width,
+    double? height,
+    BlendMode? backgroundBlendMode,
+    required double left,
+    required double top,
+    double? bottom,
+    double? right,
+    BorderRadiusGeometry? borderRadiusGeometry,
+    Widget? child,
   }) {
     final decoration = BoxDecoration(
       color: Colors.white,
@@ -191,7 +189,7 @@ class BrnGuide {
           _lastScreenSize = screenSize;
           _th.throttle(() {
             _createStepWidget(context);
-            _overlayEntry.markNeedsBuild();
+            _overlayEntry!.markNeedsBuild();
           });
         }
 
@@ -241,14 +239,14 @@ class BrnGuide {
         );
       },
     );
-    Overlay.of(context).insert(_overlayEntry);
+    Overlay.of(context)!.insert(_overlayEntry!);
   }
 
   void _onNext(BuildContext context) {
     _currentStepIndex++;
     if (_currentStepIndex < stepCount) {
       if (onNextClick != null) {
-        onNextClick(currentStepIndex);
+        onNextClick!(currentStepIndex);
       }
       _renderStep(context);
     }
@@ -257,9 +255,9 @@ class BrnGuide {
   void _onFinish() {
     if (_overlayEntry == null) return;
     _removed = true;
-    _overlayEntry.markNeedsBuild();
+    _overlayEntry!.markNeedsBuild();
     Timer(_animationDuration, () {
-      _overlayEntry.remove();
+      _overlayEntry!.remove();
       _overlayEntry = null;
     });
   }
@@ -289,7 +287,7 @@ class BrnGuide {
 
   void _renderStep(BuildContext context) {
     _createStepWidget(context);
-    if (_overlayEntry != null) _overlayEntry.markNeedsBuild();
+    if (_overlayEntry != null) _overlayEntry!.markNeedsBuild();
   }
 
   /// 触发引导操作 [context]当前环境[BuildContext]的启动方法

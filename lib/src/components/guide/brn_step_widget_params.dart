@@ -1,24 +1,22 @@
-// @dart=2.9
-
 part of brn_intro;
 
 /// Highlight component parameters
 class WidgetParams {
   /// Padding of highlighted area
-  EdgeInsets padding;
+  EdgeInsets? padding;
 
   /// Border radius of the highlighted area
-  BorderRadiusGeometry borderRadius;
+  BorderRadiusGeometry? borderRadius;
 }
 
 /// The data passed in when the system calls [GuideStep.widgetBuilder] when the guide page is generated
 ///
 class StepWidgetParams {
   /// Enter the next guide page method, or null if there is no
-  final VoidCallback onNext;
+  final VoidCallback? onNext;
 
   /// End all guide page methods
-  final VoidCallback onFinish;
+  final VoidCallback? onFinish;
 
   /// Which guide page is currently displayed, starting from 0
   final int currentStepIndex;
@@ -34,17 +32,17 @@ class StepWidgetParams {
 
   /// The coordinates of the upper left corner of the highlighted component
   final Offset offset;
-  final GuideMode introMode;
+  final GuideMode? introMode;
 
   StepWidgetParams({
     this.introMode,
     this.onNext,
     this.onFinish,
-    @required this.screenSize,
-    @required this.size,
-    @required this.currentStepIndex,
-    @required this.stepCount,
-    @required this.offset,
+    required this.screenSize,
+    required this.size,
+    required this.currentStepIndex,
+    required this.stepCount,
+    required this.offset,
   });
 
   @override
