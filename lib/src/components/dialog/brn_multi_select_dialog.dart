@@ -220,7 +220,7 @@ class MultiSelectPickerWidgetState extends State<MultiSelect> {
       submitBgColor: widget.submitBgColor,
       isShowOperateWidget: widget.isShowOperateWidget,
       onSubmit: () {
-        List<MultiSelectItem> tempList = List();
+        List<MultiSelectItem> tempList = [];
         if (widget.onSubmitClick != null) {
           for (int i = 0; i < widget.conditions?.length; i++) {
             if (widget.conditions[i].isChecked) {
