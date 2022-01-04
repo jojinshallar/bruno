@@ -2,15 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @dart=2.9
-
 import 'package:bruno/src/components/form/utils/brn_form_util.dart';
 import 'package:bruno/src/constants/brn_asset_constants.dart';
 import 'package:bruno/src/theme/brn_theme_configurator.dart';
 import 'package:bruno/src/theme/configs/brn_form_config.dart';
 import 'package:bruno/src/utils/brn_tools.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 /// A single-line [ListTile] with a trailing button that expands or collapses
 /// the tile to reveal or hide the [children].
@@ -33,19 +30,18 @@ class BrnExpandableGroup extends StatefulWidget {
   /// the tile to reveal or hide the [children]. The [initiallyExpanded] property must
   /// be non-null.
   BrnExpandableGroup({
-    Key key,
-    @required this.title,
+    Key? key,
+    required this.title,
     this.subtitle,
     this.backgroundColor,
     this.onExpansionChanged,
     this.children = const <Widget>[],
     this.initiallyExpanded = false,
     this.themeData,
-  })  : assert(initiallyExpanded != null),
-        super(key: key) {
+  }) : super(key: key) {
     this.themeData ??= BrnFormItemConfig();
     this.themeData = BrnThemeConfigurator.instance
-        .getConfig(configId: this.themeData.configId)
+        .getConfig(configId: this.themeData!.configId)
         .formItemConfig
         .merge(this.themeData);
   }
@@ -53,21 +49,21 @@ class BrnExpandableGroup extends StatefulWidget {
   /// The primary content of the list item.
   ///
   /// Typically a [Text] widget.
-  final String title;
+  final String? title;
 
   /// Additional content displayed below the title.
   ///
   /// Typically a [Text] widget.
 
   @Deprecated('message')
-  final String subtitle;
+  final String? subtitle;
 
   /// Called when the tile expands or collapses.
   ///
   /// When the tile starts expanding, this function is called with the value
   /// true. When the tile starts collapsing, this function is called with
   /// the value false.
-  final ValueChanged<bool> onExpansionChanged;
+  final ValueChanged<bool>? onExpansionChanged;
 
   /// The widgets that are displayed when the tile expands.
   ///
@@ -75,12 +71,12 @@ class BrnExpandableGroup extends StatefulWidget {
   final List<Widget> children;
 
   /// The color to display behind the sublist when expanded.
-  final Color backgroundColor;
+  final Color? backgroundColor;
 
   /// Specifies if the list tile is initially expanded (true) or collapsed (false, the default).
   final bool initiallyExpanded;
 
-  BrnFormItemConfig themeData;
+  BrnFormItemConfig? themeData;
 
   @override
   _BrnExpansionElementState createState() => _BrnExpansionElementState();
@@ -99,13 +95,13 @@ class _BrnExpansionElementState extends State<BrnExpandableGroup>
   final ColorTween _iconColorTween = ColorTween();
   final ColorTween _backgroundColorTween = ColorTween();
 
-  AnimationController _controller;
-  Animation<double> _iconTurns;
-  Animation<double> _heightFactor;
+  late AnimationController _controller;
+  late Animation<double> _iconTurns;
+  late Animation<double> _heightFactor;
 
   bool _isExpanded = false;
 
-  Widget arrowIcon;
+  late Widget arrowIcon;
 
   @override
   void initState() {
@@ -154,10 +150,10 @@ class _BrnExpansionElementState extends State<BrnExpandableGroup>
       PageStorage.of(context)?.writeState(context, _isExpanded);
     });
     if (widget.onExpansionChanged != null)
-      widget.onExpansionChanged(_isExpanded);
+      widget.onExpansionChanged!(_isExpanded);
   }
 
-  Widget _buildHeader(BuildContext context, Widget child) {
+  Widget _buildHeader(BuildContext context, Widget? child) {
     final Color backgroundColor = Colors.transparent;
 
     return Container(
@@ -185,7 +181,7 @@ class _BrnExpansionElementState extends State<BrnExpandableGroup>
                           child: Text(
                             widget.title ?? "",
                             style: BrnFormUtil.getHeadTitleTextStyle(
-                                widget.themeData,
+                                widget.themeData!,
                                 isBold: true),
                           )),
                       // 副标题
@@ -196,12 +192,12 @@ class _BrnExpansionElementState extends State<BrnExpandableGroup>
                         child: Offstage(
                           // ignore: deprecated_member_use_from_same_package
                           offstage: (widget.subtitle == null ||
-                              widget.subtitle.isEmpty),
+                              widget.subtitle!.isEmpty),
                           child: Text(
                             // ignore: deprecated_member_use_from_same_package
                             widget.subtitle ?? "",
                             style: BrnFormUtil.getSubTitleTextStyle(
-                                widget.themeData),
+                                widget.themeData!),
                           ),
                         ),
                       ),
@@ -238,8 +234,8 @@ class _BrnExpansionElementState extends State<BrnExpandableGroup>
 
     /// title 文字颜色
     _headerColorTween
-      ..begin = theme.textTheme.subtitle1.color
-      ..end = theme.textTheme.subtitle1.color;
+      ..begin = theme.textTheme.subtitle1?.color
+      ..end = theme.textTheme.subtitle1?.color;
 
     /// 展开收起图标颜色
     _iconColorTween

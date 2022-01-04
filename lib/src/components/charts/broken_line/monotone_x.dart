@@ -36,7 +36,7 @@ class MonotoneX {
     return path;
   }
 
-  static Path addCurve(Path path, List<Point> points,
+  static Path addCurve(Path? path, List<Point> points,
       {bool reversed = false, int endIndex = -1}) {
     var targetPoints = <Point>[];
     targetPoints.addAll(points);
@@ -75,13 +75,13 @@ class MonotoneX {
     if (reversed) {
       arr.reversed.forEach((f) {
         if (endIndex < 0 || index++ < endIndex) {
-          point(path, f[2], f[3], f[0], f[1], f[5], f[4]);
+          point(path!, f[2], f[3], f[0], f[1], f[5], f[4]);
         }
       });
     } else {
       arr.forEach((f) {
         if (endIndex < 0 || index++ < endIndex) {
-          point(path, f[0], f[1], f[2], f[3], f[4], f[5]);
+          point(path!, f[0], f[1], f[2], f[3], f[4], f[5]);
         }
       });
     }

@@ -1,4 +1,3 @@
-// @dart=2.9
 
 import 'package:bruno/src/components/gallery/config/brn_basic_gallery_config.dart';
 import 'package:bruno/src/components/gallery/config/brn_bottom_card.dart';
@@ -10,20 +9,20 @@ import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 
 class BrnPhotoGroupConfig extends BrnBasicGroupConfig {
-  final List<String> urls;
-  final String title;
-  List<BrnBasicItemConfig> configList;
-  final BrnGalleryDetailConfig themeData;
+  final List<String>? urls;
+  final String? title;
+  late List<BrnBasicItemConfig> configList;
+  final BrnGalleryDetailConfig? themeData;
 
   //通过url列表生成配置
-  BrnPhotoGroupConfig.url({this.title, @required this.urls, this.themeData}) {
-    configList = List();
-    urls.forEach((item) =>
+  BrnPhotoGroupConfig.url({this.title, required this.urls, this.themeData}):super(configList:[]) {
+    configList = [];
+    urls!.forEach((item) =>
         configList.add(BrnPhotoItemConfig(url: item, themeData: themeData)));
   }
 
   //自定义配置列表
-  BrnPhotoGroupConfig({this.urls, this.title, this.configList, this.themeData});
+  BrnPhotoGroupConfig({this.urls, this.title,required this.configList, this.themeData}):super(configList: configList);
 }
 
 //图片类的配置
@@ -38,19 +37,19 @@ class BrnPhotoItemConfig extends BrnBasicItemConfig {
   final String placeHolder;
 
   //图片名称 用于详情页展示
-  final String name;
+  final String? name;
 
   //图片描述公 用于详情页展示
-  final String des;
+  final String? des;
 
   //详情页图片点击回调
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   //详情页双击回调
-  final VoidCallback onDoubleTap;
+  final VoidCallback? onDoubleTap;
 
   //详情页长按回调
-  final VoidCallback onLongPress;
+  final VoidCallback? onLongPress;
 
   //详情页是否展示底部卡片，需要提供name和des信息
   final bool showBottom;
@@ -61,10 +60,10 @@ class BrnPhotoItemConfig extends BrnBasicItemConfig {
   //指定展开不可收起下 content的高度
   final double bottomContentHeight;
 
-  BrnGalleryDetailConfig themeData;
+  BrnGalleryDetailConfig? themeData;
 
   BrnPhotoItemConfig({
-    @required this.url,
+    required this.url,
     this.fit = BoxFit.cover,
     this.placeHolder =
         "packages/${BrnStrings.flutterPackageName}/assets/icons/grey_place_holder.png",
@@ -80,7 +79,7 @@ class BrnPhotoItemConfig extends BrnBasicItemConfig {
   }) {
     this.themeData ??= BrnGalleryDetailConfig();
     this.themeData = BrnThemeConfigurator.instance
-        .getConfig(configId: this.themeData.configId)
+        .getConfig(configId: this.themeData!.configId)
         .galleryDetailConfig
         .merge(this.themeData);
   }
@@ -117,23 +116,23 @@ class BrnPhotoItemConfig extends BrnBasicItemConfig {
             bottom: 0,
             child: GestureDetector(
               onTap: () {
-                if (onTap != null) onTap();
+                if (onTap != null) onTap!();
               },
               onDoubleTap: () {
-                if (onDoubleTap != null) onDoubleTap();
+                if (onDoubleTap != null) onDoubleTap!();
               },
               onLongPress: () {
-                if (onLongPress != null) onLongPress();
+                if (onLongPress != null) onLongPress!();
               },
               child: Container(
                 color: Colors.white,
                 child: PhotoView(
                   backgroundDecoration:
-                      BoxDecoration(color: themeData.pageBackgroundColor),
+                      BoxDecoration(color: themeData!.pageBackgroundColor),
                   loadingBuilder: (context, event) {
                     return Container(
                       child: BrnLoadingDialog(),
-                      color: themeData.pageBackgroundColor,
+                      color: themeData!.pageBackgroundColor,
                     );
                   },
                   imageProvider: NetworkImage(url),

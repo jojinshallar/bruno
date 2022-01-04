@@ -1,10 +1,7 @@
-// @dart=2.9
-
 import 'package:bruno/src/components/form/base/input_item_interface.dart';
 import 'package:bruno/src/components/form/items/title/brn_base_title_item.dart';
 import 'package:bruno/src/components/form/utils/brn_form_util.dart';
 import 'package:bruno/src/components/radio/brn_checkbox.dart';
-import 'package:bruno/src/components/radio/brn_radio_core.dart';
 import 'package:bruno/src/theme/brn_theme.dart';
 import 'package:flutter/widgets.dart';
 
@@ -19,13 +16,13 @@ class BrnSelectAllTitle extends StatefulWidget {
   final String title;
 
   /// 子标题
-  final String subTitle;
+  final String? subTitle;
 
   /// 是否必填项
   final bool isRequire;
 
   /// 是否可编辑
-  final bool isEdit;
+  final bool? isEdit;
 
   /// 错误提示文案
   final String error;
@@ -35,37 +32,37 @@ class BrnSelectAllTitle extends StatefulWidget {
   /// 2. 若赋值为非空字符串时 展示"问号图标&文案"，
   /// 3. 若不赋值或赋值为null时 不显示提示项
   /// 默认值为 3
-  final String tipLabel;
+  final String? tipLabel;
 
   /// 标题Widget
-  final Widget titleWidget;
+  final Widget? titleWidget;
 
   /// 子标题Widget
-  final Widget subTitleWidget;
+  final Widget? subTitleWidget;
 
   /// 右侧自定义操作区
-  final Widget customActionWidget;
+  final Widget? customActionWidget;
 
   /// 点击"？"图标回调
-  final VoidCallback onTip;
+  final VoidCallback? onTip;
 
   /// 全选状态回调
-  final OnBrnFormSelectAll onSelectAll;
+  final OnBrnFormSelectAll? onSelectAll;
 
   /// 选中项文案
-  final String selectText;
+  final String? selectText;
 
   /// 选中项Widget
-  final Widget selectTextWidget;
+  final Widget? selectTextWidget;
 
   /// 选中项状态
   bool selectState;
 
   /// form配置
-  BrnFormItemConfig themeData;
+  BrnFormItemConfig? themeData;
 
   BrnSelectAllTitle({
-    Key key,
+    Key? key,
     this.title: "",
     this.subTitle,
     this.isRequire: false,
@@ -84,7 +81,7 @@ class BrnSelectAllTitle extends StatefulWidget {
   }) {
     this.themeData ??= BrnFormItemConfig();
     this.themeData = BrnThemeConfigurator.instance
-        .getConfig(configId: this.themeData.configId)
+        .getConfig(configId: this.themeData!.configId)
         .formItemConfig
         .merge(this.themeData);
   }
@@ -122,17 +119,17 @@ class BrnSelectAllTitleState extends State<BrnSelectAllTitle> {
       customActionWidget: BrnCheckbox(
         child: getSelectTextWidget(),
         radioIndex: 0,
-        disable: !widget.isEdit,
+        disable: !(widget.isEdit ?? false),
         isSelected: widget.selectState,
         onValueChangedAtIndex: (position, value) {
-          if (widget.isEdit != null && !widget.isEdit) {
+          if (widget.isEdit != null && !widget.isEdit!) {
             return;
           }
 
           widget.selectState = value;
 
           if (widget.onSelectAll != null) {
-            widget.onSelectAll(position, value);
+            widget.onSelectAll!(position, value);
           }
         },
       ),
@@ -140,14 +137,14 @@ class BrnSelectAllTitleState extends State<BrnSelectAllTitle> {
     );
   }
 
-  Widget getSelectTextWidget() {
+  Widget? getSelectTextWidget() {
     if (widget.selectTextWidget != null) {
       return widget.selectTextWidget;
     } else {
       return Container(
         child: Text(
           widget.selectText ?? "",
-          style: getOptionTextStyle(widget.themeData),
+          style: getOptionTextStyle(widget.themeData!),
         ),
       );
     }
@@ -155,11 +152,11 @@ class BrnSelectAllTitleState extends State<BrnSelectAllTitle> {
 
   TextStyle getOptionTextStyle(BrnFormItemConfig themeData) {
     if (widget.selectState) {
-      return BrnFormUtil.getOptionSelectedTextStyle(widget.themeData);
+      return BrnFormUtil.getOptionSelectedTextStyle(widget.themeData!);
     }
-    if (widget.isEdit != null && !widget.isEdit) {
-      return BrnFormUtil.getIsEditTextStyle(widget.themeData, widget.isEdit);
+    if (widget.isEdit != null && !widget.isEdit!) {
+      return BrnFormUtil.getIsEditTextStyle(widget.themeData!, widget.isEdit);
     }
-    return BrnFormUtil.getOptionTextStyle(widget.themeData);
+    return BrnFormUtil.getOptionTextStyle(widget.themeData!);
   }
 }

@@ -1,12 +1,9 @@
-// @dart=2.9
-
 import 'package:bruno/src/components/form/base/brn_form_item_type.dart';
 import 'package:bruno/src/components/form/utils/brn_form_util.dart';
 import 'package:bruno/src/theme/brn_theme_configurator.dart';
 import 'package:bruno/src/theme/configs/brn_form_config.dart';
 import 'package:bruno/src/constants/brn_fonts_constants.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 ///
 /// 快速选择类型录入项
@@ -19,75 +16,75 @@ import 'package:flutter/widgets.dart';
 // ignore: must_be_immutable
 class BrnTextQuickSelectFormItem extends StatefulWidget {
   /// 录入项的唯一标识，主要用于录入类型页面框架中
-  final String label;
+  final String? label;
 
   /// 录入项类型，主要用于录入类型页面框架中
   String type = BrnInputItemType.TEXT_QUICK_SELECT_INPUT_TYPE;
 
   /// 录入项标题
-  final String title;
+  final String? title;
 
   /// 录入项子标题
-  final String subTitle;
+  final String? subTitle;
 
   /// 录入项提示（问号图标&文案） 用户点击时触发onTip回调。
   ///   1. 若赋值为 空字符串（""）时仅展示"问号"图标，
   ///   2. 若赋值为非空字符串时 展示"问号图标&文案"，
   ///   3. 若不赋值或赋值为null时 不显示提示项
   /// 默认值为 3
-  final String tipLabel;
+  final String? tipLabel;
 
   /// 录入项前缀图标样式 "添加项" "删除项" 详见 PrefixIconType类
   final String prefixIconType;
 
   /// 录入项错误提示
-  final String error;
+  final String? error;
 
   /// 录入项是否为必填项（展示*图标） 默认为 false 不必填
   final bool isRequire;
 
   /// 录入项 是否可编辑
-  final bool isEdit;
+  final bool? isEdit;
 
   /// 点击"+"图标回调
-  final VoidCallback onAddTap;
+  final VoidCallback? onAddTap;
 
   /// 点击"-"图标回调
-  final VoidCallback onRemoveTap;
+  final VoidCallback? onRemoveTap;
 
   /// 点击"?"图标回调
-  final VoidCallback onTip;
+  final VoidCallback? onTip;
 
   /// 点击录入区回调
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
-  final ValueChanged<int> onBtnSelectChanged;
+  final ValueChanged<int>? onBtnSelectChanged;
 
   /// 录入项 hint 提示
   final String hint;
 
   /// 录入项 值
-  String value;
+  String? value;
 
   /// 快捷操作按钮选项文案列表
-  List<String> btnsTxt;
+  List<String>? btnsTxt;
 
   /// 快捷按钮区的初始选中状态，可不传，则内部自动生成并维护
-  List<bool> selectBtnList;
+  List<bool>? selectBtnList;
 
   /// 快捷按钮区的是否可用状态，可不传，内部生成并维护
-  List<bool> enableBtnList;
+  List<bool>? enableBtnList;
 
   /// 用户自定义快捷按钮视图
-  Widget btns;
+  Widget? btns;
 
   /// 快捷按钮较多时是否可滑动，默认为 fasle，不可滑动
   final bool isBtnsScroll;
 
-  BrnFormItemConfig themeData;
+  BrnFormItemConfig? themeData;
 
   BrnTextQuickSelectFormItem(
-      {Key key,
+      {Key? key,
       this.label,
       this.title: "",
       this.subTitle,
@@ -112,7 +109,7 @@ class BrnTextQuickSelectFormItem extends StatefulWidget {
       : super(key: key) {
     themeData ??= BrnFormItemConfig();
     themeData = BrnThemeConfigurator.instance
-        .getConfig(configId: themeData.configId)
+        .getConfig(configId: themeData!.configId)
         .formItemConfig
         .merge(themeData);
   }
@@ -129,7 +126,7 @@ class BrnTextQuickSelectFormItemState
   Widget build(BuildContext context) {
     return Container(
       color: Colors.white,
-      padding: BrnFormUtil.itemEdgeInsets(widget.themeData),
+      padding: BrnFormUtil.itemEdgeInsets(widget.themeData!),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -141,7 +138,7 @@ class BrnTextQuickSelectFormItemState
               children: <Widget>[
                 Container(
                   padding: BrnFormUtil.titleEdgeInsets(widget.prefixIconType,
-                      widget.isRequire, widget.themeData),
+                      widget.isRequire, widget.themeData!),
                   child: Row(
                     children: <Widget>[
                       BrnFormUtil.buildPrefixIcon(
@@ -156,11 +153,11 @@ class BrnTextQuickSelectFormItemState
 
                       // 主标题
                       BrnFormUtil.buildTitleWidget(
-                          widget.title, widget.themeData),
+                          widget.title, widget.themeData!),
 
                       // 问号提示
                       BrnFormUtil.buildTipLabelWidget(
-                          widget.tipLabel, widget.onTip, widget.themeData),
+                          widget.tipLabel, widget.onTip, widget.themeData!),
                     ],
                   ),
                 ),
@@ -169,12 +166,12 @@ class BrnTextQuickSelectFormItemState
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
-                      if (widget.isEdit != null && !widget.isEdit) {
+                      if (widget.isEdit != null && !widget.isEdit!) {
                         return;
                       }
 
                       if (widget.onTap != null) {
-                        widget.onTap();
+                        widget.onTap!();
                       }
                     },
                     child: Row(
@@ -193,7 +190,7 @@ class BrnTextQuickSelectFormItemState
           ),
 
           // 副标题
-          BrnFormUtil.buildSubTitleWidget(widget.subTitle, widget.themeData),
+          BrnFormUtil.buildSubTitleWidget(widget.subTitle, widget.themeData!),
 
           /// 快捷按钮区
           Container(
@@ -205,29 +202,29 @@ class BrnTextQuickSelectFormItemState
                 enableBtnList: widget.enableBtnList,
                 btns: widget.btns,
                 isBtnsScroll: widget.isBtnsScroll,
-                isEdit: widget.isEdit,
+                isEdit: widget.isEdit ?? false,
                 onBtnSelectChanged: widget.onBtnSelectChanged,
               )),
 
           /// 错误提示
-          BrnFormUtil.buildErrorWidget(widget.error, widget.themeData)
+          BrnFormUtil.buildErrorWidget(widget.error, widget.themeData!)
         ],
       ),
     );
   }
 
   Widget buildText() {
-    if (widget.value != null && widget.value.isNotEmpty) {
+    if (widget.value != null && widget.value!.isNotEmpty) {
       return Text(
-        widget.value,
+        widget.value!,
         textAlign: TextAlign.end,
-        style: BrnFormUtil.getIsEditTextStyle(widget.themeData, widget.isEdit),
+        style: BrnFormUtil.getIsEditTextStyle(widget.themeData!, widget.isEdit),
       );
     } else {
       return Text(
         widget.hint,
         textAlign: TextAlign.end,
-        style: BrnFormUtil.getHintTextStyle(widget.themeData),
+        style: BrnFormUtil.getHintTextStyle(widget.themeData!),
       );
     }
   }
@@ -235,22 +232,22 @@ class BrnTextQuickSelectFormItemState
 
 // ignore: must_be_immutable
 class QuickButtonsWidget extends StatefulWidget {
-  List<String> btnsTxt;
-  List<bool> selectBtnList;
-  List<bool> enableBtnList;
-  Widget btns;
+  List<String>? btnsTxt;
+  List<bool>? selectBtnList;
+  List<bool>? enableBtnList;
+  Widget? btns;
   bool isBtnsScroll;
   bool isEdit;
 
-  ValueChanged<int> onBtnSelectChanged;
+  ValueChanged<int>? onBtnSelectChanged;
 
   QuickButtonsWidget({
-    Key key,
+    Key? key,
     this.btnsTxt,
     this.selectBtnList,
     this.enableBtnList,
     this.btns,
-    this.isBtnsScroll,
+    required this.isBtnsScroll,
     this.isEdit: true,
     this.onBtnSelectChanged,
   });
@@ -264,6 +261,7 @@ class QuickButtonsWidget extends StatefulWidget {
 class QuickButtonsState extends State<QuickButtonsWidget> {
   // 按钮状态是否使用内部维护
   bool _useInnerStatus = false;
+
   @override
   void initState() {
     initButtonParams();
@@ -294,11 +292,11 @@ class QuickButtonsState extends State<QuickButtonsWidget> {
 
     if (widget.selectBtnList == null) {
       _useInnerStatus = true;
-      widget.selectBtnList = List<bool>.filled(widget.btnsTxt.length, false);
+      widget.selectBtnList = List<bool>.filled(widget.btnsTxt!.length, false);
     }
 
     if (widget.enableBtnList == null) {
-      widget.enableBtnList = List<bool>.filled(widget.btnsTxt.length, true);
+      widget.enableBtnList = List<bool>.filled(widget.btnsTxt!.length, true);
     }
   }
 
@@ -308,7 +306,7 @@ class QuickButtonsState extends State<QuickButtonsWidget> {
     }
 
     if (widget.btns != null) {
-      return widget.btns;
+      return widget.btns!;
     } else if (widget.btnsTxt != null) {
       if (widget.isBtnsScroll) {
         return ListView(
@@ -329,12 +327,8 @@ class QuickButtonsState extends State<QuickButtonsWidget> {
   List<Widget> getBtnsByText() {
     List<Widget> result = <Widget>[];
 
-    for (int index = 0; index < widget.btnsTxt.length; ++index) {
-      String str = widget.btnsTxt[index];
-
-      if (str == null) {
-        continue;
-      }
+    for (int index = 0; index < widget.btnsTxt!.length; ++index) {
+      String str = widget.btnsTxt![index];
 
       result.add(Container(
         padding: EdgeInsets.fromLTRB(6, 0, 6, 0),
@@ -352,16 +346,16 @@ class QuickButtonsState extends State<QuickButtonsWidget> {
           onPressed: () {
             if (!widget.isEdit ||
                 (widget.enableBtnList != null &&
-                    !widget.enableBtnList[index])) {
+                    !widget.enableBtnList![index])) {
               return;
             }
             if (widget.onBtnSelectChanged != null) {
-              widget.onBtnSelectChanged(index);
+              widget.onBtnSelectChanged!(index);
             }
             if (_useInnerStatus) {
               // 如果是内部维护的状态，需要改变按钮的状态
-              widget.selectBtnList[index] =
-                  widget.selectBtnList[index] ? false : true;
+              widget.selectBtnList![index] =
+                  widget.selectBtnList![index] ? false : true;
             }
             setState(() {});
             /*
@@ -386,20 +380,20 @@ class QuickButtonsState extends State<QuickButtonsWidget> {
   }
 
   Color getButtonColor(int index) {
-    if (widget.btnsTxt != null && widget.btnsTxt.isEmpty) {
+    if (widget.btnsTxt != null && widget.btnsTxt!.isEmpty) {
       return Color(0xFFF8F8F8);
     }
 
     /// 这个按钮不可点击
     if (widget.enableBtnList != null &&
-        index < widget.enableBtnList.length &&
-        !widget.enableBtnList[index]) {
+        index < widget.enableBtnList!.length &&
+        !widget.enableBtnList![index]) {
       return Color(0xFFF8F8F8);
     }
 
     if (widget.selectBtnList != null &&
-        index < widget.selectBtnList.length &&
-        widget.selectBtnList[index]) {
+        index < widget.selectBtnList!.length &&
+        widget.selectBtnList![index]) {
       return Color(0x1F0984F9);
     } else {
       return Color(0xFFF8F8F8);
@@ -407,25 +401,25 @@ class QuickButtonsState extends State<QuickButtonsWidget> {
   }
 
   Color getBtnTextColor(int index) {
-    if (widget.btnsTxt != null && widget.btnsTxt.isEmpty) {
+    if (widget.btnsTxt != null && widget.btnsTxt!.isEmpty) {
       return Color(0xFF222222);
     }
 
     /// 这个按钮不可点击
     if (widget.enableBtnList != null &&
-        index < widget.enableBtnList.length &&
-        !widget.enableBtnList[index]) {
+        index < widget.enableBtnList!.length &&
+        !widget.enableBtnList![index]) {
       return Color(0xFF999999);
     }
 
     if (widget.selectBtnList == null ||
-        widget.selectBtnList.length != widget.btnsTxt.length) {
+        widget.selectBtnList!.length != widget.btnsTxt!.length) {
       return Color(0xFF222222);
     }
 
     if (widget.selectBtnList != null &&
-        index < widget.selectBtnList.length &&
-        widget.selectBtnList[index]) {
+        index < widget.selectBtnList!.length &&
+        widget.selectBtnList![index]) {
       return Color(0xFF0984F9);
     } else {
       return Color(0xFF222222);
