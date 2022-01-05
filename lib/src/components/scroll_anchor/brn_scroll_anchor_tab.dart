@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ui';
 
 import 'package:bruno/src/components/tabbar/normal/brn_tab_bar.dart';
 import 'package:flutter/gestures.dart';
@@ -158,7 +157,7 @@ class _BrnScrollAnchorTabWidgetState extends State<BrnAnchorTab>
   }
 
   void fillList() {
-    if (widget.widgetIndexedBuilder != null) {
+
       for (int i = 0, n = widget.itemCount; i < n; i++) {
         bodyWidgetList.add(
           Container(
@@ -166,7 +165,7 @@ class _BrnScrollAnchorTabWidgetState extends State<BrnAnchorTab>
               child: widget.widgetIndexedBuilder(context, i)),
         );
       }
-    }
+
   }
 
   void fillKeyList() {
@@ -194,11 +193,11 @@ class _BrnScrollAnchorTabWidgetState extends State<BrnAnchorTab>
   }
 
   void fillTab() {
-    if (widget.tabIndexedBuilder != null) {
+
       for (int i = 0, n = widget.itemCount; i < n; i++) {
         tabList.add(widget.tabIndexedBuilder(context, i));
       }
-    }
+
   }
 
   void updateOffset() {
@@ -240,7 +239,7 @@ class BrnAnchorTabBarStyle {
 
   final double indicatorWeight;
 
-  final EdgeInsetsGeometry? indicatorPadding;
+  final EdgeInsetsGeometry indicatorPadding;
 
   final Color? labelColor;
 
@@ -252,7 +251,7 @@ class BrnAnchorTabBarStyle {
 
   final TextStyle? unselectedLabelStyle;
 
-  final DragStartBehavior? dragStartBehavior;
+  final DragStartBehavior dragStartBehavior;
 
   const BrnAnchorTabBarStyle({
     this.indicatorColor,

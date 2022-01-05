@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'package:bruno/src/theme/brn_theme_configurator.dart';
 import 'package:flutter/material.dart';
 
@@ -115,14 +113,14 @@ class BrnStepLine extends StatefulWidget {
   final Color normalColor;
 
   /// 高亮状态(isGrey=false)的颜色，默认值，主题色
-  final Color highlightColor;
+  final Color? highlightColor;
 
   /// 自定义icon的widget
-  final Widget iconWidget;
+  final Widget? iconWidget;
 
   const BrnStepLine({
-    Key key,
-    @required this.contentWidget,
+    Key? key,
+    required this.contentWidget,
     this.isGrey = false,
     this.lineColor,
     this.lineWidth = 2,
@@ -171,7 +169,7 @@ class _BrnStepLineState extends State<BrnStepLine> {
   }
 
   List<Color> _buildLineColor() {
-    List<Color> lineColor = List();
+    List<Color> lineColor = [];
 
     if (widget.lineColor != null) {
       if (widget.lineColor is Color) {
@@ -193,19 +191,15 @@ class _BrnStepLineState extends State<BrnStepLine> {
       }
     } else {
       if (widget.isGrey) {
-        return List<Color>()..add(widget.normalColor ?? Color(0xffeeeeee));
+        return <Color>[]..add(widget.normalColor);
       }
-      return List<Color>()
-        ..add(widget.highlightColor ??
-            BrnThemeConfigurator.instance
-                .getConfig()
-                .commonConfig
-                .brandPrimary);
+      return <Color>[]..add(widget.highlightColor ??
+          BrnThemeConfigurator.instance.getConfig().commonConfig.brandPrimary);
     }
   }
 
   Widget _buildGreyCircle() {
-    return _buildColorCircleWidget(widget.normalColor ?? Color(0xffeeeeee));
+    return _buildColorCircleWidget(widget.normalColor);
   }
 
   Widget _buildHighLightCircle() {
@@ -253,12 +247,12 @@ class _BrnStepLinePainter extends CustomPainter {
   final double dashLength;
 
   _BrnStepLinePainter(
-      {this.lineColor,
+      {required this.lineColor,
       this.paintWidth = 1,
-      this.iconTopPadding,
-      this.isDash,
-      this.dashSpace,
-      this.dashLength});
+      required this.iconTopPadding,
+      required this.isDash,
+      required this.dashSpace,
+      required this.dashLength});
 
   Paint _paint = Paint()
     ..strokeCap = StrokeCap.round //画笔笔触类型

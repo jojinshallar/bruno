@@ -1,17 +1,15 @@
-// @dart=2.9
-
 import 'package:bruno/src/utils/brn_event_bus.dart';
 import "package:flutter/foundation.dart";
 import 'package:flutter/material.dart';
 
 class BrnSelectionListViewController extends ChangeNotifier {
-  double listViewTop; //下拉筛选列表顶部坐标
-  double screenHeight;
-  int menuIndex;
+  late double listViewTop; //下拉筛选列表顶部坐标
+  late double screenHeight;
+  late int menuIndex;
 
   bool isShow = false; //是否显示下拉筛选列表
 
-  OverlayEntry entry; //显示下拉筛选列表的图层
+  OverlayEntry? entry; //显示下拉筛选列表的图层
 
   void show(int index) {
     isShow = true;

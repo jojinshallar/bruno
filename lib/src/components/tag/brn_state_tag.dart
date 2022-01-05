@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'package:bruno/src/components/tag/brn_tag_custom.dart';
 import 'package:flutter/material.dart';
 
@@ -16,14 +14,14 @@ import 'package:flutter/material.dart';
 /// * [BrnTagCustom], 高度自定义的通用标签
 ///
 class BrnStateTag extends StatelessWidget {
-  final String tagText;
-  final Color backgroundColor;
-  final Color textColor;
+  final String? tagText;
+  final Color? backgroundColor;
+  final Color? textColor;
   final TagState tagState;
 
   //默认为等待状态,黄色
   const BrnStateTag(
-      {Key key,
+      {Key? key,
       this.tagText,
       this.backgroundColor,
       this.textColor,

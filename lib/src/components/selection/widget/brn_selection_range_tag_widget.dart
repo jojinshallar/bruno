@@ -1,7 +1,3 @@
-// @dart=2.9
-
-import 'dart:ui';
-
 import 'package:bruno/src/components/picker/time_picker/brn_date_time_formatter.dart';
 import 'package:bruno/src/components/selection/bean/brn_selection_common_entity.dart';
 import 'package:bruno/src/components/selection/brn_selection_util.dart';
@@ -21,21 +17,21 @@ class BrnSelectionRangeTagWidget extends StatefulWidget {
   final List<BrnSelectionEntity> tagFilterList;
 
   //初始选中的 Index 列表
-  final List<bool> initSelectStatus;
+  final List<bool>? initSelectStatus;
 
   //选择tag的回调
-  final void Function(int, bool) onSelect;
+  final void Function(int, bool)? onSelect;
   final double spacing;
   final double verticalSpacing;
   final int tagWidth;
   final double tagHeight;
   final int initFocusedindex;
 
-  BrnSelectionConfig themeData;
+  BrnSelectionConfig? themeData;
 
   BrnSelectionRangeTagWidget(
-      {Key key,
-      @required this.tagFilterList,
+      {Key? key,
+      required this.tagFilterList,
       this.initSelectStatus,
       this.onSelect,
       this.spacing = 12,
@@ -44,8 +40,7 @@ class BrnSelectionRangeTagWidget extends StatefulWidget {
       this.tagHeight = 34,
       this.themeData,
       this.initFocusedindex = -1})
-      : assert(tagFilterList != null),
-        super(key: key);
+      : super(key: key);
 
   @override
   _BrnSelectionRangeTagWidgetState createState() =>
@@ -64,7 +59,7 @@ class _BrnSelectionRangeTagWidgetState
   }
 
   List<Widget> _tagWidgetList(context) {
-    List<Widget> list = List<Widget>();
+    List<Widget> list = <Widget>[];
     for (int nameIndex = 0;
         nameIndex < widget.tagFilterList.length;
         nameIndex++) {
@@ -82,7 +77,7 @@ class _BrnSelectionRangeTagWidgetState
             }
             BrnSelectionUtil.processBrotherItemSelectStatus(selectedEntity);
             if (null != widget.onSelect) {
-              widget.onSelect(nameIndex, selectedEntity.isSelected);
+              widget.onSelect!(nameIndex, selectedEntity.isSelected);
             }
             setState(() {});
           });
@@ -94,11 +89,11 @@ class _BrnSelectionRangeTagWidgetState
   Widget _tagWidgetAtIndex(int nameIndex) {
     bool selected = widget.tagFilterList[nameIndex].isSelected ||
         nameIndex == widget.initFocusedindex;
-    String text = widget.tagFilterList[nameIndex].title;
+    String? text = widget.tagFilterList[nameIndex].title;
     if (widget.tagFilterList[nameIndex].filterType ==
             BrnSelectionFilterType.Date &&
         !BrunoTools.isEmpty(widget.tagFilterList[nameIndex].value)) {
-      if (int.tryParse(widget.tagFilterList[nameIndex].value) != null) {
+      if (int.tryParse(widget.tagFilterList[nameIndex].value ?? "") != null) {
         text = DateTimeFormatter.formatDate(
             DateTimeFormatter.convertIntValueToDateTime(
                 widget.tagFilterList[nameIndex].value),
@@ -109,28 +104,29 @@ class _BrnSelectionRangeTagWidgetState
     }
 
     Text tx = Text(
-      text,
+      text ?? "",
       style: selected ? _selectedTextStyle() : _tagTextStyle(),
     );
     Container cntn = Container(
       alignment: Alignment.center,
       decoration: BoxDecoration(
           color: selected
-              ? widget.themeData.tagSelectedBackgroundColor
-              : widget.themeData.tagNormalBackgroundColor,
-          borderRadius: BorderRadius.circular(widget.themeData.tagRadius)),
-      width: widget.tagWidth?.toDouble(),
+              ? widget.themeData?.tagSelectedBackgroundColor
+              : widget.themeData?.tagNormalBackgroundColor,
+          borderRadius:
+              BorderRadius.circular(widget.themeData?.tagRadius ?? 0)),
+      width: widget.tagWidth.toDouble(),
       height: widget.tagHeight,
       child: tx,
     );
     return cntn;
   }
 
-  TextStyle _tagTextStyle() {
-    return widget.themeData.tagNormalTextStyle?.generateTextStyle();
+  TextStyle? _tagTextStyle() {
+    return widget.themeData?.tagNormalTextStyle.generateTextStyle();
   }
 
-  TextStyle _selectedTextStyle() {
-    return widget.themeData.tagSelectedTextStyle?.generateTextStyle();
+  TextStyle? _selectedTextStyle() {
+    return widget.themeData?.tagSelectedTextStyle.generateTextStyle();
   }
 }

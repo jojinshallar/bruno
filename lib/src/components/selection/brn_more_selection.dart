@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'dart:async';
 
 import 'package:bruno/src/components/button/brn_big_main_button.dart';
@@ -29,15 +27,15 @@ import 'package:flutter/material.dart';
 /// 参考[BrnSelectionEntity]和[BrnSelectionView]
 class BrnMoreSelectionPage extends StatefulWidget {
   final BrnSelectionEntity entityData;
-  final Function(BrnSelectionEntity) confirmCallback;
-  final BrnOnCustomFloatingLayerClick onCustomFloatingLayerClick;
+  final Function(BrnSelectionEntity)? confirmCallback;
+  final BrnOnCustomFloatingLayerClick? onCustomFloatingLayerClick;
   final BrnSelectionConfig themeData;
 
   BrnMoreSelectionPage(
-      {this.entityData,
+      {required this.entityData,
       this.confirmCallback,
       this.onCustomFloatingLayerClick,
-      this.themeData});
+      required this.themeData});
 
   @override
   _BrnMoreSelectionPageState createState() => _BrnMoreSelectionPageState();
@@ -45,10 +43,10 @@ class BrnMoreSelectionPage extends StatefulWidget {
 
 class _BrnMoreSelectionPageState extends State<BrnMoreSelectionPage>
     with SingleTickerProviderStateMixin {
-  List<BrnSelectionEntity> _originalSelectedItemsList;
-  AnimationController _controller;
-  Animation<Offset> animation;
-  StreamController<ClearEvent> clearController;
+  late List<BrnSelectionEntity> _originalSelectedItemsList;
+  late AnimationController _controller;
+  late Animation<Offset> animation;
+  late StreamController<ClearEvent> clearController;
   bool isValid = true;
 
   @override
@@ -62,15 +60,14 @@ class _BrnMoreSelectionPageState extends State<BrnMoreSelectionPage>
         Tween(end: Offset.zero, begin: Offset(1.0, 0.0)).animate(_controller);
     _controller.forward();
 
-    _originalSelectedItemsList = List();
+    _originalSelectedItemsList = [];
     _originalSelectedItemsList.clear();
-    _originalSelectedItemsList
-        .addAll(widget.entityData?.allSelectedList() ?? List());
+    _originalSelectedItemsList.addAll(widget.entityData.allSelectedList());
     for (BrnSelectionEntity entity in _originalSelectedItemsList) {
       entity.isSelected = true;
       if (entity.customMap != null) {
         //ori 是存数据     customMap是用来展示ui的
-        entity.originalCustomMap = Map.from(entity.customMap);
+        entity.originalCustomMap = Map.from(entity.customMap!);
       }
     }
 
@@ -134,7 +131,7 @@ class _BrnMoreSelectionPageState extends State<BrnMoreSelectionPage>
   @override
   void dispose() {
     super.dispose();
-    _controller?.dispose();
+    _controller.dispose();
   }
 
   /// 左侧为透明黑，点击直接退出页面
@@ -151,7 +148,7 @@ class _BrnMoreSelectionPageState extends State<BrnMoreSelectionPage>
               data.customMap = Map<String, String>();
               if (data.originalCustomMap != null) {
                 data.originalCustomMap.forEach((key, value) {
-                  data.customMap[key.toString()] = value.toString() ?? "";
+                  data.customMap![key.toString()] = value.toString();
                 });
               }
             }
@@ -183,11 +180,11 @@ class _BrnMoreSelectionPageState extends State<BrnMoreSelectionPage>
       itemBuilder: (context, index) {
         return BrnMoreSelectionWidget(
             clearController: clearController,
-            selectionEntity: widget.entityData.children[index],
+            selectionEntity: widget.entityData.children![index],
             onCustomFloatingLayerClick: widget.onCustomFloatingLayerClick,
             themeData: widget.themeData);
       },
-      itemCount: widget.entityData.children.length,
+      itemCount: widget.entityData.children!.length,
     );
   }
 
@@ -209,7 +206,7 @@ class _BrnMoreSelectionPageState extends State<BrnMoreSelectionPage>
           return;
         }
 
-        widget.entityData.children.forEach((data) {
+        widget.entityData.children?.forEach((data) {
           if (data.selectedList().isNotEmpty) {
             data.isSelected = true;
           } else {
@@ -217,7 +214,7 @@ class _BrnMoreSelectionPageState extends State<BrnMoreSelectionPage>
           }
         });
         if (widget.confirmCallback != null) {
-          widget.confirmCallback(data);
+          widget.confirmCallback!(data);
         }
         Navigator.of(context).pop();
       },
@@ -229,10 +226,10 @@ class _BrnMoreSelectionPageState extends State<BrnMoreSelectionPage>
     entity.isSelected = false;
     entity.customMap = Map<String, String>();
     if (BrnSelectionFilterType.Range == entity.filterType) {
-      entity.title = null;
+      entity.title = "";
     }
     if (entity.children != null) {
-      for (BrnSelectionEntity subEntity in entity.children) {
+      for (BrnSelectionEntity subEntity in entity.children!) {
         _clearUIData(subEntity);
       }
     }
@@ -243,8 +240,8 @@ class _BrnMoreSelectionPageState extends State<BrnMoreSelectionPage>
   }
 
   void clearSelectedEntity() {
-    List<BrnSelectionEntity> tmp = List();
-    BrnSelectionEntity node = widget.entityData;
+    List<BrnSelectionEntity> tmp = [];
+    BrnSelectionEntity? node = widget.entityData;
     tmp.add(node);
     while (tmp.isNotEmpty) {
       node = tmp.removeLast();
@@ -253,16 +250,16 @@ class _BrnMoreSelectionPageState extends State<BrnMoreSelectionPage>
               node.filterType == BrnSelectionFilterType.DateRange ||
               node.filterType == BrnSelectionFilterType.DateRangeCalendar)) {
         if (node.customMap != null &&
-            ((node.customMap['min'] != null &&
-                    node.customMap['min'].length > 0) ||
-                (node.customMap['max'] != null &&
-                    node.customMap['max'].length > 0))) {
+            ((node.customMap!['min'] != null &&
+                    node.customMap!['min']!.length > 0) ||
+                (node.customMap!['max'] != null &&
+                    node.customMap!['max']!.length > 0))) {
           if (!node.isValidRange()) {
             isValid = false;
-            if (node?.filterType == BrnSelectionFilterType.Range) {
+            if (node.filterType == BrnSelectionFilterType.Range) {
               BrnToast.show('您输入的区间有误', context);
-            } else if (node?.filterType == BrnSelectionFilterType.DateRange ||
-                node?.filterType == BrnSelectionFilterType.DateRangeCalendar) {
+            } else if (node.filterType == BrnSelectionFilterType.DateRange ||
+                node.filterType == BrnSelectionFilterType.DateRangeCalendar) {
               BrnToast.show('您选择的区间有误', context);
             }
             return;
@@ -271,7 +268,7 @@ class _BrnMoreSelectionPageState extends State<BrnMoreSelectionPage>
           node.isSelected = false;
         }
       }
-      node.children?.forEach((data) {
+      node.children!.forEach((data) {
         tmp.add(data);
       });
     }
@@ -282,7 +279,7 @@ class _BrnMoreSelectionPageState extends State<BrnMoreSelectionPage>
 class SlideRightRoute<T> extends PageRouteBuilder<T> {
   final Widget page;
 
-  SlideRightRoute({this.page})
+  SlideRightRoute({required this.page})
       : super(
           opaque: false,
           pageBuilder: (
@@ -310,13 +307,16 @@ class SlideRightRoute<T> extends PageRouteBuilder<T> {
 /// 底部的重置+确定
 // ignore: must_be_immutable
 class MoreBottomSelectionWidget extends StatelessWidget {
-  final VoidCallback clearCallback;
-  final Function(BrnSelectionEntity) conformCallback;
+  final VoidCallback? clearCallback;
+  final Function(BrnSelectionEntity)? conformCallback;
   final BrnSelectionEntity entity;
-  BrnSelectionConfig themeData;
+  BrnSelectionConfig? themeData;
 
   MoreBottomSelectionWidget(
-      {this.clearCallback, this.conformCallback, this.entity, this.themeData});
+      {this.clearCallback,
+      this.conformCallback,
+      required this.entity,
+      this.themeData});
 
   @override
   Widget build(BuildContext context) {
@@ -326,7 +326,7 @@ class MoreBottomSelectionWidget extends StatelessWidget {
         GestureDetector(
           onTap: () {
             if (clearCallback != null) {
-              clearCallback();
+              clearCallback!();
             }
           },
           child: Container(
@@ -342,7 +342,7 @@ class MoreBottomSelectionWidget extends StatelessWidget {
                 ),
                 Text(
                   '重置',
-                  style: themeData.resetTextStyle.generateTextStyle(),
+                  style: themeData?.resetTextStyle.generateTextStyle(),
                 )
               ],
             ),
@@ -353,7 +353,7 @@ class MoreBottomSelectionWidget extends StatelessWidget {
           title: '确定',
           onTap: () {
             if (conformCallback != null) {
-              conformCallback(entity);
+              conformCallback!(entity);
             }
           },
         )),

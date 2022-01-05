@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'package:bruno/src/components/selection/controller/brn_selection_view_controller.dart';
 import 'package:flutter/material.dart';
 
@@ -11,9 +9,9 @@ class BrnSelectionAnimationWidget extends StatefulWidget {
   final int animationMilliseconds;
 
   const BrnSelectionAnimationWidget(
-      {Key key,
-      @required this.controller,
-      @required this.view,
+      {Key? key,
+      required this.controller,
+      required this.view,
       this.animationMilliseconds = 100})
       : super(key: key);
 
@@ -26,8 +24,8 @@ class _BrnSelectionAnimationWidgetState
     extends State<BrnSelectionAnimationWidget>
     with SingleTickerProviderStateMixin {
   bool _isControllerDisposed = false;
-  Animation<double> _animation;
-  AnimationController _controller;
+  late Animation<double> _animation;
+  late AnimationController _controller;
 
   @override
   void initState() {
@@ -40,7 +38,7 @@ class _BrnSelectionAnimationWidgetState
   }
 
   dispose() {
-    widget.controller?.removeListener(_onController);
+    widget.controller.removeListener(_onController);
     _controller.dispose();
     _isControllerDisposed = true;
     super.dispose();

@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'package:bruno/src/constants/brn_asset_constants.dart';
 import 'package:bruno/src/theme/brn_theme_configurator.dart';
 import 'package:bruno/src/utils/brn_tools.dart';
@@ -22,14 +20,13 @@ class BrnHorizontalStepsManager {
   /// completedIcon: 自定义已完成状态的icon
   ///
   Widget buildSteps(
-      {List<BrunoStep> steps,
-      int currentIndex,
-      bool isCompleted,
-      Widget doingIcon,
-      Widget completedIcon}) {
-    if (steps != null) {
-      maxCount = steps.length;
-    }
+      {required List<BrunoStep> steps,
+      int? currentIndex,
+      bool? isCompleted,
+      Widget? doingIcon,
+      Widget? completedIcon}) {
+    maxCount = steps.length;
+
     if (currentIndex != null) {
       controller.currentIndex = currentIndex;
     }
@@ -87,11 +84,14 @@ class BrnHorizontalSteps extends StatefulWidget {
 
   BrnStepsController controller;
 
-  final Widget doingIcon;
-  final Widget completedIcon;
+  final Widget? doingIcon;
+  final Widget? completedIcon;
 
   BrnHorizontalSteps(
-      {this.steps, this.controller, this.doingIcon, this.completedIcon})
+      {required this.steps,
+      required this.controller,
+      this.doingIcon,
+      this.completedIcon})
       : assert(steps.length < 6);
 
   @override
@@ -104,7 +104,7 @@ class BrnHorizontalStepsState extends State<BrnHorizontalSteps> {
   @override
   void initState() {
     super.initState();
-    widget.controller?.addListener(_handleStepStateListenerTick);
+    widget.controller.addListener(_handleStepStateListenerTick);
   }
 
   void _handleStepStateListenerTick() {
@@ -114,7 +114,7 @@ class BrnHorizontalStepsState extends State<BrnHorizontalSteps> {
   @override
   void dispose() {
     super.dispose();
-    widget.controller?.removeListener(_handleStepStateListenerTick);
+    widget.controller.removeListener(_handleStepStateListenerTick);
   }
 
   @override
@@ -143,7 +143,7 @@ class BrnHorizontalStepsState extends State<BrnHorizontalSteps> {
   }
 
   Widget _applyStepIcon(BrunoStep step, int index) {
-    Widget icon;
+    Widget? icon;
     if (widget.controller.isCompleted) {
       return _getCompletedIcon(step);
     }
@@ -173,7 +173,7 @@ class BrnHorizontalStepsState extends State<BrnHorizontalSteps> {
         icon = getIndexIcon(index);
       }
     }
-    return icon;
+    return icon!;
   }
 
   Widget _applyStepItem(BrunoStep step, int index) {
@@ -245,11 +245,11 @@ class BrnHorizontalStepsState extends State<BrnHorizontalSteps> {
   Widget _getCompletedIcon(BrunoStep step) {
     if (step.completedIcon != null) {
       // 如果Step中自定义completedIcon不为空，则使用自定义的icon
-      return step.completedIcon;
+      return step.completedIcon!;
     }
     if (widget.completedIcon != null) {
       // 如果自定义completedIcon不为空，则使用自定义的icon
-      return widget.completedIcon;
+      return widget.completedIcon!;
     }
     // 使用组件默认的icon
     return BrunoTools.getAssetSizeImage(BrnAsset.ICON_STEP_COMPLETED, 20, 20,
@@ -262,11 +262,11 @@ class BrnHorizontalStepsState extends State<BrnHorizontalSteps> {
   Widget _getDoingIcon(BrunoStep step) {
     if (step.doingIcon != null) {
       // 如果Step中自定义doingIcon不为空，则使用自定义的icon
-      return step.doingIcon;
+      return step.doingIcon!;
     }
     if (widget.doingIcon != null) {
       // 如果自定义doingIcon不为空，则使用自定义的icon
-      return widget.doingIcon;
+      return widget.doingIcon!;
     }
     // 使用组件默认的icon
     return BrunoTools.getAssetSizeImage(BrnAsset.ICON_STEP_DOING, 20, 20,
@@ -294,35 +294,35 @@ class BrunoStep {
   ///
   /// The [stepContent], [doingIcon] arguments must not be null.
   const BrunoStep({
-    this.stepContent,
-    this.stepContentText,
-    this.doingIcon,
+    required this.stepContent,
+    required this.stepContentText,
+    required this.doingIcon,
     this.completedIcon,
-    this.state,
+    required this.state,
   });
 
   /// The String title of the step that typically describes it.
   final String stepContentText;
 
   /// The title of the step that typically describes it.
-  final Widget stepContent;
+  final Widget? stepContent;
 
   /// The doingIcon of the step
-  final Widget doingIcon;
+  final Widget? doingIcon;
 
   /// The completedIcon of the step
-  final Widget completedIcon;
+  final Widget? completedIcon;
 
   /// The state of the step which determines the styling of its components
   /// and whether steps are interactive.
-  final BrunoStepState state;
+  final BrunoStepState? state;
 }
 
 class BrnStepsController with ChangeNotifier {
   int currentIndex = 0;
   bool isCompleted = false;
 
-  BrnStepsController({this.currentIndex, this.isCompleted});
+  BrnStepsController();
 
   void setCurrentIndex(int index) {
     currentIndex = index;

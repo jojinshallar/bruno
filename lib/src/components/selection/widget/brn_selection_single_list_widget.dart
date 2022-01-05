@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'package:bruno/src/components/selection/bean/brn_selection_common_entity.dart';
 import 'package:bruno/src/components/selection/brn_selection_util.dart';
 import 'package:bruno/src/components/selection/widget/brn_selection_common_item_widget.dart';
@@ -10,47 +8,43 @@ import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class BrnSelectionSingleListWidget extends StatefulWidget {
-  List<BrnSelectionEntity> _selectedItems;
-  int focusedIndex = -1;
+  late List<BrnSelectionEntity> _selectedItems;
+  int? focusedIndex = -1;
   List<BrnSelectionEntity> items;
-  Color backgroundColor;
-  Color selectedBackgroundColor;
+  Color? backgroundColor;
+  Color? selectedBackgroundColor;
   int flex;
   SingleListItemSelect singleListItemSelect;
-  int currentListIndex;
-  double maxHeight;
+  late int currentListIndex;
+  double? maxHeight;
   BrnSelectionConfig themeData;
 
   BrnSelectionSingleListWidget({
-    @required this.items,
+    required this.items,
     this.maxHeight = 0,
     this.backgroundColor,
     this.selectedBackgroundColor,
-    this.flex,
+    this.flex = 1,
     this.focusedIndex,
-    this.singleListItemSelect,
-    this.themeData,
+    required this.singleListItemSelect,
+    required this.themeData,
   }) {
-    if (items == null) {
-      items = List();
-    } else {
-      /// 自定义 Item 不在 list 样式中显示
-      items = items
-          .where((_) =>
-              _.filterType != BrnSelectionFilterType.Range &&
-              _.filterType != BrnSelectionFilterType.Date &&
-              _.filterType != BrnSelectionFilterType.DateRange &&
-              _.filterType != BrnSelectionFilterType.DateRangeCalendar)
-          .toList();
-    }
+    /// 自定义 Item 不在 list 样式中显示
+    items = items
+        .where((_) =>
+            _.filterType != BrnSelectionFilterType.Range &&
+            _.filterType != BrnSelectionFilterType.Date &&
+            _.filterType != BrnSelectionFilterType.DateRange &&
+            _.filterType != BrnSelectionFilterType.DateRangeCalendar)
+        .toList();
 
     /// 当前 Items 所在的层级
     currentListIndex = BrnSelectionUtil.getCurrentListIndex(
         items.length > 0 ? items[0] : null);
 
-    _selectedItems = items?.where((f) => f.isSelected)?.toList();
+    _selectedItems = items.where((f) => f.isSelected).toList();
     if (_selectedItems == null) {
-      _selectedItems = List();
+      _selectedItems = [];
     }
   }
 
@@ -72,7 +66,7 @@ class _BrnSelectionSingleListWidgetState
       child: Container(
         constraints: (widget.maxHeight == null || widget.maxHeight == 0)
             ? BoxConstraints.expand()
-            : BoxConstraints(maxHeight: widget.maxHeight),
+            : BoxConstraints(maxHeight: widget.maxHeight!),
         color: widget.backgroundColor,
         child: ListView.separated(
           shrinkWrap: true,
@@ -100,11 +94,11 @@ class _BrnSelectionSingleListWidgetState
                     entity.filterType != BrnSelectionFilterType.Checkbox) {
                   if (entity.hasCheckBoxBrother()) {
                     if (entity.isUnLimit() &&
-                            entity.parent.children
+                            entity.parent!.children!
                                     .where((f) => f.isSelected)
                                     .length >
                                 0 ||
-                        entity.parent.children
+                        entity.parent!.children!
                                 .where((f) => f.isSelected && f.isUnLimit())
                                 .length >
                             0) {
@@ -149,7 +143,7 @@ class _BrnSelectionSingleListWidgetState
 
     int totalLevel = BrnSelectionUtil.getTotalLevel(selectedEntity);
     if (selectedEntity.isUnLimit()) {
-      selectedEntity.parent.clearChildSelection();
+      selectedEntity.parent?.clearChildSelection();
     }
 
     /// 设置选中数据。
@@ -165,7 +159,7 @@ class _BrnSelectionSingleListWidgetState
     /// （两列、三列时）第一列节点是否被选中取决于它的子节点是否被选中，
     /// 只有当它子节点被选中时才会认为第一列的节点相应被选中。
     if (widget.items != null && widget.items.length > 0) {
-      widget.items[0].parent?.isSelected = widget.items[0].parent.children
+      widget.items[0].parent!.isSelected = widget.items[0].parent!.children!
               .where((BrnSelectionEntity f) => f.isSelected)
               .length >
           0;
@@ -187,12 +181,12 @@ class _BrnSelectionSingleListWidgetState
   void configOneLevelList(BrnSelectionEntity selectedEntity) {
     if (BrnSelectionFilterType.Radio == selectedEntity.filterType) {
       /// 单选，清除同一级别选中的状态，则其他的设置为未选中。
-      selectedEntity.parent.clearChildSelection();
+      selectedEntity.parent?.clearChildSelection();
       selectedEntity.isSelected = true;
     } else if (BrnSelectionFilterType.Checkbox == selectedEntity.filterType) {
       /// 选中【不限】清除同一级别其他的状态
       if (selectedEntity.isUnLimit()) {
-        selectedEntity.parent.clearChildSelection();
+        selectedEntity.parent?.clearChildSelection();
         selectedEntity.isSelected = true;
       } else {
         ///清除【不限】类型。
@@ -200,7 +194,7 @@ class _BrnSelectionSingleListWidgetState
         if (selectedEntity.parent == null) {
           brotherItems = widget.items;
         } else {
-          brotherItems = selectedEntity.parent.children;
+          brotherItems = selectedEntity.parent!.children!;
         }
         for (BrnSelectionEntity entity in brotherItems) {
           if (entity.isUnLimit()) {
@@ -216,9 +210,9 @@ class _BrnSelectionSingleListWidgetState
       BrnSelectionEntity selectedEntity, int currentListIndex) {
     /// 单选，清除同一级别选中的状态，则其他的设置为未选中。
     if (BrnSelectionFilterType.Radio == selectedEntity.filterType) {
-      selectedEntity.parent?.children
+      selectedEntity.parent!.children
           ?.where((f) => f != selectedEntity)
-          ?.forEach((f) {
+          .forEach((f) {
         f.clearChildSelection();
         f.isSelected = false;
       });
@@ -228,7 +222,7 @@ class _BrnSelectionSingleListWidgetState
       if (selectedEntity.isUnLimit()) {
         selectedEntity.parent?.children
             ?.where((f) => f != selectedEntity)
-            ?.forEach((f) {
+            .forEach((f) {
           f.clearChildSelection();
           f.isSelected = false;
         });
@@ -239,7 +233,7 @@ class _BrnSelectionSingleListWidgetState
         if (selectedEntity.parent == null) {
           brotherItems = widget.items;
         } else {
-          brotherItems = selectedEntity.parent.children;
+          brotherItems = selectedEntity.parent!.children;
         }
         for (BrnSelectionEntity entity in brotherItems) {
           if (entity.isUnLimit()) {

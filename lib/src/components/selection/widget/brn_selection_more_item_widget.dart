@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'dart:async';
 
 import 'package:bruno/src/components/line/brn_line.dart';
@@ -31,14 +29,14 @@ class BrnMoreSelectionWidget extends StatefulWidget {
   //entity 是商圈、钥匙等
   final BrnSelectionEntity selectionEntity;
   final StreamController<ClearEvent> clearController;
-  final BrnOnCustomFloatingLayerClick onCustomFloatingLayerClick;
+  final BrnOnCustomFloatingLayerClick? onCustomFloatingLayerClick;
   BrnSelectionConfig themeData;
 
   BrnMoreSelectionWidget(
-      {this.selectionEntity,
-      this.clearController,
+      {required this.selectionEntity,
+      required this.clearController,
       this.onCustomFloatingLayerClick,
-      this.themeData});
+      required this.themeData});
 
   @override
   _BrnMoreSelectionWidgetState createState() => _BrnMoreSelectionWidgetState();
@@ -75,7 +73,9 @@ class _FilterCommonTypeWidget extends StatefulWidget {
   BrnSelectionConfig themeData;
 
   _FilterCommonTypeWidget(
-      {this.selectionEntity, this.clearController, this.themeData});
+      {required this.selectionEntity,
+      required this.clearController,
+      required this.themeData});
 
   @override
   __FilterCommonTypeWidgetState createState() =>
@@ -86,10 +86,10 @@ class __FilterCommonTypeWidgetState extends State<_FilterCommonTypeWidget> {
   bool isExpanded = false;
 
   ///展开收起的通知
-  ValueNotifier valueNotifier;
+  late ValueNotifier valueNotifier;
 
   ///用于 range和 tag 之间通信
-  StreamController<Event> streamController;
+  late StreamController<Event> streamController;
 
   @override
   void initState() {
@@ -104,9 +104,7 @@ class __FilterCommonTypeWidgetState extends State<_FilterCommonTypeWidget> {
         setState(() {
           if (!event.filter) {
             //将所有tag设置为未选中
-            event.rangeEntity.parent
-                ?.currentTagListForEntity()
-                ?.forEach((data) {
+            event.rangeEntity.parent?.currentTagListForEntity().forEach((data) {
               data.clearSelectedEntity();
             });
           }
@@ -181,7 +179,7 @@ class __FilterCommonTypeWidgetState extends State<_FilterCommonTypeWidget> {
       children: <Widget>[
         Expanded(
           child: Text(
-            widget.selectionEntity.title ?? "",
+            widget.selectionEntity.title,
             style: widget.themeData.titleForMoreTextStyle.generateTextStyle(),
           ),
         ),
@@ -223,7 +221,7 @@ class __FilterCommonTypeWidgetState extends State<_FilterCommonTypeWidget> {
           onTap: () {
             setState(() {
               if (data.filterType == BrnSelectionFilterType.Radio) {
-                data.parent.clearSelectedEntity();
+                data.parent?.clearSelectedEntity();
                 data.isSelected = true;
                 //用于发送 标签点击事件
                 streamController.add(SelectEvent());
@@ -235,9 +233,9 @@ class __FilterCommonTypeWidgetState extends State<_FilterCommonTypeWidget> {
                   }
                 }
 
-                data.parent.children
+                data.parent?.children
                     ?.where((_) => _.filterType == BrnSelectionFilterType.Radio)
-                    ?.forEach((f) => f.isSelected = false);
+                    .forEach((f) => f.isSelected = false);
                 data.isSelected = !data.isSelected;
                 //用于发送 标签点击事件
                 streamController.add(SelectEvent());
@@ -258,7 +256,7 @@ class __FilterCommonTypeWidgetState extends State<_FilterCommonTypeWidget> {
     String showName;
 
     if (isDate) {
-      if (data.value == null || data.value.isEmpty) {
+      if (data.value == null || data.value!.isEmpty) {
         showName = data.title;
       } else {
         int time = int.tryParse(data.value ?? "") ??
@@ -289,11 +287,11 @@ class __FilterCommonTypeWidgetState extends State<_FilterCommonTypeWidget> {
   }
 
   TextStyle _tagTextStyle() {
-    return widget.themeData.tagNormalTextStyle?.generateTextStyle();
+    return widget.themeData.tagNormalTextStyle.generateTextStyle();
   }
 
   TextStyle _selectedTextStyle() {
-    return widget.themeData.tagSelectedTextStyle?.generateTextStyle();
+    return widget.themeData.tagSelectedTextStyle.generateTextStyle();
   }
 
   void _showDatePicker(BrnSelectionEntity data) {
@@ -306,7 +304,7 @@ class __FilterCommonTypeWidgetState extends State<_FilterCommonTypeWidget> {
         dateFormat: 'yyyy年,MMMM月,dd日', onConfirm: (dateTime, list) {
       if (mounted) {
         setState(() {
-          data.parent.clearSelectedEntity();
+          data.parent?.clearSelectedEntity();
           data.isSelected = true;
           data.value = dateTime.millisecondsSinceEpoch.toString();
         });
@@ -319,9 +317,9 @@ class __FilterCommonTypeWidgetState extends State<_FilterCommonTypeWidget> {
 // ignore: must_be_immutable
 class _MoreArrow extends StatefulWidget {
   ///用于通知 展开和收起
-  final ValueNotifier valueNotifier;
+  final ValueNotifier? valueNotifier;
 
-  BrnSelectionConfig themeData;
+  BrnSelectionConfig? themeData;
 
   _MoreArrow({this.valueNotifier, this.themeData});
 
@@ -343,7 +341,7 @@ class __MoreArrowState extends State<_MoreArrow> {
         setState(() {
           isExpanded = !isExpanded;
           if (widget.valueNotifier != null) {
-            widget.valueNotifier.value = isExpanded;
+            widget.valueNotifier!.value = isExpanded;
           }
         });
       },
@@ -354,7 +352,7 @@ class __MoreArrowState extends State<_MoreArrow> {
           children: <Widget>[
             Text(
               '更多',
-              style: widget.themeData.moreTextStyle.generateTextStyle(),
+              style: widget.themeData?.moreTextStyle.generateTextStyle(),
             ),
             Container(
               height: 16,
@@ -386,11 +384,11 @@ class _MoreRangeWidget extends StatefulWidget {
   BrnSelectionConfig themeData;
 
   _MoreRangeWidget(
-      {this.streamController,
-      this.rangeEntity,
-      this.clearController,
-      this.themeData,
-      Key key})
+      {required this.streamController,
+      required this.rangeEntity,
+      required this.clearController,
+      required this.themeData,
+      Key? key})
       : super(key: key);
 
   @override
@@ -399,22 +397,22 @@ class _MoreRangeWidget extends StatefulWidget {
 
 class __MoreRangeWidgetState extends State<_MoreRangeWidget> {
   //最小值 输入框监听
-  TextEditingController minController;
+  late TextEditingController minController;
 
   //最大值 输入框监听
-  TextEditingController maxController;
+  late TextEditingController maxController;
 
   //最小值 焦点监听
-  FocusNode minFocusNode;
+  late FocusNode minFocusNode;
 
   //最大值 焦点监听
-  FocusNode maxFocusNode;
+  late FocusNode maxFocusNode;
 
   //默认的最大值
-  int max;
+  late int max;
 
   //默认的最小值
-  int min;
+  late int min;
 
   @override
   void initState() {
@@ -424,7 +422,7 @@ class __MoreRangeWidgetState extends State<_MoreRangeWidget> {
     minController = TextEditingController();
     maxController = TextEditingController();
 
-    widget?.clearController?.stream?.listen((event) {
+    widget.clearController.stream.listen((event) {
       minController.clear();
       maxController.clear();
     });
@@ -433,16 +431,12 @@ class __MoreRangeWidgetState extends State<_MoreRangeWidget> {
       widget.rangeEntity.customMap = Map<String, String>();
     }
 
-    minController.text = (widget.rangeEntity.customMap['min'] != null)
-        ? widget.rangeEntity.customMap['min']?.toString()
-        : null;
-    maxController.text = (widget.rangeEntity.customMap['max'] != null)
-        ? widget.rangeEntity.customMap['max']?.toString()
-        : null;
+    minController.text = widget.rangeEntity.customMap!['min'] ?? "";
+    maxController.text = widget.rangeEntity.customMap!['max'] ?? "";
 
     min =
-        int.tryParse(widget.rangeEntity?.extMap['min']?.toString() ?? "") ?? 0;
-    max = int.tryParse(widget.rangeEntity?.extMap['max']?.toString() ?? "") ??
+        int.tryParse(widget.rangeEntity.extMap!['min']?.toString() ?? "") ?? 0;
+    max = int.tryParse(widget.rangeEntity.extMap!['max']?.toString() ?? "") ??
         9999;
 
     ///处理的逻辑：
@@ -452,13 +446,13 @@ class __MoreRangeWidgetState extends State<_MoreRangeWidget> {
       if (widget.rangeEntity.filterType != BrnSelectionFilterType.Range) {
         return;
       }
-      String minInput = minController.text ?? "";
+      String minInput = minController.text;
 
       if (widget.rangeEntity.customMap == null) {
         widget.rangeEntity.customMap = {};
       }
 
-      widget.rangeEntity.customMap['min'] = minInput;
+      widget.rangeEntity.customMap!['min'] = minInput;
 
       widget.rangeEntity.isSelected = true;
     });
@@ -467,12 +461,12 @@ class __MoreRangeWidgetState extends State<_MoreRangeWidget> {
       if (widget.rangeEntity.filterType != BrnSelectionFilterType.Range) {
         return;
       }
-      String maxInput = maxController.text ?? "";
+      String maxInput = maxController.text;
       if (widget.rangeEntity.customMap == null) {
         widget.rangeEntity.customMap = {};
       }
 
-      widget.rangeEntity.customMap['max'] = maxInput;
+      widget.rangeEntity.customMap!['max'] = maxInput;
 
       widget.rangeEntity.isSelected = true;
     });
@@ -594,11 +588,13 @@ class __MoreRangeWidgetState extends State<_MoreRangeWidget> {
 class FilterLayerTypeWidget extends StatefulWidget {
   //entity是 商圈
   final BrnSelectionEntity selectionEntity;
-  final BrnOnCustomFloatingLayerClick onCustomFloatingLayerClick;
+  final BrnOnCustomFloatingLayerClick? onCustomFloatingLayerClick;
   BrnSelectionConfig themeData;
 
   FilterLayerTypeWidget(
-      {this.selectionEntity, this.onCustomFloatingLayerClick, this.themeData});
+      {required this.selectionEntity,
+      this.onCustomFloatingLayerClick,
+      required this.themeData});
 
   @override
   _FilterLayerTypeWidgetState createState() => _FilterLayerTypeWidgetState();
@@ -640,16 +636,16 @@ class _FilterLayerTypeWidgetState extends State<FilterLayerTypeWidget> {
                 if (widget.onCustomFloatingLayerClick != null) {
                   int entityIndex = -1;
                   if (widget.selectionEntity.parent != null &&
-                      widget.selectionEntity.parent.children != null) {
-                    entityIndex = widget.selectionEntity.parent.children
+                      widget.selectionEntity.parent!.children != null) {
+                    entityIndex = widget.selectionEntity.parent!.children!
                         .indexOf(widget.selectionEntity);
                   }
-                  widget.onCustomFloatingLayerClick(
+                  widget.onCustomFloatingLayerClick!(
                       entityIndex, widget.selectionEntity,
                       (List<BrnSelectionEntity> customFloatingLayerParams) {
-                    widget.selectionEntity.children?.clear();
+                    widget.selectionEntity.children!.clear();
                     widget.selectionEntity.children = [];
-                    widget.selectionEntity.children
+                    widget.selectionEntity.children!
                         .addAll(customFloatingLayerParams);
                     widget.selectionEntity.configDefaultValue();
                     setState(() {});
@@ -687,7 +683,7 @@ class _FilterLayerTypeWidgetState extends State<FilterLayerTypeWidget> {
 
   bool isEmptyCondition() {
     String condition = getCondition();
-    return condition == null || condition.isEmpty;
+    return condition.isEmpty;
   }
 
   String getCondition() {
@@ -738,5 +734,5 @@ class InputEvent extends Event {
   BrnSelectionEntity rangeEntity;
   bool filter;
 
-  InputEvent({this.rangeEntity, this.filter});
+  InputEvent({required this.rangeEntity, required this.filter});
 }

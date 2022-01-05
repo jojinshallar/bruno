@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'dart:async';
 
 import 'package:bruno/src/components/empty/brn_empty_status.dart';
@@ -27,7 +25,7 @@ abstract class BaseAZListViewPage extends StatefulWidget {
   Widget buildItemWidget(ISuspensionBean item);
 
   //悬浮的widget
-  Widget buildSuspensionWidget(String tag);
+  Widget buildSuspensionWidget(String? tag);
 
   List<ISuspensionBean> getTopData() {
     return <ISuspensionBean>[];
@@ -41,16 +39,19 @@ abstract class BaseAZListViewPage extends StatefulWidget {
 
   //每个modal 对应的 tag，默认是拼音来设置
   String createTagByModal(ISuspensionBean bean) {
-    String pinyin = PinyinHelper.getPinyinE(bean.name);
-    return pinyin.substring(0, 1).toUpperCase();
+    if (bean.name != null && bean.name!.isNotEmpty) {
+      String pinyin = PinyinHelper.getPinyinE(bean.name!);
+      return pinyin.substring(0, 1).toUpperCase();
+    }
+    return "";
   }
 }
 
 class _BaseAZListViewPageState extends State<BaseAZListViewPage> {
-  String suspensionTag = "";
+  String? suspensionTag = "";
 
   List<ISuspensionBean> _dataList = [];
-  StreamController<String> streamController;
+  late StreamController<String> streamController;
 
   @override
   void initState() {
@@ -79,7 +80,7 @@ class _BaseAZListViewPageState extends State<BaseAZListViewPage> {
                 return buildContentBody(snapShot.data);
               }
             }
-            return null;
+            return Container();
           },
         ));
   }
@@ -109,7 +110,7 @@ class _BaseAZListViewPageState extends State<BaseAZListViewPage> {
             child: StreamBuilder(
           initialData: suspensionTag,
           stream: streamController.stream,
-          builder: (context, snapShot) {
+          builder: (context, AsyncSnapshot snapShot) {
             return AzListView(
               data: _dataList,
               topData: top,
@@ -128,7 +129,7 @@ class _BaseAZListViewPageState extends State<BaseAZListViewPage> {
     );
   }
 
-  Widget _buildSusWidget(String susTag) {
+  Widget _buildSusWidget(String? susTag) {
     return Container(
       height: widget.getSuspensionHeight(),
       child: widget.buildSuspensionWidget(susTag),
@@ -154,7 +155,7 @@ class _BaseAZListViewPageState extends State<BaseAZListViewPage> {
   }
 
   Widget _buildListItem(ISuspensionBean model) {
-    String susTag = model.tag;
+    String? susTag = model.tag;
     return Column(
       children: <Widget>[
         //当offstage为true，当前控件不会被绘制在屏幕上

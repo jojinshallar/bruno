@@ -300,7 +300,7 @@ class _BrnSingleSelectCityPageState extends State<BrnSingleSelectCityPage> {
       headerHeight = 0;
     }
     if (_suspensionTag.isEmpty || _suspensionTag == '') {
-      if (!_cityList.isEmpty) {
+      if (_cityList.isNotEmpty) {
         _suspensionTag = _cityList.first.tag!;
       }
     }

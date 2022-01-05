@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'dart:async';
 
 import 'package:bruno/src/components/picker/time_picker/brn_date_time_formatter.dart';
@@ -26,24 +24,24 @@ class BrnSelectionMenuWidget extends StatefulWidget {
   final List<BrnSelectionEntity> data;
   final BuildContext context;
   final double height;
-  final double width;
-  final BrnOnRangeSelectionConfirm onConfirm;
-  final BrnOnMenuItemClick onMenuItemClick;
-  final BrnConfigTagCountPerRow configRowCount;
+  final double? width;
+  final BrnOnRangeSelectionConfirm? onConfirm;
+  final BrnOnMenuItemClick? onMenuItemClick;
+  final BrnConfigTagCountPerRow? configRowCount;
 
   ///筛选所在列表的外部列表滚动需要收起筛选，此处为最外层列表，有点恶心，但是暂时只想到这个方法，有更好方式的一定要告诉我
-  final ScrollController extraScrollController;
+  final ScrollController? extraScrollController;
 
   ///指定筛选固定的相对于屏幕的顶部距离，默认null不指定
-  final double constantTop;
+  final double? constantTop;
 
-  BrnSelectionViewController selectionViewController;
+  BrnSelectionViewController? selectionViewController;
 
   BrnSelectionConfig themeData;
 
   BrnSelectionMenuWidget(
-      {@required this.data,
-      @required this.context,
+      {required this.data,
+      required this.context,
       this.height = 50.0,
       this.width,
       this.onMenuItemClick,
@@ -52,7 +50,7 @@ class BrnSelectionMenuWidget extends StatefulWidget {
       this.extraScrollController,
       this.constantTop,
       this.selectionViewController,
-      this.themeData});
+      required this.themeData});
 
   @override
   _BrnSelectionMenuWidgetState createState() => _BrnSelectionMenuWidgetState();
@@ -60,17 +58,17 @@ class BrnSelectionMenuWidget extends StatefulWidget {
 
 class _BrnSelectionMenuWidgetState extends State<BrnSelectionMenuWidget> {
   bool _needRefreshTitle = true;
-  List<BrnSelectionEntity> result;
-  List<String> titles = List();
-  List<bool> menuItemActiveState = List();
-  List<bool> menuItemHighlightState = List();
+  List<BrnSelectionEntity>? result;
+  List<String> titles = [];
+  List<bool> menuItemActiveState = [];
+  List<bool> menuItemHighlightState = [];
   BrnSelectionListViewController listViewController =
       BrnSelectionListViewController();
-  ScrollController _scrollController;
+  ScrollController? _scrollController;
 
-  StreamSubscription _refreshTitleSubscription;
+  StreamSubscription? _refreshTitleSubscription;
 
-  StreamSubscription _closeSelectionPopupWindowSubscription;
+  StreamSubscription? _closeSelectionPopupWindowSubscription;
 
   @override
   void initState() {
@@ -88,10 +86,10 @@ class _BrnSelectionMenuWidgetState extends State<BrnSelectionMenuWidget> {
 
     if (widget.extraScrollController != null) {
       _scrollController = widget.extraScrollController;
-      _scrollController.addListener(_closeSelectionPopupWindow);
+      _scrollController!.addListener(_closeSelectionPopupWindow);
     }
 
-    result = List<BrnSelectionEntity>();
+    result = <BrnSelectionEntity>[];
     if (widget.data != null) {
       for (BrnSelectionEntity parentEntity in widget.data) {
         titles.add(parentEntity.title);
@@ -102,7 +100,7 @@ class _BrnSelectionMenuWidgetState extends State<BrnSelectionMenuWidget> {
   }
 
   void _closeSelectionPopupWindow() {
-    if (listViewController?.isShow ?? false) {
+    if (listViewController.isShow) {
       listViewController.isShow = false;
       listViewController.hide();
       listViewController.entry?.remove();
@@ -126,10 +124,10 @@ class _BrnSelectionMenuWidgetState extends State<BrnSelectionMenuWidget> {
     _scrollController?.removeListener(_closeSelectionPopupWindow);
     _refreshTitleSubscription?.cancel();
     _closeSelectionPopupWindowSubscription?.cancel();
-    listViewController?.isShow = false;
-    listViewController?.hide();
-    listViewController?.entry?.remove();
-    listViewController?.entry = null;
+    listViewController.isShow = false;
+    listViewController.hide();
+    listViewController.entry?.remove();
+    listViewController.entry = null;
     super.dispose();
   }
 
@@ -192,7 +190,7 @@ class _BrnSelectionMenuWidgetState extends State<BrnSelectionMenuWidget> {
   }
 
   List<Widget> _configMenuItems() {
-    List<Widget> itemViewList = List();
+    List<Widget> itemViewList = [];
     itemViewList.add(Padding(
       padding: EdgeInsets.only(left: 14),
     ));
@@ -215,11 +213,12 @@ class _BrnSelectionMenuWidgetState extends State<BrnSelectionMenuWidget> {
         itemClickFunction: () {
           if (widget.onMenuItemClick != null) {
             /// 拦截 menuItem 点击。
-            if (widget.onMenuItemClick(index)) {
+            if (widget.onMenuItemClick!(index)) {
               return;
             }
           }
-          final RenderBox dropDownItemRenderBox = context.findRenderObject();
+          final RenderBox dropDownItemRenderBox =
+              context.findRenderObject() as RenderBox;
 
           var position =
               dropDownItemRenderBox.localToGlobal(Offset.zero, ancestor: null);
@@ -244,7 +243,7 @@ class _BrnSelectionMenuWidgetState extends State<BrnSelectionMenuWidget> {
                     BrnSelectionFilterType.CustomHandle) {
               /// 创建 筛选组件的的入口
               _createEntry(widget.data[index]);
-              Overlay.of(widget.context).insert(listViewController.entry);
+              Overlay.of(widget.context)?.insert(listViewController.entry!);
               listViewController.show(index);
             } else if (widget.data[index].filterType ==
                 BrnSelectionFilterType.CustomHandle) {
@@ -285,7 +284,7 @@ class _BrnSelectionMenuWidgetState extends State<BrnSelectionMenuWidget> {
   /// 3、只有一列筛选数据，且为多选时，使用 Tag 模式展示
   bool isRange(BrnSelectionEntity entity) {
     if (entity.children != null) {
-      if (BrnSelectionUtil.hasRangeItem(entity.children) ||
+      if (BrnSelectionUtil.hasRangeItem(entity.children!) ||
           entity.filterShowType == BrnSelectionWindowType.Range) {
         return true;
       }
@@ -299,9 +298,9 @@ class _BrnSelectionMenuWidgetState extends State<BrnSelectionMenuWidget> {
   }
 
   Widget _createRangeView(BrnSelectionEntity entity) {
-    int rowCount;
+    int rowCount = 0;
     if (widget.configRowCount != null) {
-      rowCount = widget.configRowCount(widget.data.indexOf(entity), entity) ??
+      rowCount = widget.configRowCount!(widget.data.indexOf(entity), entity) ??
           rowCount;
     }
     return BrnRangeSelectionGroupWidget(
@@ -366,7 +365,7 @@ class _BrnSelectionMenuWidgetState extends State<BrnSelectionMenuWidget> {
       int firstIndex, int secondIndex, int thirdIndex) {
     if (listViewController.menuIndex < titles.length) {
       if (widget.onConfirm != null) {
-        widget.onConfirm(result, firstIndex, secondIndex, thirdIndex);
+        widget.onConfirm!(result, firstIndex, secondIndex, thirdIndex);
       }
       menuItemActiveState[listViewController.menuIndex] = false;
       refreshSelectionMenuTitle(listViewController.menuIndex, entity);
@@ -377,7 +376,7 @@ class _BrnSelectionMenuWidgetState extends State<BrnSelectionMenuWidget> {
   }
 
   /// 筛选 Title 展示规则
-  String getSelectedResultTitle(BrnSelectionEntity entity) {
+  String? getSelectedResultTitle(BrnSelectionEntity entity) {
     /// 更多筛选不改变 title.故返回 null
     if (entity.filterType == BrnSelectionFilterType.More) {
       return null;
@@ -389,8 +388,8 @@ class _BrnSelectionMenuWidgetState extends State<BrnSelectionMenuWidget> {
     }
   }
 
-  String getTitle(BrnSelectionEntity entity) {
-    String title;
+  String? getTitle(BrnSelectionEntity entity) {
+    String? title;
     if (entity != null) {
       List<BrnSelectionEntity> firstColumn =
           BrnSelectionUtil.currentSelectListForEntity(entity);
@@ -474,7 +473,7 @@ class _BrnSelectionMenuWidgetState extends State<BrnSelectionMenuWidget> {
     if (!BrunoTools.isEmpty(list[0].customMap)) {
       if (list[0].filterType == BrnSelectionFilterType.Range) {
         title =
-            '${list[0].customMap['min']}-${list[0].customMap['max']}(${list[0].extMap['unit']?.toString()})';
+            '${list[0].customMap!['min']}-${list[0].customMap!['max']}(${list[0].extMap!['unit']?.toString()})';
       } else if (list[0].filterType == BrnSelectionFilterType.DateRange ||
           list[0].filterType == BrnSelectionFilterType.DateRangeCalendar) {
         title = getDateRangeTitle(list);
@@ -493,18 +492,20 @@ class _BrnSelectionMenuWidgetState extends State<BrnSelectionMenuWidget> {
     String minDateTime = "";
     String maxDateTime = "";
     if (list[0].customMap != null &&
-        list[0].customMap['min'] != null &&
-        int.tryParse(list[0].customMap['min']) != null) {
+        list[0].customMap!['min'] != null &&
+        int.tryParse(list[0].customMap!['min']!) != null) {
       minDateTime = DateTimeFormatter.formatDate(
-          DateTimeFormatter.convertIntValueToDateTime(list[0].customMap['min']),
+          DateTimeFormatter.convertIntValueToDateTime(
+              list[0].customMap!['min']),
           'yyyy年MM月dd日',
           DateTimePickerLocale.zh_cn);
     }
     if (list[0].customMap != null &&
-        list[0].customMap['max'] != null &&
-        int.tryParse(list[0].customMap['max']) != null) {
+        list[0].customMap!['max'] != null &&
+        int.tryParse(list[0].customMap!['max']!) != null) {
       maxDateTime = DateTimeFormatter.formatDate(
-          DateTimeFormatter.convertIntValueToDateTime(list[0].customMap['max']),
+          DateTimeFormatter.convertIntValueToDateTime(
+              list[0].customMap!['max']),
           'yyyy年MM月dd日',
           DateTimePickerLocale.zh_cn);
     }
@@ -513,7 +514,7 @@ class _BrnSelectionMenuWidgetState extends State<BrnSelectionMenuWidget> {
 
   String getDateTimeTitle(List<BrnSelectionEntity> list) {
     String title = "";
-    int msDateTime = int.tryParse(list[0].value ?? "");
+    int? msDateTime = int.tryParse(list[0].value ?? "");
     title = msDateTime != null
         ? DateTimeFormatter.formatDate(
             DateTime.fromMillisecondsSinceEpoch(msDateTime),
@@ -531,13 +532,13 @@ class _BrnSelectionMenuWidgetState extends State<BrnSelectionMenuWidget> {
     String title = "";
     if (entity.canJoinTitle) {
       if (firstColumn.length == 1) {
-        title = firstColumn[0].title ?? "";
+        title = firstColumn[0].title;
       }
       if (secondColumn.length == 1) {
-        title += secondColumn[0].title ?? "";
+        title += secondColumn[0].title;
       }
       if (thirdColumn.length == 1) {
-        title += thirdColumn[0].title ?? "";
+        title += thirdColumn[0].title;
       }
     }
     return title;
@@ -552,7 +553,7 @@ class _BrnSelectionMenuWidgetState extends State<BrnSelectionMenuWidget> {
       }
       return;
     }
-    String title = getSelectedResultTitle(entity);
+    String? title = getSelectedResultTitle(entity);
     if (title != null) {
       titles[index] = title;
     }

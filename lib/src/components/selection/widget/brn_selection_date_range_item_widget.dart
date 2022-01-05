@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'package:bruno/src/components/picker/base/brn_picker_title_config.dart';
 import 'package:bruno/src/components/picker/time_picker/brn_date_time_formatter.dart';
 import 'package:bruno/src/components/picker/time_picker/date_picker/brn_date_widget.dart';
@@ -20,7 +18,7 @@ class BrnSelectionDateRangeItemWidget extends StatefulWidget {
   final BrnSelectionEntity item;
 
   /// 选中色
-  final Color confirmColor;
+  final Color? confirmColor;
 
   /// 背景色
   final Color backgroundColor;
@@ -34,19 +32,19 @@ class BrnSelectionDateRangeItemWidget extends StatefulWidget {
   final bool isNeedTitle;
 
   /// 日期格式
-  final String dateFormat;
+  final String? dateFormat;
 
   final TextEditingController minTextEditingController;
   final TextEditingController maxTextEditingController;
 
-  final OnTappedFunction onTapped;
+  final OnTappedFunction? onTapped;
 
   BrnSelectionConfig themeData;
 
   BrnSelectionDateRangeItemWidget(
-      {this.item,
-      @required this.minTextEditingController,
-      @required this.maxTextEditingController,
+      {required this.item,
+      required this.minTextEditingController,
+      required this.maxTextEditingController,
       this.confirmColor,
       this.backgroundColor = Colors.white,
       this.isShouldClearText = false,
@@ -54,7 +52,7 @@ class BrnSelectionDateRangeItemWidget extends StatefulWidget {
       this.showTextSize = 16,
       this.dateFormat,
       this.onTapped,
-      this.themeData});
+      required this.themeData});
 
   _BrnSelectionDateRangeItemWidgetState createState() =>
       _BrnSelectionDateRangeItemWidgetState();
@@ -68,14 +66,16 @@ class _BrnSelectionDateRangeItemWidgetState
   @override
   void initState() {
     var minDateTime;
-    if (widget.item.customMap != null && widget.item.customMap['min'] != null) {
+    if (widget.item.customMap != null &&
+        widget.item.customMap!['min'] != null) {
       minDateTime = DateTimeFormatter.convertIntValueToDateTime(
-          widget.item?.customMap['min']);
+          widget.item.customMap!['min']);
     }
     var maxDateTime;
-    if (widget.item.customMap != null && widget.item.customMap['max'] != null) {
+    if (widget.item.customMap != null &&
+        widget.item.customMap!['max'] != null) {
       maxDateTime = DateTimeFormatter.convertIntValueToDateTime(
-          widget.item?.customMap['max']);
+          widget.item.customMap!['max']);
     }
     widget.minTextEditingController.text = minDateTime != null
         ? DateTimeFormatter.formatDate(minDateTime,
@@ -101,10 +101,10 @@ class _BrnSelectionDateRangeItemWidgetState
                     margin: EdgeInsets.only(bottom: 5),
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      widget.item.title != null ? widget.item.title : '自定义区间',
+                      widget.item.title,
                       textAlign: TextAlign.left,
                       style: widget.themeData.rangeTitleTextStyle
-                          ?.generateTextStyle(),
+                          .generateTextStyle(),
                     ),
                   )
                 : Container(),
@@ -114,7 +114,7 @@ class _BrnSelectionDateRangeItemWidgetState
                 Container(
                   child: Text(
                     "至",
-                    style: widget.themeData.inputTextStyle?.generateTextStyle(),
+                    style: widget.themeData.inputTextStyle.generateTextStyle(),
                   ),
                 ),
                 getDateRangeTextField(true),
@@ -132,10 +132,12 @@ class _BrnSelectionDateRangeItemWidgetState
         enableInteractiveSelection: false,
         readOnly: true,
         onTap: () {
-          widget.onTapped();
+          if (widget.onTapped != null) {
+            widget.onTapped!();
+          }
           onTextTapped(isMax);
         },
-        style: widget.themeData.inputTextStyle?.generateTextStyle(),
+        style: widget.themeData.inputTextStyle.generateTextStyle(),
         inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         keyboardType: TextInputType.numberWithOptions(),
         onChanged: (input) {
@@ -147,7 +149,7 @@ class _BrnSelectionDateRangeItemWidgetState
         cursorColor: widget.themeData.commonConfig.brandPrimary,
         textAlign: TextAlign.center,
         decoration: InputDecoration(
-          hintStyle: widget.themeData.hintTextStyle?.generateTextStyle(),
+          hintStyle: widget.themeData.hintTextStyle.generateTextStyle(),
           hintText: (!isMax ? '开始日期' : '结束日期'),
           enabledBorder: UnderlineInputBorder(
               borderSide: BorderSide(
@@ -166,27 +168,27 @@ class _BrnSelectionDateRangeItemWidgetState
   }
 
   void onTextTapped(bool isMax) {
-    if (_datePickerController?.isShow ?? false) return;
+    if (_datePickerController.isShow) return;
     String format = 'yyyy年,MM月,dd日';
     DateTime minDate = DateTimeFormatter.convertIntValueToDateTime(
-        (widget.item?.extMap ?? Map())['min']);
+        (widget.item.extMap ?? Map())['min']);
     DateTime maxDate = DateTimeFormatter.convertIntValueToDateTime(
-        (widget.item?.extMap ?? Map())['max']);
+        (widget.item.extMap ?? Map())['max']);
 
-    DateTime minSelectedDateTime = BrunoTools.isEmpty(widget.item?.customMap)
+    DateTime? minSelectedDateTime = BrunoTools.isEmpty(widget.item.customMap)
         ? null
         : DateTimeFormatter.convertIntValueToDateTime(
-            widget.item?.customMap['min']);
-    DateTime maxSelectedDateTime = BrunoTools.isEmpty(widget.item?.customMap)
+            widget.item.customMap!['min']);
+    DateTime? maxSelectedDateTime = BrunoTools.isEmpty(widget.item.customMap)
         ? null
         : DateTimeFormatter.convertIntValueToDateTime(
-            widget.item?.customMap['max']);
+            widget.item.customMap!['max']);
 
     DateTime _minDateTime;
     DateTime _maxDateTime;
-    if (widget.item?.customMap == null ||
-        (widget.item?.customMap['min'] == null &&
-            widget.item?.customMap['max'] == null)) {
+    if (widget.item.customMap == null ||
+        (widget.item.customMap!['min'] == null &&
+            widget.item.customMap!['max'] == null)) {
       // 如果开始时间和结束时间均未选择
       _minDateTime = minDate;
       _maxDateTime = maxDate;
@@ -220,7 +222,7 @@ class _BrnSelectionDateRangeItemWidgetState
         if (widget.item.customMap == null) {
           widget.item.customMap = {};
         }
-        widget.item.customMap[isMax ? 'max' : 'min'] =
+        widget.item.customMap![isMax ? 'max' : 'min'] =
             selectedDate.millisecondsSinceEpoch.toString();
         closeSelectionPopupWindow();
 
@@ -233,7 +235,7 @@ class _BrnSelectionDateRangeItemWidgetState
     );
     _datePickerController.screenHeight = MediaQuery.of(context).size.height;
     _createDatePickerEntry(context, content);
-    Overlay.of(context).insert(_datePickerController.entry);
+    Overlay.of(context)?.insert(_datePickerController.entry!);
     _datePickerController.show();
   }
 
@@ -263,21 +265,21 @@ class _BrnSelectionDateRangeItemWidgetState
   }
 
   void closeSelectionPopupWindow() {
-    if (_datePickerController?.isShow ?? false) {
-      _datePickerController?.isShow = false;
-      _datePickerController?.hide();
-      _datePickerController?.entry?.remove();
-      _datePickerController?.entry = null;
+    if (_datePickerController.isShow) {
+      _datePickerController.isShow = false;
+      _datePickerController.hide();
+      _datePickerController.entry?.remove();
+      _datePickerController.entry = null;
     }
   }
 
   @override
   void dispose() {
     // TODO: implement dispose
-    _datePickerController?.isShow = false;
-    _datePickerController?.hide();
-    _datePickerController?.entry?.remove();
-    _datePickerController?.entry = null;
+    _datePickerController.isShow = false;
+    _datePickerController.hide();
+    _datePickerController.entry?.remove();
+    _datePickerController.entry = null;
     super.dispose();
   }
 }

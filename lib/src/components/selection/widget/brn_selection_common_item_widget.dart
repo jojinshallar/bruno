@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'package:bruno/src/components/selection/bean/brn_selection_common_entity.dart';
 import 'package:bruno/src/components/selection/brn_selection_util.dart';
 import 'package:bruno/src/constants/brn_asset_constants.dart';
@@ -13,25 +11,25 @@ typedef void ItemSelectFunction(BrnSelectionEntity entity);
 // ignore: must_be_immutable
 class BrnSelectionCommonItemWidget extends StatelessWidget {
   final BrnSelectionEntity item;
-  final Color backgroundColor;
-  final Color selectedBackgroundColor;
+  final Color? backgroundColor;
+  final Color? selectedBackgroundColor;
   final bool isCurrentFocused;
   final bool isFirstLevel;
 
   final bool isMoreSelectionListType;
 
-  final ItemSelectFunction itemSelectFunction;
+  final ItemSelectFunction? itemSelectFunction;
 
-  BrnSelectionConfig themeData;
+  BrnSelectionConfig? themeData;
 
   BrnSelectionCommonItemWidget({
-    @required this.item,
+    required this.item,
     this.backgroundColor,
     this.isFirstLevel = false,
     this.isMoreSelectionListType = false,
     this.itemSelectFunction,
     this.selectedBackgroundColor,
-    this.isCurrentFocused,
+    required this.isCurrentFocused,
     this.themeData,
   });
 
@@ -39,7 +37,7 @@ class BrnSelectionCommonItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     var checkbox;
     if (!item.isUnLimit() &&
-        (item.children == null || item.children.length == 0)) {
+        (item.children == null || item.children!.length == 0)) {
       if (item.isInLastLevel() && item.hasCheckBoxBrother()) {
         checkbox = Container(
           padding: EdgeInsets.only(left: 6),
@@ -59,7 +57,7 @@ class BrnSelectionCommonItemWidget extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         if (itemSelectFunction != null) {
-          itemSelectFunction(item);
+          itemSelectFunction!(item);
         }
       },
       child: Container(
@@ -97,7 +95,7 @@ class BrnSelectionCommonItemWidget extends StatelessWidget {
                           fontSize: 12,
                           fontWeight: FontWeight.normal,
                           decoration: TextDecoration.none,
-                          color: themeData.commonConfig.colorTextSecondary),
+                          color: themeData?.commonConfig.colorTextSecondary),
                       maxLines: 1,
                       textOverflow: TextOverflow.ellipsis),
                 ),
@@ -109,7 +107,7 @@ class BrnSelectionCommonItemWidget extends StatelessWidget {
     );
   }
 
-  Color getItemBGColor() {
+  Color? getItemBGColor() {
     if (isCurrentFocused) {
       return this.selectedBackgroundColor;
     } else {
@@ -137,13 +135,13 @@ class BrnSelectionCommonItemWidget extends StatelessWidget {
     }
   }
 
-  TextStyle getItemTextStyle() {
+  TextStyle? getItemTextStyle() {
     if (isHighLight(item)) {
-      return themeData.itemSelectedTextStyle.generateTextStyle();
+      return themeData?.itemSelectedTextStyle.generateTextStyle();
     } else if (isBold(item)) {
-      return themeData.itemBoldTextStyle.generateTextStyle();
+      return themeData?.itemBoldTextStyle.generateTextStyle();
     }
-    return themeData.itemNormalTextStyle.generateTextStyle();
+    return themeData?.itemNormalTextStyle.generateTextStyle();
   }
 
   String getSelectedItemCount(BrnSelectionEntity item) {
@@ -151,14 +149,14 @@ class BrnSelectionCommonItemWidget extends StatelessWidget {
     if ((BrnSelectionUtil.getTotalLevel(item) < 3 || !isFirstLevel) &&
         item.children != null) {
       int count =
-          item.children.where((f) => f.isSelected && !f.isUnLimit()).length;
+          item.children!.where((f) => f.isSelected && !f.isUnLimit()).length;
       if (count > 1) {
         return '($count)';
       } else if (count == 1 && item.hasCheckBoxBrother()) {
         return '($count)';
       } else {
         var unLimited =
-            item.children.where((f) => f.isSelected && f.isUnLimit()).toList();
+            item.children!.where((f) => f.isSelected && f.isUnLimit()).toList();
         if (unLimited.length > 0) {
           return '(全部)';
         }

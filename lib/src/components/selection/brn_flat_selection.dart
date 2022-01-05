@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'dart:async';
 
 import 'package:bruno/src/components/popup/brn_measure_size.dart';
@@ -30,29 +28,29 @@ class BrnFlatSelection extends StatefulWidget {
 
   /// 当[BrnSelectionEntity.filterType]为[BrnSelectionFilterType.Layer] or[BrnSelectionFilterType.CustomLayer]时
   /// 跳转到二级页面的自定义操作
-  final BrnOnCustomFloatingLayerClick onCustomFloatingLayerClick;
+  final BrnOnCustomFloatingLayerClick? onCustomFloatingLayerClick;
 
   /// controller.dispose() 操作交由外部处理
   final BrnFlatSelectionController controller;
 
   /// 是否需要配置子选项
-  final bool isNeedConfigChild;
+  final bool? isNeedConfigChild;
 
   /// 主题配置
   /// 如有对文本样式、圆角、间距等[BrnSelectionConfig]有特定要求可以配置该属性
-  BrnSelectionConfig themeData;
+  BrnSelectionConfig? themeData;
 
   BrnFlatSelection(
-      {this.entityDataList,
-      this.confirmCallback,
+      {required this.entityDataList,
+      required this.confirmCallback,
       this.onCustomFloatingLayerClick,
       this.preLineTagSize = 3,
       this.isNeedConfigChild = true,
-      this.controller,
+      required this.controller,
       this.themeData}) {
     this.themeData ??= BrnSelectionConfig();
     this.themeData = BrnThemeConfigurator.instance
-        .getConfig(configId: themeData.configId)
+        .getConfig(configId: themeData!.configId)
         .selectionConfig
         .merge(themeData);
   }
@@ -63,11 +61,11 @@ class BrnFlatSelection extends StatefulWidget {
 
 class _BrnFlatSelectionState extends State<BrnFlatSelection>
     with SingleTickerProviderStateMixin {
-  List<BrnSelectionEntity> _originalSelectedItemsList;
+  late List<BrnSelectionEntity> _originalSelectedItemsList;
 
-  StreamController<FlatClearEvent> clearController;
+  late StreamController<FlatClearEvent> clearController;
   bool isValid = true;
-  BrnFlatSelectionController _controller;
+  late BrnFlatSelectionController _controller;
 
   var _lineWidth = 0.0;
 
@@ -78,14 +76,14 @@ class _BrnFlatSelectionState extends State<BrnFlatSelection>
 
     if (widget.isNeedConfigChild ?? true) {
       widget.entityDataList
-          ?.forEach((f) => f.configRelationshipAndDefaultValue());
+          .forEach((f) => f.configRelationshipAndDefaultValue());
     }
-    _controller?.addListener(_handleFlatControllerTick);
+    _controller.addListener(_handleFlatControllerTick);
 
-    _originalSelectedItemsList = List();
+    _originalSelectedItemsList = [];
     _originalSelectedItemsList.clear();
 
-    List<BrnSelectionEntity> firstColumn = List();
+    List<BrnSelectionEntity> firstColumn = [];
     if (widget.entityDataList != null && widget.entityDataList.length > 0) {
       for (BrnSelectionEntity entity in widget.entityDataList) {
         if (entity.isSelected) {
@@ -115,7 +113,7 @@ class _BrnFlatSelectionState extends State<BrnFlatSelection>
       entity.isSelected = true;
       if (entity.customMap != null) {
         //ori 是存数据     customMap是用来展示ui的
-        entity.originalCustomMap = Map.from(entity.customMap);
+        entity.originalCustomMap = Map.from(entity.customMap!);
       }
     }
 
@@ -145,7 +143,7 @@ class _BrnFlatSelectionState extends State<BrnFlatSelection>
     return MeasureSize(
         onChange: (size) {
           setState(() {
-            _lineWidth = size.width;
+            _lineWidth = size?.width ?? 0;
           });
         },
         child: _buildSelectionListView());
@@ -153,7 +151,7 @@ class _BrnFlatSelectionState extends State<BrnFlatSelection>
 
   @override
   void dispose() {
-    _controller?.removeListener(_handleFlatControllerTick);
+    _controller.removeListener(_handleFlatControllerTick);
     super.dispose();
   }
 
@@ -173,7 +171,7 @@ class _BrnFlatSelectionState extends State<BrnFlatSelection>
         data.customMap = Map<String, String>();
         if (data.originalCustomMap != null) {
           data.originalCustomMap.forEach((key, value) {
-            data.customMap[key.toString()] = value.toString() ?? "";
+            data.customMap![key.toString()] = value.toString();
           });
         }
       }
@@ -225,7 +223,7 @@ class _BrnFlatSelectionState extends State<BrnFlatSelection>
                 onCustomFloatingLayerClick: widget.onCustomFloatingLayerClick,
                 preLineTagSize: widget.preLineTagSize,
                 parentWidth: _lineWidth,
-                themeData: widget.themeData,
+                themeData: widget.themeData!,
               );
             },
             itemCount: widget.entityDataList.length,
@@ -240,17 +238,17 @@ class _BrnFlatSelectionState extends State<BrnFlatSelection>
     entity.isSelected = false;
     entity.customMap = Map<String, String>();
     if (BrnSelectionFilterType.Range == entity.filterType) {
-      entity.title = null;
+      entity.title = "";
     }
-    if (entity.children != null) {
-      for (BrnSelectionEntity subEntity in entity.children) {
+    if (entity.children!.isNotEmpty) {
+      for (BrnSelectionEntity subEntity in entity.children!) {
         _clearUIData(subEntity);
       }
     }
   }
 
   void _clearSelectedEntity() {
-    List<BrnSelectionEntity> tmp = List();
+    List<BrnSelectionEntity> tmp = [];
     BrnSelectionEntity node;
     tmp.addAll(widget.entityDataList);
     while (tmp.isNotEmpty) {

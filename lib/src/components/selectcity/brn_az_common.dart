@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 /// ISuspension Bean.
 abstract class ISuspensionBean {
-  bool? isShowSuspension;
+  bool isShowSuspension = false;
   String? name;
   String? tag; //Suspension Tag
 }

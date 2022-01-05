@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'dart:ui';
 
 import 'package:bruno/src/components/button/brn_big_main_button.dart';
@@ -20,7 +18,6 @@ import 'package:bruno/src/utils/brn_event_bus.dart';
 import 'package:bruno/src/utils/brn_text_util.dart';
 import 'package:bruno/src/utils/brn_tools.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 typedef void BrnOnRangeSelectionBgClick();
 
@@ -32,8 +29,8 @@ class BrnRangeSelectionGroupWidget extends StatefulWidget {
   final BrnSelectionEntity entity;
   final double maxContentHeight;
   final bool showSelectedCount;
-  final BrnOnRangeSelectionBgClick bgClickFunction;
-  final BrnOnRangeSelectionConfirm onSelectionConfirm;
+  final BrnOnRangeSelectionBgClick? bgClickFunction;
+  final BrnOnRangeSelectionConfirm? onSelectionConfirm;
 
   final int rowount;
 
@@ -42,15 +39,15 @@ class BrnRangeSelectionGroupWidget extends StatefulWidget {
   BrnSelectionConfig themeData;
 
   BrnRangeSelectionGroupWidget(
-      {Key key,
-      @required this.entity,
+      {Key? key,
+      required this.entity,
       this.maxContentHeight = DESIGN_SELECTION_HEIGHT,
-      this.rowount,
+      required this.rowount,
       this.showSelectedCount = false,
       this.bgClickFunction,
       this.onSelectionConfirm,
       this.marginTop = 0,
-      this.themeData});
+      required this.themeData});
 
   @override
   _BrnRangeSelectionGroupWidgetState createState() =>
@@ -60,15 +57,15 @@ class BrnRangeSelectionGroupWidget extends StatefulWidget {
 class _BrnRangeSelectionGroupWidgetState
     extends State<BrnRangeSelectionGroupWidget>
     with SingleTickerProviderStateMixin {
-  List<BrnSelectionEntity> _originalSelectedItemsList = List();
-  List<BrnSelectionEntity> _firstList = List();
-  List<BrnSelectionEntity> _secondList = List();
-  int _firstIndex;
-  int _secondIndex;
+  List<BrnSelectionEntity> _originalSelectedItemsList = [];
+  List<BrnSelectionEntity> _firstList = [];
+  List<BrnSelectionEntity> _secondList = [];
+  int _firstIndex = -1;
+  int _secondIndex = -1;
   int totalLevel = 0;
 
-  TabController _tabController;
-  List<Widget> tabs;
+  late TabController _tabController;
+  List<Widget>? tabs;
 
   TextEditingController _minTextEditingController = TextEditingController();
   TextEditingController _maxTextEditingController = TextEditingController();
@@ -93,7 +90,7 @@ class _BrnRangeSelectionGroupWidgetState
 
   @override
   void dispose() {
-    _tabController?.dispose();
+    _tabController.dispose();
     if (!_isConfirmClick) {
       _resetSelectionDatas(widget.entity);
       clearNotTagItem(totalLevel == 1
@@ -126,13 +123,13 @@ class _BrnRangeSelectionGroupWidgetState
   //pragma mark -- config widgets
 
   List<Widget> _configWidgets() {
-    List<Widget> widgetList = List();
+    List<Widget> widgetList = [];
     widgetList.add(_listWidget());
     return widgetList;
   }
 
   Widget _listWidget() {
-    Widget rangeWidget;
+    Widget? rangeWidget;
 
     if (_firstList != null && _secondList == null) {
       /// 1、仅有一级的情况
@@ -158,8 +155,8 @@ class _BrnRangeSelectionGroupWidgetState
     );
   }
 
-  Widget _createNewTagAndRangeWidget(List<BrnSelectionEntity> firstList,
-      List<BrnSelectionEntity> secondList, Color white) {
+  Widget _createNewTagAndRangeWidget(List<BrnSelectionEntity>? firstList,
+      List<BrnSelectionEntity>? secondList, Color white) {
     if (firstList != null &&
         BrnSelectionUtil.getTotalLevel(widget.entity) == 1) {
       return Column(
@@ -209,7 +206,7 @@ class _BrnRangeSelectionGroupWidgetState
   }
 
   List<Widget> getOneTabContent(BrnSelectionEntity filterItem) {
-    List<BrnSelectionEntity> subFilterList = filterItem.children;
+    List<BrnSelectionEntity> subFilterList = filterItem.children!;
 
     /// TODO 还要添加 Date  DateRange 类型的判断。
     List<BrnSelectionEntity> tagFilterList = subFilterList
@@ -219,7 +216,7 @@ class _BrnRangeSelectionGroupWidgetState
             f.filterType != BrnSelectionFilterType.DateRange &&
             f.filterType != BrnSelectionFilterType.DateRangeCalendar)
         .toList();
-    Size maxWidthSize;
+    Size? maxWidthSize;
     for (BrnSelectionEntity entity in subFilterList) {
       Size size = BrnTextUtil.textSize(entity.title,
           widget.themeData.tagNormalTextStyle.generateTextStyle());
@@ -244,7 +241,7 @@ class _BrnRangeSelectionGroupWidgetState
           (BrnRangeSelectionGroupWidget.screenWidth - 40 - 12 * (3 - 1)) ~/ 3;
       int fourCountTagWidth =
           (BrnRangeSelectionGroupWidget.screenWidth - 40 - 12 * (4 - 1)) ~/ 4;
-      if (maxWidthSize.width > twoCountTagWidth) {
+      if (maxWidthSize!.width > twoCountTagWidth) {
         tagWidth = oneCountTagWidth;
       } else if (threeCountTagWidth < maxWidthSize.width &&
           maxWidthSize.width <= twoCountTagWidth) {
@@ -262,7 +259,7 @@ class _BrnRangeSelectionGroupWidgetState
           widget.rowount;
     }
 
-    var tagContainer = (tagFilterList?.length ?? 0) > 0
+    var tagContainer = (tagFilterList.length > 0)
         ? Container(
             alignment: Alignment.centerLeft,
             padding: EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20),
@@ -333,14 +330,14 @@ class _BrnRangeSelectionGroupWidgetState
           },
         );
       } else if (item.filterType == BrnSelectionFilterType.DateRangeCalendar) {
-        DateTime initialStartDate = item.customMap == null
+        DateTime? initialStartDate = item.customMap == null
             ? null
             : DateTimeFormatter.convertIntValueToDateTime(
-                item.customMap['min']);
-        DateTime initialEndDate = item.customMap == null
+                item.customMap!['min']);
+        DateTime? initialEndDate = item.customMap == null
             ? null
             : DateTimeFormatter.convertIntValueToDateTime(
-                item.customMap['max']);
+                item.customMap!['max']);
         content = BrnCalendarView(
           key: GlobalKey(),
           selectMode: SelectMode.RANGE,
@@ -349,8 +346,8 @@ class _BrnRangeSelectionGroupWidgetState
           startEndDateChange: (DateTime startDate, DateTime endDate) {
             item.customMap = {};
             item.customMap = {
-              'min': startDate?.millisecondsSinceEpoch?.toString(),
-              'max': endDate?.millisecondsSinceEpoch?.toString()
+              'min': startDate.millisecondsSinceEpoch.toString(),
+              'max': endDate.millisecondsSinceEpoch.toString()
             };
             item.isSelected = true;
             setState(() {
@@ -415,7 +412,7 @@ class _BrnRangeSelectionGroupWidgetState
 
     if (totalLevel == 2) {
       List<BrnSelectionEntity> subFilterList =
-          widget.entity.children[_tabController.index].children;
+          widget.entity.children![_tabController.index].children!;
       List<BrnSelectionEntity> selectItems =
           subFilterList.where((f) => f.isSelected).toList();
       if (selectItems.length > 0) {
@@ -426,22 +423,22 @@ class _BrnRangeSelectionGroupWidgetState
     }
 
     // 处理Range类型的校验
-    BrnSelectionEntity rangeEntity = getSelectRangeItem(totalLevel == 1
+    BrnSelectionEntity? rangeEntity = getSelectRangeItem(totalLevel == 1
         ? _firstList
         : _firstList[_tabController.index].children);
     if (rangeEntity != null) {
       if (rangeEntity.customMap != null &&
-          ((rangeEntity.customMap['min'] != null &&
-                  rangeEntity.customMap['min'].length > 0) ||
-              (rangeEntity.customMap['max'] != null &&
-                  rangeEntity.customMap['max'].length > 0))) {
+          ((rangeEntity.customMap!['min'] != null &&
+                  rangeEntity.customMap!['min']!.length > 0) ||
+              (rangeEntity.customMap!['max'] != null &&
+                  rangeEntity.customMap!['max']!.length > 0))) {
         if (!rangeEntity.isValidRange()) {
           FocusScope.of(context).requestFocus(FocusNode());
-          if (rangeEntity?.filterType == BrnSelectionFilterType.Range) {
+          if (rangeEntity.filterType == BrnSelectionFilterType.Range) {
             BrnToast.show('您输入的区间有误', context);
-          } else if (rangeEntity?.filterType ==
+          } else if (rangeEntity.filterType ==
                   BrnSelectionFilterType.DateRange ||
-              rangeEntity?.filterType ==
+              rangeEntity.filterType ==
                   BrnSelectionFilterType.DateRangeCalendar) {
             BrnToast.show('您选择的区间有误', context);
           }
@@ -453,7 +450,7 @@ class _BrnRangeSelectionGroupWidgetState
     }
 
     if (widget.onSelectionConfirm != null) {
-      widget.onSelectionConfirm(widget.entity, _firstIndex, _secondIndex, -1);
+      widget.onSelectionConfirm!(widget.entity, _firstIndex, _secondIndex, -1);
     }
   }
 
@@ -476,7 +473,7 @@ class _BrnRangeSelectionGroupWidgetState
     for (BrnSelectionEntity entity in _originalSelectedItemsList) {
       entity.isSelected = true;
       if (entity.customMap != null) {
-        entity.originalCustomMap = Map.from(entity.customMap);
+        entity.originalCustomMap = Map.from(entity.customMap!);
       }
     }
     // 初始化每列的选中 index 为 -1，未选中。
@@ -495,9 +492,9 @@ class _BrnRangeSelectionGroupWidgetState
   void _setFirstIndex(int firstIndex) {
     _firstIndex = firstIndex;
     _secondIndex = -1;
-    if (widget.entity.children.length > _firstIndex) {
-      List<BrnSelectionEntity> seconds =
-          widget.entity.children[_firstIndex].children;
+    if (widget.entity.children!.length > _firstIndex) {
+      List<BrnSelectionEntity>? seconds =
+          widget.entity.children![_firstIndex].children;
       if (seconds != null) {
         for (BrnSelectionEntity entity in seconds) {
           if (entity.isSelected) {
@@ -521,20 +518,20 @@ class _BrnRangeSelectionGroupWidgetState
 
   // 刷新3个ListView的数据源
   void _refreshDataSource() {
-    _firstList = widget.entity.children;
+    _firstList = widget.entity.children!;
     if (_firstIndex >= 0 && _firstList.length > _firstIndex) {
-      _secondList = _firstList[_firstIndex].children;
+      _secondList = _firstList[_firstIndex].children!;
     } else {
-      _secondList = null;
+      _secondList = [];
     }
   }
 
   void _configDefaultSelectedData() {
-    _firstList = widget.entity.children;
+    _firstList = widget.entity.children!;
     //是否已选择的item里面有第一列的
     if (_firstList == null) {
       _secondIndex = -1;
-      _secondList = null;
+      _secondList = [];
       return;
     }
     for (BrnSelectionEntity entity in _firstList) {
@@ -545,7 +542,7 @@ class _BrnRangeSelectionGroupWidgetState
     }
 
     if (_firstIndex >= 0 && _firstIndex < _firstList.length) {
-      _secondList = _firstList[_firstIndex].children;
+      _secondList = _firstList[_firstIndex].children!;
       if (_secondList != null) {
         for (BrnSelectionEntity entity in _secondList) {
           if (entity.isSelected) {
@@ -562,20 +559,20 @@ class _BrnRangeSelectionGroupWidgetState
     entity.isSelected = false;
     entity.customMap = null;
     if (entity.children != null) {
-      for (BrnSelectionEntity subEntity in entity.children) {
+      for (BrnSelectionEntity subEntity in entity.children!) {
         _resetSelectionDatas(subEntity);
       }
     }
   }
 
-  void clearNotTagItem(List<BrnSelectionEntity> subFilterList) {
+  void clearNotTagItem(List<BrnSelectionEntity>? subFilterList) {
     subFilterList
         ?.where((f) =>
             f.filterType == BrnSelectionFilterType.Range ||
             f.filterType == BrnSelectionFilterType.Date ||
             f.filterType == BrnSelectionFilterType.DateRange ||
             f.filterType == BrnSelectionFilterType.DateRangeCalendar)
-        ?.forEach((f) {
+        .forEach((f) {
       f.isSelected = false;
       f.customMap = null;
       f.value = null;
@@ -601,16 +598,16 @@ class _BrnRangeSelectionGroupWidgetState
   }
 
   /// 获取针对 Range 类型进行value 检查。 DateRange、DateRangeCalendar 类型不需要检查，因为在选择时间的时候已经做了时间范围限制。
-  BrnSelectionEntity getSelectRangeItem(List<BrnSelectionEntity> filterList) {
-    List<BrnSelectionEntity> ranges = filterList
+  BrnSelectionEntity? getSelectRangeItem(List<BrnSelectionEntity>? filterList) {
+    List<BrnSelectionEntity>? ranges = filterList
         ?.where((f) =>
             (f.filterType == BrnSelectionFilterType.Range ||
                 f.filterType == BrnSelectionFilterType.DateRange ||
                 f.filterType == BrnSelectionFilterType.DateRangeCalendar) &&
             f.isSelected)
-        ?.toList();
+        .toList();
 
-    if (ranges.length > 0) {
+    if (ranges != null && ranges.length > 0) {
       return ranges[0];
     }
     return null;
@@ -619,7 +616,7 @@ class _BrnRangeSelectionGroupWidgetState
   void _backgroundTap() {
     _resetSelectStatus();
     if (widget.bgClickFunction != null) {
-      widget.bgClickFunction();
+      widget.bgClickFunction!();
     }
   }
 
@@ -651,12 +648,12 @@ class _BrnRangeSelectionGroupWidgetState
     }
 
     var selectedItem = subFilterList
-        ?.where((f) =>
+        .where((f) =>
             f.filterType != BrnSelectionFilterType.Range &&
             f.filterType != BrnSelectionFilterType.DateRange &&
             f.filterType != BrnSelectionFilterType.DateRangeCalendar &&
             f.isSelected)
-        ?.toList();
+        .toList();
     if (!isCustomInputSelected && BrunoTools.isEmpty(selectedItem)) {
       for (BrnSelectionEntity item in subFilterList) {
         if (item.isUnLimit()) {
@@ -672,7 +669,7 @@ class _BrnRangeSelectionGroupWidgetState
     bool hasCalendarItem = false;
     if (entity != null && entity.children != null) {
       /// 查找第一层级
-      hasCalendarItem = entity.children
+      hasCalendarItem = entity.children!
               .where((_) =>
                   _.filterType == BrnSelectionFilterType.Date ||
                   _.filterType == BrnSelectionFilterType.DateRangeCalendar)
@@ -682,13 +679,13 @@ class _BrnRangeSelectionGroupWidgetState
 
       /// 查找第二层级
       if (!hasCalendarItem) {
-        for (BrnSelectionEntity subItem in entity.children) {
+        for (BrnSelectionEntity subItem in entity.children!) {
           int count = subItem.children
                   ?.where((_) =>
                       _.filterType == BrnSelectionFilterType.Date ||
                       _.filterType == BrnSelectionFilterType.DateRangeCalendar)
-                  ?.toList()
-                  ?.length ??
+                  .toList()
+                  .length ??
               0;
           if (count > 0) {
             hasCalendarItem = true;

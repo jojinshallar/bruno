@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'package:bruno/src/theme/brn_theme_configurator.dart';
 import 'package:flutter/material.dart';
 
@@ -19,20 +17,20 @@ import 'package:flutter/material.dart';
 ///
 class BrnTagCustom extends StatelessWidget {
   /// 标签的文字
-  final String tagText;
+  final String? tagText;
 
   /// 标签的背景颜色 默认主题色
-  final Color backgroundColor;
+  final Color? backgroundColor;
 
   /// 标签的文本颜色 默认F4的反白颜色
-  final Color textColor;
+  final Color? textColor;
 
   /// 标签的圆角 默认为2
   /// 如果同时设置了borderRadius、tagBorderRadius字段，优先使用tagBorderRadius字段设置圆角
-  final BorderRadius tagBorderRadius;
+  final BorderRadius? tagBorderRadius;
 
   /// 标签的padding  默认为3
-  final EdgeInsets textPadding;
+  final EdgeInsets? textPadding;
 
   /// 文字大小
   final double fontSize;
@@ -44,10 +42,10 @@ class BrnTagCustom extends StatelessWidget {
   final double maxWidth;
 
   /// 标签边框
-  final Border border;
+  final Border? border;
 
   BrnTagCustom({
-    Key key,
+    Key? key,
     this.tagText,
     this.textColor,
     this.backgroundColor,
@@ -61,7 +59,7 @@ class BrnTagCustom extends StatelessWidget {
 
   ///快捷方式生成边框标签
   BrnTagCustom.buildBorderTag({
-    Key key,
+    Key? key,
     this.backgroundColor = Colors.transparent,
     this.tagText = "",
     this.textPadding =
@@ -69,8 +67,8 @@ class BrnTagCustom extends StatelessWidget {
     this.fontSize = 11,
     this.fontWeight = FontWeight.normal,
     this.tagBorderRadius,
-    Color textColor,
-    Color borderColor,
+    Color? textColor,
+    Color? borderColor,
     double borderWidth = 1,
     double borderRadius = 3,
   })  : this.maxWidth = double.infinity,
@@ -80,7 +78,7 @@ class BrnTagCustom extends StatelessWidget {
                   .getConfig()
                   .commonConfig
                   .brandPrimary,
-          width: borderWidth ?? 1,
+          width: borderWidth,
         ),
         this.textColor = textColor ??
             BrnThemeConfigurator.instance.getConfig().commonConfig.brandPrimary,
@@ -110,7 +108,7 @@ class BrnTagCustom extends StatelessWidget {
           textAlign: TextAlign.center,
           overflow: TextOverflow.ellipsis,
           style: TextStyle(
-            fontSize: fontSize ?? 11,
+            fontSize: fontSize,
             color: textColor ??
                 BrnThemeConfigurator.instance
                     .getConfig()

@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'package:bruno/src/components/selection/bean/brn_selection_common_entity.dart';
 import 'package:bruno/src/components/selection/brn_more_selection.dart';
 import 'package:bruno/src/components/selection/controller/brn_selection_view_controller.dart';
@@ -71,12 +69,12 @@ typedef BrnSetCustomFloatingLayerSelectionParams = void Function(
 /// [setCustomFloatingLayerSelectionParams] 外部自定义参数回传函数
 typedef BrnOnCustomFloatingLayerClick = Function(
     int index,
-    BrnSelectionEntity customFloatingLayerEntity,
+    BrnSelectionEntity? customFloatingLayerEntity,
     BrnSetCustomFloatingLayerSelectionParams
         setCustomFloatingLayerSelectionParams);
 
 typedef OnDefaultParamsPrepared = void Function(
-    Map<String, String> selectedParams);
+    Map<String, String>? selectedParams);
 
 /// 默认筛选参数转换器，对传入的筛选数据做处理，返回 Map 参数对象。
 const BrnSelectionConverterDelegate _defaultConverter =
@@ -85,35 +83,35 @@ const BrnSelectionConverterDelegate _defaultConverter =
 // ignore: must_be_immutable
 class BrnSelectionView extends StatefulWidget {
   final BrnSelectionConverterDelegate selectionConverterDelegate;
-  final BrnOnCustomSelectionMenuClick onCustomSelectionMenuClick;
-  final BrnOnCustomFloatingLayerClick onCustomFloatingLayerClick;
-  final BrnOnMoreSelectionMenuClick onMoreSelectionMenuClick;
+  final BrnOnCustomSelectionMenuClick? onCustomSelectionMenuClick;
+  final BrnOnCustomFloatingLayerClick? onCustomFloatingLayerClick;
+  final BrnOnMoreSelectionMenuClick? onMoreSelectionMenuClick;
   final BrnOnSelectionChanged onSelectionChanged;
   final List<BrnSelectionEntity> originalSelectionData;
-  final BrnOnMenuItemInterceptor onMenuClickInterceptor;
-  final BrnOnSelectionPreShow onSelectionPreShow;
+  final BrnOnMenuItemInterceptor? onMenuClickInterceptor;
+  final BrnOnSelectionPreShow? onSelectionPreShow;
 
   ///筛选所在列表的外部列表滚动需要收起筛选，此处为最外层列表，有点恶心，但是暂时只想到这个方法，有更好方式的一定要告诉我
-  final ScrollController extraScrollController;
+  final ScrollController? extraScrollController;
 
   ///指定筛选固定的相对于屏幕的顶部距离，默认null不指定
-  final double constantTop;
+  final double? constantTop;
 
   /// 处理完默认选中的参数后给外部回调
-  final OnDefaultParamsPrepared onDefaultParamsPrepared;
+  final OnDefaultParamsPrepared? onDefaultParamsPrepared;
 
   /// 用于对 SelectionWindowType.Range 类型的列数做配置的回调。
-  final BrnConfigTagCountPerRow configRowCount;
+  final BrnConfigTagCountPerRow? configRowCount;
 
-  BrnSelectionViewController selectionViewController;
+  BrnSelectionViewController? selectionViewController;
 
-  BrnSelectionConfig themeData;
+  BrnSelectionConfig? themeData;
 
   BrnSelectionView(
-      {Key key,
-      this.originalSelectionData,
+      {Key? key,
+      required this.originalSelectionData,
       this.selectionViewController,
-      @required this.onSelectionChanged,
+      required this.onSelectionChanged,
       this.configRowCount,
       this.selectionConverterDelegate = _defaultConverter,
       this.onMenuClickInterceptor,
@@ -129,7 +127,7 @@ class BrnSelectionView extends StatefulWidget {
     selectionViewController ??= BrnSelectionViewController();
     this.themeData ??= BrnSelectionConfig();
     this.themeData = BrnThemeConfigurator.instance
-        .getConfig(configId: themeData.configId)
+        .getConfig(configId: themeData!.configId)
         .selectionConfig
         .merge(themeData);
   }
@@ -142,46 +140,46 @@ class BrnSelectionView extends StatefulWidget {
 }
 
 class BrnSelectionViewState extends State<BrnSelectionView> {
-  List<BrnSelectionEntity> _selectionData;
+  late List<BrnSelectionEntity> _selectionData;
   Map<String, String> _customParams = Map();
-  BrnSelectionConverterDelegate _selectionConverterDelegate;
-  OnDefaultParamsPrepared _onDefaultParamsPrepared;
+  BrnSelectionConverterDelegate? _selectionConverterDelegate;
+  OnDefaultParamsPrepared? _onDefaultParamsPrepared;
 
   @override
   void initState() {
     super.initState();
     _selectionData = widget.originalSelectionData;
-    _selectionData?.forEach((f) => f.configRelationshipAndDefaultValue());
+    _selectionData.forEach((f) => f.configRelationshipAndDefaultValue());
 
     _selectionConverterDelegate = widget.selectionConverterDelegate;
     _onDefaultParamsPrepared = widget.onDefaultParamsPrepared;
 
     if (_onDefaultParamsPrepared != null) {
-      _onDefaultParamsPrepared(
+      _onDefaultParamsPrepared!(
           _selectionConverterDelegate?.convertSelectedData(_selectionData));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_selectionData != null && _selectionData.length > 0) {
-      _selectionData?.forEach((f) => f.configRelationship());
+    if (_selectionData.length > 0) {
+      _selectionData.forEach((f) => f.configRelationship());
       return BrnSelectionMenuWidget(
         context: context,
         data: _selectionData,
-        themeData: widget.themeData,
+        themeData: widget.themeData!,
         extraScrollController: widget.extraScrollController,
         constantTop: widget.constantTop,
         configRowCount: widget.configRowCount,
         onMenuItemClick: (int menuIndex) {
           if (widget.onMenuClickInterceptor != null &&
-              widget.onMenuClickInterceptor(menuIndex)) {
+              widget.onMenuClickInterceptor!(menuIndex)) {
             return true;
           }
 
           if (widget.onSelectionPreShow != null) {
-            _selectionData[menuIndex].filterShowType =
-                widget.onSelectionPreShow(menuIndex, _selectionData[menuIndex]);
+            _selectionData[menuIndex].filterShowType = widget
+                .onSelectionPreShow!(menuIndex, _selectionData[menuIndex]);
           }
 
           /// 自定义 Menu 的时候，
@@ -191,7 +189,7 @@ class BrnSelectionViewState extends State<BrnSelectionView> {
           if (_selectionData[menuIndex].filterType ==
                   BrnSelectionFilterType.CustomHandle &&
               widget.onCustomSelectionMenuClick != null) {
-            widget.onCustomSelectionMenuClick(
+            widget.onCustomSelectionMenuClick!(
                 menuIndex, _selectionData[menuIndex],
                 (Map<String, String> customParams) {
               _customParams.clear();
@@ -207,11 +205,12 @@ class BrnSelectionViewState extends State<BrnSelectionView> {
           if (_selectionData[menuIndex].filterType ==
                   BrnSelectionFilterType.More &&
               widget.onMoreSelectionMenuClick != null) {
-            widget.onMoreSelectionMenuClick(menuIndex, (
+            widget.onMoreSelectionMenuClick!(menuIndex, (
                 {bool updateData = false,
-                List<BrnSelectionEntity> moreSelections}) {
-              if (updateData != null && updateData) {
-                List<BrnSelectionEntity> moreSelectionEntities = moreSelections;
+                List<BrnSelectionEntity>? moreSelections}) {
+              if (updateData) {
+                List<BrnSelectionEntity> moreSelectionEntities =
+                    moreSelections ?? [];
                 _selectionData[menuIndex].children = moreSelectionEntities;
                 _selectionData[menuIndex].configRelationshipAndDefaultValue();
               }
@@ -223,8 +222,8 @@ class BrnSelectionViewState extends State<BrnSelectionView> {
           }
           return false;
         },
-        onConfirm: (BrnSelectionEntity results, int firstIndex, int secondIndex,
-            int thirdIndex) {
+        onConfirm: (BrnSelectionEntity results, int? firstIndex,
+            int? secondIndex, int? thirdIndex) {
           _onSelectionChanged(_selectionData.indexOf(results));
         },
       );
@@ -236,7 +235,7 @@ class BrnSelectionViewState extends State<BrnSelectionView> {
     widget.onSelectionChanged(
         menuIndex,
         widget.selectionConverterDelegate.convertSelectedData(_selectionData),
-        _customParams, ({String menuTitle, bool isMenuTitleHighLight}) {
+        _customParams, ({String? menuTitle, bool? isMenuTitleHighLight}) {
       /// 说明没有 menu 被选中，不需要更新。
       if (menuIndex >= 0) {
         _selectionData[menuIndex].isCustomTitleHighLight =
@@ -255,14 +254,14 @@ class BrnSelectionViewState extends State<BrnSelectionView> {
   }
 
   void _openMore(BrnSelectionEntity entity,
-      {BrnOnCustomFloatingLayerClick onCustomFloatingLayerClick}) {
-    if (entity.children.length > 0) {
+      {BrnOnCustomFloatingLayerClick? onCustomFloatingLayerClick}) {
+    if (entity.children!.length > 0) {
       Navigator.of(context).push(PageRouteBuilder(
           opaque: false,
           pageBuilder: (context, animation, second) {
             return BrnMoreSelectionPage(
               entityData: entity,
-              themeData: widget.themeData,
+              themeData: widget.themeData!,
               onCustomFloatingLayerClick: onCustomFloatingLayerClick,
               confirmCallback: (_) {
                 EventBus.instance.fire(RefreshMenuTitleEvent());

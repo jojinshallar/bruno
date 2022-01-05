@@ -2,10 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @dart=2.9
-
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 /// Used with [TabBar.indicator] to draw a horizontal line below the
 /// selected tab.
@@ -29,9 +26,7 @@ class BrnFixedUnderlineIndicator extends Decoration {
     this.width = 1.0,
     this.thickness = 1.0,
     this.color = Colors.white,
-  })  : assert(borderSide != null),
-        assert(insets != null),
-        assert(width >= 1.0);
+  }) : assert(width >= 1.0);
 
   /// The color and weight of the horizontal line drawn below the selected tab.
   final BorderSide borderSide;
@@ -48,37 +43,36 @@ class BrnFixedUnderlineIndicator extends Decoration {
   final Color color;
 
   @override
-  Decoration lerpFrom(Decoration a, double t) {
+  Decoration? lerpFrom(Decoration? a, double t) {
     if (a is BrnFixedUnderlineIndicator) {
       return BrnFixedUnderlineIndicator(
         borderSide: BorderSide.lerp(a.borderSide, borderSide, t),
-        insets: EdgeInsetsGeometry.lerp(a.insets, insets, t),
+        insets: EdgeInsetsGeometry.lerp(a.insets, insets, t) ?? EdgeInsets.zero,
       );
     }
-    return super.lerpFrom(a, t);
+    return super.lerpFrom(a, t)!;
   }
 
   @override
-  Decoration lerpTo(Decoration b, double t) {
+  Decoration? lerpTo(Decoration? b, double t) {
     if (b is BrnFixedUnderlineIndicator) {
       return BrnFixedUnderlineIndicator(
         borderSide: BorderSide.lerp(borderSide, b.borderSide, t),
-        insets: EdgeInsetsGeometry.lerp(insets, b.insets, t),
+        insets: EdgeInsetsGeometry.lerp(insets, b.insets, t) ?? EdgeInsets.zero,
       );
     }
-    return super.lerpTo(b, t);
+    return super.lerpTo(b, t)!;
   }
 
   @override
-  _FixedUnderlinePainter createBoxPainter([VoidCallback onChanged]) {
+  _FixedUnderlinePainter createBoxPainter([VoidCallback? onChanged]) {
     return _FixedUnderlinePainter(this, onChanged);
   }
 }
 
 class _FixedUnderlinePainter extends BoxPainter {
-  _FixedUnderlinePainter(this.decoration, VoidCallback onChanged)
-      : assert(decoration != null),
-        super(onChanged);
+  _FixedUnderlinePainter(this.decoration, VoidCallback? onChanged)
+      : super(onChanged);
 
   final BrnFixedUnderlineIndicator decoration;
 
@@ -86,9 +80,7 @@ class _FixedUnderlinePainter extends BoxPainter {
 
   EdgeInsetsGeometry get insets => decoration.insets;
 
-  Rect _indicatorRectFor(Rect rect, TextDirection textDirection) {
-    assert(rect != null);
-    assert(textDirection != null);
+  Rect _indicatorRectFor(Rect rect, TextDirection? textDirection) {
     final Rect indicator = insets.resolve(textDirection).deflateRect(rect);
     return Rect.fromLTWH(
       indicator.left,
@@ -100,10 +92,8 @@ class _FixedUnderlinePainter extends BoxPainter {
 
   @override
   void paint(Canvas canvas, Offset offset, ImageConfiguration configuration) {
-    assert(configuration != null);
-    assert(configuration.size != null);
-    final Rect rect = offset & configuration.size;
-    final TextDirection textDirection = configuration.textDirection;
+    final Rect rect = offset & configuration.size!;
+    final TextDirection? textDirection = configuration.textDirection;
     final Rect indicator =
         _indicatorRectFor(rect, textDirection).deflate(borderSide.width / 2.0);
     final Paint paint = borderSide.toPaint()..strokeCap = StrokeCap.square;

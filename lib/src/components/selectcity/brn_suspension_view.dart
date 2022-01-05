@@ -43,7 +43,7 @@ class SuspensionView extends StatefulWidget {
     this.onSusTagChanged,
     this.onSusSectionInited,
     this.header,
-  })  : super(key: key);
+  }) : super(key: key);
 
   @override
   _SuspensionWidgetState createState() => _SuspensionWidgetState();
