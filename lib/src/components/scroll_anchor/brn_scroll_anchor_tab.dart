@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'dart:async';
 import 'dart:ui';
 
@@ -20,15 +18,15 @@ class BrnAnchorTab extends StatefulWidget {
   final BrnAnchorTabBarStyle tabBarStyle;
   final AnchorTabWidgetIndexedBuilder widgetIndexedBuilder;
   final AnchorTabIndexedBuilder tabIndexedBuilder;
-  final Widget tabDivider;
+  final Widget? tabDivider;
 
   //设置tab与widget的个数
   final int itemCount;
 
   BrnAnchorTab(
-      {@required this.widgetIndexedBuilder,
-      @required this.tabIndexedBuilder,
-      @required this.itemCount,
+      {required this.widgetIndexedBuilder,
+      required this.tabIndexedBuilder,
+      required this.itemCount,
       this.tabDivider,
       this.tabBarStyle = const BrnAnchorTabBarStyle()});
 
@@ -40,31 +38,31 @@ class BrnAnchorTab extends StatefulWidget {
 class _BrnScrollAnchorTabWidgetState extends State<BrnAnchorTab>
     with SingleTickerProviderStateMixin {
   //用于控制 滑动
-  ScrollController scrollController;
+  late ScrollController scrollController;
 
   //用于 滑动 和 tab 之间的通信
-  StreamController<int> streamController;
+  late StreamController<int> streamController;
 
   //用于控制tab
-  TabController tabController;
+  late TabController tabController;
 
   //滑动组件的 key
-  GlobalKey key;
+  late GlobalKey key;
 
   //当前选中的索引
-  int currentIndex;
+  late int currentIndex;
 
   //滑动组件的元素、
-  List<Widget> bodyWidgetList;
+  late List<Widget> bodyWidgetList;
 
   //滑动组件的元素的key
-  List<GlobalKey> bodyKeyList;
+  late List<GlobalKey> bodyKeyList;
 
   //每个元素在滑动组件中的位置
-  List<double> cardOffsetList;
+  late List<double> cardOffsetList;
 
   //tab
-  List<BadgeTab> tabList;
+  late List<BadgeTab> tabList;
 
   //是否点击滑动
   bool tab = false;
@@ -79,9 +77,9 @@ class _BrnScrollAnchorTabWidgetState extends State<BrnAnchorTab>
 
     key = GlobalKey();
     cardOffsetList = List.filled(widget.itemCount, -1.0);
-    bodyWidgetList = List();
-    bodyKeyList = List();
-    tabList = List();
+    bodyWidgetList = [];
+    bodyKeyList = [];
+    tabList = [];
 
     currentIndex = 0;
     tabController = TabController(length: widget.itemCount, vsync: this);
@@ -90,7 +88,7 @@ class _BrnScrollAnchorTabWidgetState extends State<BrnAnchorTab>
     fillList();
     fillTab();
 
-    WidgetsBinding.instance.addPostFrameCallback((da) {
+    WidgetsBinding.instance?.addPostFrameCallback((da) {
       fillOffset();
       scrollController.addListener(() {
         updateOffset();
@@ -178,7 +176,7 @@ class _BrnScrollAnchorTabWidgetState extends State<BrnAnchorTab>
   }
 
   void fillOffset() {
-    Offset globalToLocal = (key.currentContext.findRenderObject() as RenderBox)
+    Offset globalToLocal = (key.currentContext?.findRenderObject() as RenderBox)
         .localToGlobal(Offset.zero);
     listDy = globalToLocal.dy;
 
@@ -186,7 +184,7 @@ class _BrnScrollAnchorTabWidgetState extends State<BrnAnchorTab>
       if (cardOffsetList[i] == -1.0) if (bodyKeyList[i].currentContext !=
           null) {
         double cardOffset =
-            (bodyKeyList[i].currentContext.findRenderObject() as RenderBox)
+            (bodyKeyList[i].currentContext!.findRenderObject() as RenderBox)
                 .localToGlobal(Offset.zero) //相对于原点 控件的位置
                 .dy; //y点坐标
 
@@ -208,7 +206,7 @@ class _BrnScrollAnchorTabWidgetState extends State<BrnAnchorTab>
       if (cardOffsetList[i] == -1.0) if (bodyKeyList[i].currentContext !=
           null) {
         double cardOffset =
-            (bodyKeyList[i].currentContext.findRenderObject() as RenderBox)
+            (bodyKeyList[i].currentContext!.findRenderObject() as RenderBox)
                 .localToGlobal(Offset.zero) //相对于原点 控件的位置
                 .dy; //y点坐标
 
@@ -238,23 +236,23 @@ class _BrnScrollAnchorTabWidgetState extends State<BrnAnchorTab>
 }
 
 class BrnAnchorTabBarStyle {
-  final Color indicatorColor;
+  final Color? indicatorColor;
 
   final double indicatorWeight;
 
-  final EdgeInsetsGeometry indicatorPadding;
+  final EdgeInsetsGeometry? indicatorPadding;
 
-  final Color labelColor;
+  final Color? labelColor;
 
-  final Color unselectedLabelColor;
+  final Color? unselectedLabelColor;
 
-  final TextStyle labelStyle;
+  final TextStyle? labelStyle;
 
-  final EdgeInsetsGeometry labelPadding;
+  final EdgeInsetsGeometry? labelPadding;
 
-  final TextStyle unselectedLabelStyle;
+  final TextStyle? unselectedLabelStyle;
 
-  final DragStartBehavior dragStartBehavior;
+  final DragStartBehavior? dragStartBehavior;
 
   const BrnAnchorTabBarStyle({
     this.indicatorColor,

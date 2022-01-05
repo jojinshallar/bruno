@@ -1,12 +1,9 @@
-// @dart=2.9
-
 import 'dart:core';
 import 'dart:math';
 import 'dart:ui';
 
 import 'package:bruno/src/components/popup/brn_measure_size.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 /// popWindow位于targetView的方向
 enum BrnOverlayPopDirection { none, top, bottom, left, right }
@@ -16,7 +13,7 @@ class BrnOverlayWindow extends StatefulWidget {
   final BuildContext context;
 
   /// 锚点 Widget 的 key，用于 OverlayWindow 的定位
-  final Key targetKey;
+  final GlobalKey targetKey;
 
   /// OverlayWindow 相对于 key 的展示位置， 默认 bottom
   final BrnOverlayPopDirection popDirection;
@@ -25,10 +22,10 @@ class BrnOverlayWindow extends StatefulWidget {
   final Widget content;
 
   const BrnOverlayWindow({
-    this.context,
-    this.targetKey,
+    required this.context,
+    required this.targetKey,
     this.popDirection = BrnOverlayPopDirection.bottom,
-    this.content,
+    required this.content,
   });
 
   @override
@@ -44,18 +41,12 @@ class BrnOverlayWindow extends StatefulWidget {
   /// [autoDismissOnTouchOutSide] 点击 OverlayWindow 外部是否自动消失
   /// [onDismiss] OverlayWindow 消失回调
   static BrnOverlayController showOverlayWindow(
-      BuildContext context, Key targetKey,
-      {Widget content,
-      BrnOverlayPopDirection popDirection,
-      bool autoDismissOnTouchOutSide,
-      Function onDismiss}) {
-    assert(content != null);
-    assert(targetKey != null);
-    assert(content != null);
-
-    if (content == null || targetKey == null) return null;
-
-    BrnOverlayController overlayController;
+      BuildContext context, GlobalKey targetKey,
+      {required Widget content,
+      required BrnOverlayPopDirection popDirection,
+      bool? autoDismissOnTouchOutSide,
+      Function? onDismiss}) {
+    BrnOverlayController? overlayController;
     OverlayEntry entry = OverlayEntry(builder: (context) {
       return GestureDetector(
           behavior: (autoDismissOnTouchOutSide ?? true)
@@ -84,13 +75,13 @@ class BrnOverlayWindow extends StatefulWidget {
 
 class _BrnOverlayWindowState extends State<BrnOverlayWindow> {
   /// targetView的位置
-  Rect _showRect;
+  late Rect _showRect;
 
   /// 屏幕的尺寸
-  Size _screenSize;
+  late Size _screenSize;
 
   /// overlay 在targetView 四周的偏移位置
-  double _left, _right, _top, _bottom;
+  late double _left, _right, _top, _bottom;
 
   /// targetView 的 Size
   Size _targetViewSize = Size.zero;
@@ -109,7 +100,7 @@ class _BrnOverlayWindowState extends State<BrnOverlayWindow> {
         child: MeasureSize(
             onChange: (size) {
               setState(() {
-                _targetViewSize = size;
+                _targetViewSize = size ?? Size.zero;
               });
             },
             child: widget.content));
@@ -203,10 +194,7 @@ class _BrnOverlayWindowState extends State<BrnOverlayWindow> {
   /// 获取targetView的位置
   ///
   Rect _getWidgetGlobalRect(GlobalKey key) {
-    if (key == null) {
-      return null;
-    }
-    RenderBox renderBox = key.currentContext.findRenderObject();
+    RenderBox renderBox = key.currentContext?.findRenderObject() as RenderBox;
     var offset = renderBox.localToGlobal(Offset.zero);
     return Rect.fromLTWH(
         offset.dx, offset.dy, renderBox.size.width, renderBox.size.height);
@@ -241,13 +229,12 @@ class BrnOverlayController {
   BrnOverlayController._(this.context, this._entry);
 
   showOverlay() {
-    Overlay.of(context).insert(_entry);
+    Overlay.of(context)?.insert(_entry);
     _isOverlayShowing = true;
   }
 
   void removeOverlay() {
-    _entry?.remove();
-    _entry = null;
+    _entry.remove();
     _isOverlayShowing = false;
   }
 }
