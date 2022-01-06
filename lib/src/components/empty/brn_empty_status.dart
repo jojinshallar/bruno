@@ -127,7 +127,7 @@ class BrnAbnormalStateWidget extends StatelessWidget {
   }) {
     this.themeData ??= BrnAbnormalStateConfig();
     this.themeData = BrnThemeConfigurator.instance
-        .getConfig(configId: this.themeData?.configId)
+        .getConfig(configId: this.themeData!.configId)
         .abnormalStateConfig
         .merge(this.themeData);
   }

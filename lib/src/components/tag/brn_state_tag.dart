@@ -14,19 +14,19 @@ import 'package:flutter/material.dart';
 /// * [BrnTagCustom], 高度自定义的通用标签
 ///
 class BrnStateTag extends StatelessWidget {
-  final String? tagText;
+  final String tagText;
+  final TagState tagState;
   final Color? backgroundColor;
   final Color? textColor;
-  final TagState tagState;
 
   //默认为等待状态,黄色
-  const BrnStateTag(
-      {Key? key,
-      this.tagText,
-      this.backgroundColor,
-      this.textColor,
-      this.tagState = TagState.waiting})
-      : super(key: key);
+  const BrnStateTag({
+    Key? key,
+    required this.tagText,
+    this.tagState = TagState.waiting,
+    this.backgroundColor,
+    this.textColor,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -100,7 +100,7 @@ class BrnCommonActionSheet extends StatelessWidget {
   }) {
     themeData ??= BrnActionSheetConfig();
     themeData = BrnThemeConfigurator.instance
-        .getConfig(configId: themeData?.configId)
+        .getConfig(configId: themeData!.configId)
         .actionSheetConfig
         .merge(themeData);
   }

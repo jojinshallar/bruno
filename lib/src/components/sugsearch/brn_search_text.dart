@@ -213,7 +213,7 @@ class _SearchTextState extends State<BrnSearchText> {
                           // 光标颜色属性，绘制光标时使用的颜色。
                           cursorColor: BrnThemeConfigurator.instance
                               .getConfig()
-                              .commonConfig!
+                              .commonConfig
                               .brandPrimary,
                           // 光标宽度属性，光标的厚度，默认是2.0。
                           cursorWidth: 2.0,
@@ -223,7 +223,7 @@ class _SearchTextState extends State<BrnSearchText> {
                                   textBaseline: TextBaseline.alphabetic,
                                   color: BrnThemeConfigurator.instance
                                       .getConfig()
-                                      .commonConfig!
+                                      .commonConfig
                                       .colorTextBase,
                                   fontSize: 16),
                           // 装饰（`decoration`）属性，在文本字段周围显示的装饰。
@@ -310,7 +310,7 @@ class _SearchTextState extends State<BrnSearchText> {
                         style: TextStyle(
                             color: BrnThemeConfigurator.instance
                                 .getConfig()
-                                .commonConfig!
+                                .commonConfig
                                 .colorTextBase,
                             fontSize: 16,
                             height: 1),

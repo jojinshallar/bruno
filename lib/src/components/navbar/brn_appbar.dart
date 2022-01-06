@@ -495,7 +495,7 @@ class BrnAppBarTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     BrnAppBarConfig _defaultThemeData = themeData ?? BrnAppBarConfig();
     _defaultThemeData = BrnThemeConfigurator.instance
-        .getConfig(configId: themeData?.configId)
+        .getConfig(configId: themeData!.configId)
         .appBarConfig
         .merge(this.themeData);
 

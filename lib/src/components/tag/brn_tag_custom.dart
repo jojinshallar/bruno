@@ -17,7 +17,7 @@ import 'package:flutter/material.dart';
 ///
 class BrnTagCustom extends StatelessWidget {
   /// 标签的文字
-  final String? tagText;
+  final String tagText;
 
   /// 标签的背景颜色 默认主题色
   final Color? backgroundColor;
@@ -27,10 +27,10 @@ class BrnTagCustom extends StatelessWidget {
 
   /// 标签的圆角 默认为2
   /// 如果同时设置了borderRadius、tagBorderRadius字段，优先使用tagBorderRadius字段设置圆角
-  final BorderRadius? tagBorderRadius;
+  final BorderRadius tagBorderRadius;
 
   /// 标签的padding  默认为3
-  final EdgeInsets? textPadding;
+  final EdgeInsets textPadding;
 
   /// 文字大小
   final double fontSize;
@@ -46,11 +46,12 @@ class BrnTagCustom extends StatelessWidget {
 
   BrnTagCustom({
     Key? key,
-    this.tagText,
+    required this.tagText,
     this.textColor,
     this.backgroundColor,
-    this.tagBorderRadius,
-    this.textPadding,
+    this.tagBorderRadius = const BorderRadius.all(Radius.circular(2)),
+    this.textPadding =
+        const EdgeInsets.only(bottom: 0.5, left: 3, right: 3, top: 0),
     this.border,
     this.fontSize = 11,
     this.fontWeight = FontWeight.normal,
@@ -60,17 +61,16 @@ class BrnTagCustom extends StatelessWidget {
   ///快捷方式生成边框标签
   BrnTagCustom.buildBorderTag({
     Key? key,
+    required this.tagText,
     this.backgroundColor = Colors.transparent,
-    this.tagText = "",
     this.textPadding =
         const EdgeInsets.only(bottom: 3, left: 3, right: 3, top: 0),
     this.fontSize = 11,
     this.fontWeight = FontWeight.normal,
-    this.tagBorderRadius,
+    this.tagBorderRadius = const BorderRadius.all(Radius.circular(2)),
     Color? textColor,
     Color? borderColor,
     double borderWidth = 1,
-    double borderRadius = 3,
   })  : this.maxWidth = double.infinity,
         this.border = Border.all(
           color: borderColor ??
@@ -86,8 +86,6 @@ class BrnTagCustom extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    BorderRadius bRadius =
-        tagBorderRadius ?? BorderRadius.all(Radius.circular(2));
     return Container(
         constraints: BoxConstraints(
           maxWidth: maxWidth,
@@ -99,12 +97,11 @@ class BrnTagCustom extends StatelessWidget {
                     .commonConfig
                     .brandPrimary,
             shape: BoxShape.rectangle,
-            borderRadius: bRadius,
+            borderRadius: tagBorderRadius,
             border: border),
-        padding: textPadding ??
-            EdgeInsets.only(bottom: 0.5, left: 3, right: 3, top: 0),
+        padding: textPadding,
         child: Text(
-          tagText ?? "",
+          tagText,
           textAlign: TextAlign.center,
           overflow: TextOverflow.ellipsis,
           style: TextStyle(

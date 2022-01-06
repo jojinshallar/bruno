@@ -143,7 +143,7 @@ class _BrnPairInfoTableState extends State<BrnPairInfoTable> {
     themeData = themeData!
         .merge(BrnPairInfoTableConfig(rowSpacing: widget.rowDistance));
     themeData = BrnThemeConfigurator.instance
-        .getConfig(configId: themeData?.configId)
+        .getConfig(configId: themeData!.configId)
         .pairInfoTableConfig
         .merge(themeData);
 
@@ -171,7 +171,7 @@ class _BrnPairInfoTableState extends State<BrnPairInfoTable> {
     themeData = themeData!
         .merge(BrnPairInfoTableConfig(rowSpacing: widget.rowDistance));
     themeData = BrnThemeConfigurator.instance
-        .getConfig(configId: themeData?.configId)
+        .getConfig(configId: themeData!.configId)
         .pairInfoTableConfig
         .merge(themeData);
   }
@@ -760,7 +760,7 @@ class BrnInfoModal {
               valueTitle,
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
-              style: themeData?.valueTextStyle.generateTextStyle(),
+              style: themeData.valueTextStyle.generateTextStyle(),
             ),
           ),
           GestureDetector(
@@ -773,7 +773,7 @@ class BrnInfoModal {
               clickValue,
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
-              style: themeData?.linkTextStyle.generateTextStyle(),
+              style: themeData.linkTextStyle.generateTextStyle(),
             ),
           )
         ],
@@ -782,11 +782,11 @@ class BrnInfoModal {
       valueWidget = BrnRichTextGenerator()
           .addText(
             valueTitle,
-            textStyle: themeData?.valueTextStyle.generateTextStyle(),
+            textStyle: themeData.valueTextStyle.generateTextStyle(),
           )
           .addTextWithLink(
             clickValue,
-            textStyle: themeData?.linkTextStyle.generateTextStyle(),
+            textStyle: themeData.linkTextStyle.generateTextStyle(),
             richTextLinkClick: (text, url) {
               if (clickCallback != null) {
                 clickCallback(text);
@@ -864,7 +864,7 @@ class BrnInfoModal {
                   keyTitle,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
-                  style: themeData?.keyTextStyle.generateTextStyle(),
+                  style: themeData.keyTextStyle.generateTextStyle(),
                 ),
               ),
               GestureDetector(
@@ -879,7 +879,7 @@ class BrnInfoModal {
                 '：',
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
-                style: themeData?.valueTextStyle.generateTextStyle(),
+                style: themeData.valueTextStyle.generateTextStyle(),
               )
             ],
           ),
@@ -897,7 +897,7 @@ class BrnInfoModal {
                 valueTitle,
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
-                style: themeData?.keyTextStyle.generateTextStyle(),
+                style: themeData.keyTextStyle.generateTextStyle(),
               ),
             ),
             GestureDetector(
@@ -916,7 +916,7 @@ class BrnInfoModal {
     } else {
       BrnRichTextGenerator keyGen = BrnRichTextGenerator();
       keyGen.addText(keyTitle,
-          textStyle: themeData?.keyTextStyle.generateTextStyle());
+          textStyle: themeData.keyTextStyle.generateTextStyle());
       if (keyShow) {
         keyGen.addIcon(GestureDetector(
           onTap: () {
@@ -927,13 +927,13 @@ class BrnInfoModal {
           child: BrunoTools.getAssetImage(BrnAsset.ICON_QUESTION),
         ));
         keyGen.addText('：',
-            textStyle: themeData?.keyTextStyle.generateTextStyle());
+            textStyle: themeData.keyTextStyle.generateTextStyle());
       }
       keyWidget = keyGen.build();
 
       BrnRichTextGenerator valueGen = BrnRichTextGenerator();
       valueGen.addText(valueTitle,
-          textStyle: themeData?.valueTextStyle.generateTextStyle());
+          textStyle: themeData.valueTextStyle.generateTextStyle());
       if (valueShow) {
         valueGen.addIcon(GestureDetector(
           onTap: () {
@@ -1003,7 +1003,7 @@ class BrnInfoModal {
     }
 
     keyGen.addText(keyTitle,
-        textStyle: themeData?.keyTextStyle.generateTextStyle());
+        textStyle: themeData.keyTextStyle.generateTextStyle());
 
     return BrnInfoModal(
         keyPart: keyGen.build(),
@@ -1044,7 +1044,7 @@ class BrnInfoModal {
                 maxLines: isArrow ? 1 : null,
                 textOverflow:
                     isArrow ? TextOverflow.ellipsis : TextOverflow.clip,
-                defaultStyle: themeData?.valueTextStyle.generateTextStyle(),
+                defaultStyle: themeData.valueTextStyle.generateTextStyle(),
                 linksCallback: (text, url) {
               if (richTextLinkClick != null) {
                 richTextLinkClick(text, url);

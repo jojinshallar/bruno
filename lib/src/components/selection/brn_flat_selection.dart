@@ -52,7 +52,7 @@ class BrnFlatSelection extends StatefulWidget {
     this.themeData = BrnThemeConfigurator.instance
         .getConfig(configId: themeData!.configId)
         .selectionConfig
-        .merge(themeData);
+        .merge(themeData!);
   }
 
   @override

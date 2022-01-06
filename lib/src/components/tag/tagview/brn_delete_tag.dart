@@ -2,6 +2,7 @@ import 'package:bruno/src/constants/brn_asset_constants.dart';
 import 'package:bruno/src/theme/brn_theme.dart';
 import 'package:bruno/src/utils/brn_tools.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 /// 删除模式的标签
 /// 支持下下流式和横向滑动布局
@@ -11,7 +12,7 @@ import 'package:flutter/material.dart';
 /// ignore: must_be_immutable
 class BrnDeleteTag extends StatefulWidget {
   /// 初始传入的标签，当传入controller的时候，应把初始标签放入controller的构造中
-  final List<String>? tags;
+  final List<String> tags;
 
   /// 标签控制器，用于主动添加和删除标签，如果使用场景只需要删除标签并进行回调可以不传控制器
   final BrnDeleteTagController? controller;
@@ -44,7 +45,7 @@ class BrnDeleteTag extends StatefulWidget {
   final bool softWrap;
 
   /// 内容边距，默认 EdgeInsets.fromLTRB(20, 0, 20, 0)
-  final EdgeInsets? padding;
+  final EdgeInsets padding;
 
   /// 主题配置信息，包含标签背景色、文本颜色等字段，非必传
   BrnTagConfig? themeData;
@@ -54,7 +55,7 @@ class BrnDeleteTag extends StatefulWidget {
 
   BrnDeleteTag(
       {Key? key,
-      this.tags,
+      required this.tags,
       this.controller,
       this.onTagDelete,
       this.verticalSpacing,
@@ -65,7 +66,7 @@ class BrnDeleteTag extends StatefulWidget {
       this.deleteIconColor,
       this.deleteIconSize,
       this.softWrap = true,
-      this.padding,
+      this.padding = const EdgeInsets.fromLTRB(20, 0, 20, 0),
       this.themeData})
       : super(key: key) {
     themeData ??= BrnTagConfig();
@@ -75,7 +76,7 @@ class BrnDeleteTag extends StatefulWidget {
     themeData = BrnThemeConfigurator.instance
         .getConfig(configId: themeData!.configId)
         .tagConfig
-        .merge(themeData);
+        .merge(themeData!);
   }
 
   @override
@@ -96,18 +97,18 @@ class _BrnDeleteTagState extends State<BrnDeleteTag> {
   Widget build(BuildContext context) {
     return Container(
         color: Colors.white,
-        child: ValueListenableBuilder(
+        child: ValueListenableBuilder<List<String>>(
           valueListenable: _controller.notifier,
-          builder: (context, List<String> value, _) {
+          builder: (context, value, _) {
             return _buildContent(value);
           },
         ));
   }
 
   /// 根据标签集合构建标签 UI
-  Widget _buildContent(List<String>? tags) {
-    if (tags == null || tags.isEmpty) {
-      return Container();
+  Widget _buildContent(List<String> tags) {
+    if (tags.isEmpty) {
+      return SizedBox.shrink();
     }
 
     List<Widget> itemList = [];
@@ -121,7 +122,7 @@ class _BrnDeleteTagState extends State<BrnDeleteTag> {
         shape: widget.shape,
         backgroundColor: widget.themeData!.tagBackgroundColor,
         deleteIconColor: widget.deleteIconColor,
-        themeData: widget.themeData!,
+        themeData: widget.themeData,
       ));
     }
     Widget result;
@@ -157,7 +158,7 @@ class _BrnDeleteTagState extends State<BrnDeleteTag> {
 
     return Container(
       color: Colors.white,
-      padding: widget.padding ?? EdgeInsets.fromLTRB(20, 0, 20, 0),
+      padding: widget.padding,
       alignment: Alignment.centerLeft,
       child: result,
     );
@@ -183,7 +184,7 @@ class DeleteTagItemWidget extends StatelessWidget {
   final OutlinedBorder? shape;
   final Color? backgroundColor;
   final Color? deleteIconColor;
-  BrnTagConfig themeData;
+  final BrnTagConfig? themeData;
 
   DeleteTagItemWidget(this.index, this.title, this.didDeleted,
       {this.deleteIconSize,
@@ -191,20 +192,20 @@ class DeleteTagItemWidget extends StatelessWidget {
       this.shape,
       this.backgroundColor,
       this.deleteIconColor,
-      required this.themeData});
+      this.themeData});
 
   @override
   Widget build(BuildContext context) {
     return Chip(
       padding: EdgeInsets.fromLTRB(10, 0, -3, 0),
       labelPadding: EdgeInsets.fromLTRB(0, 0, -3, 0),
-      backgroundColor: themeData.tagBackgroundColor,
+      backgroundColor: themeData!.tagBackgroundColor,
       label: Text(this.title,
           overflow: TextOverflow.ellipsis,
-          style: themeData.tagTextStyle.generateTextStyle()),
+          style: themeData!.tagTextStyle.generateTextStyle()),
       shape: shape ??
           RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(themeData.tagRadius)),
+              borderRadius: BorderRadius.circular(themeData!.tagRadius)),
       //删除图标
       deleteIcon: deleteIconSize != null
           ? BrunoTools.getAssetSizeImage(BrnAsset.ICON_CLOSE,
@@ -230,9 +231,7 @@ class BrnDeleteTagController {
   List<String> get tags => notifier.value;
 
   BrnDeleteTagController({List<String>? initTags}) {
-    if (initTags != null) {
-      _tags = initTags;
-    }
+    _tags = initTags ?? [];
     notifier = ValueNotifier(_tags);
   }
 
@@ -272,12 +271,9 @@ class BrnDeleteTagController {
 
   /// 删除某个具体内容的标签，成功返回 true，失败返回 false
   bool deleteForTag(String tag) {
-    if (_tags.isNotEmpty) {
-      bool result = _tags.remove(tag);
-      _asyncData();
-      return result;
-    } else
-      return false;
+    bool result = _tags.remove(tag);
+    _asyncData();
+    return result;
   }
 
   void _asyncData() {

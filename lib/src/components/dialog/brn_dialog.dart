@@ -289,30 +289,29 @@ class BrnDialog extends AlertDialog {
     final List<Widget> children = <Widget>[];
 
     if (_isShowIcon()) {
-      Widget generateIconWidget = _generateIconWidget(context, defaultConfig!);
+      Widget generateIconWidget = _generateIconWidget(context, defaultConfig);
       children.add(generateIconWidget);
     }
 
     if (_isShowTitle()) {
-      Widget generateTitleWidget =
-          _generateTitleWidget(context, defaultConfig!);
+      Widget generateTitleWidget = _generateTitleWidget(context, defaultConfig);
       children.add(generateTitleWidget);
     }
 
     if (_isShowContent()) {
       Widget generateContentWidget =
-          _generateContentWidget(context, defaultConfig!);
+          _generateContentWidget(context, defaultConfig);
       children.add(generateContentWidget);
     }
 
     if (_isShowWarning()) {
       Widget generateWarningWidget =
-          _generateWarningWidget(context, defaultConfig!);
+          _generateWarningWidget(context, defaultConfig);
       children.add(generateWarningWidget);
     }
 
     children.add(Padding(
-      padding: defaultConfig!.dividerPadding,
+      padding: defaultConfig.dividerPadding,
       child: SizedBox(
         height: 0,
         width: 0,

@@ -13,7 +13,6 @@ import 'package:flutter/material.dart';
 /// ignore: must_be_immutable
 class BrnSelectTag extends StatefulWidget {
   /// 展示的标签列表
-  @required
   final List<String> tags;
 
   /// 选择tag的回调,返回选中 tag 的位置
@@ -37,10 +36,10 @@ class BrnSelectTag extends StatefulWidget {
   /// 选中的标签背景色，默认 B0Color
   final Color? selectedTagBackgroundColor;
 
-  /// 标签宽度。默认 75
+  /// 标签宽度。默认全局配置宽度 75
   final double? tagWidth;
 
-  /// 标签高度。默认 34
+  /// 标签高度。默认全局配置高度 34
   final double? tagHeight;
 
   /// true 流式展示，false 横向滑动展示，默认 true
@@ -93,7 +92,7 @@ class BrnSelectTag extends StatefulWidget {
     this.themeData = BrnThemeConfigurator.instance
         .getConfig(configId: this.themeData!.configId)
         .tagConfig
-        .merge(this.themeData);
+        .merge(this.themeData!);
   }
 
   @override
@@ -101,7 +100,7 @@ class BrnSelectTag extends StatefulWidget {
 }
 
 class _BrnSelectTagState extends State<BrnSelectTag> {
-  late List<bool> _tagState;
+  List<bool> _tagState = [];
 
   @override
   void initState() {
@@ -156,7 +155,7 @@ class _BrnSelectTagState extends State<BrnSelectTag> {
   }
 
   List<Widget> _tagWidgetList(context) {
-    List<Widget> list = <Widget>[];
+    List<Widget> list = [];
     for (int nameIndex = 0; nameIndex < widget.tags.length; nameIndex++) {
       Widget tagWidget = _tagWidgetAtIndex(nameIndex);
       GestureDetector gdt = GestureDetector(
@@ -202,10 +201,10 @@ class _BrnSelectTagState extends State<BrnSelectTag> {
       decoration: BoxDecoration(
           color: selected
               ? (widget.themeData!.selectedTagBackgroundColor.withOpacity(0.12))
-              : (widget.themeData?.tagBackgroundColor),
+              : (widget.themeData!.tagBackgroundColor),
           borderRadius: BorderRadius.circular(widget.themeData!.tagRadius)),
-      width: widget.fixWidthMode ? widget.themeData?.tagWidth : null,
-      height: widget.themeData?.tagHeight,
+      width: widget.fixWidthMode ? widget.themeData!.tagWidth : null,
+      height: widget.themeData!.tagHeight,
       padding: EdgeInsets.only(left: 8, right: 8),
       child: Center(widthFactor: 1, child: tx),
     );
@@ -229,12 +228,11 @@ class _BrnSelectTagState extends State<BrnSelectTag> {
   }
 
   /// 比较两个数组内容是否一致，如果一致，返回 true，否则 false
-  bool sameList(List<String?>? first, List<String?>? second) {
-    if (first == null || second == null || first.length != second.length)
-      return false;
+  bool sameList(List<String> first, List<String> second) {
+    if (first.length != second.length) return false;
     int index = 0;
     return first.firstWhere((item) => item != second[index++],
-            orElse: () => null) ==
-        null;
+            orElse: () => '') ==
+        '';
   }
 }
