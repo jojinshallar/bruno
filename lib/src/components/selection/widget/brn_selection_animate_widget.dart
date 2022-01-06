@@ -5,13 +5,13 @@ typedef void MaskClickFunction(int index);
 
 class BrnSelectionAnimationWidget extends StatefulWidget {
   final BrnSelectionListViewController controller;
-  final Widget view;
+  final Widget? view;
   final int animationMilliseconds;
 
   const BrnSelectionAnimationWidget(
       {Key? key,
       required this.controller,
-      required this.view,
+      this.view,
       this.animationMilliseconds = 100})
       : super(key: key);
 

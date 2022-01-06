@@ -120,7 +120,7 @@ class StickyTabBarDelegate extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  double get maxExtent => this.child.tabHeight;
+  double get maxExtent =>this.child.tabHeight;
 
   @override
   double get minExtent => this.child.tabHeight;

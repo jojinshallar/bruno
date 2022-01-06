@@ -100,14 +100,12 @@ class _SuspensionListViewIndexBarState extends State<IndexBar> {
         textStyle: widget.textStyle,
         touchDownTextStyle: widget.touchDownTextStyle,
         onTouch: (details) {
-          if (widget.onTouch != null) {
-            if (_isTouchDown != details.isTouchDown) {
-              setState(() {
-                _isTouchDown = details.isTouchDown;
-              });
-            }
-            widget.onTouch(details);
+          if (_isTouchDown != details.isTouchDown) {
+            setState(() {
+              _isTouchDown = details.isTouchDown;
+            });
           }
+          widget.onTouch(details);
         },
       ),
     );
@@ -178,9 +176,7 @@ class _IndexBarState extends State<_IndexBar> {
   }
 
   _triggerTouchEvent() {
-    if (widget.onTouch != null) {
-      widget.onTouch(_indexModel);
-    }
+    widget.onTouch(_indexModel);
   }
 
   @override

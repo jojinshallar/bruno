@@ -18,7 +18,7 @@ import 'package:flutter/material.dart';
 // ignore: must_be_immutable
 class BrnFlatSelection extends StatefulWidget {
   /// 筛选原始数据
-  final List<BrnSelectionEntity> entityDataList;
+  final List<BrnSelectionEntity>? entityDataList;
 
   /// 点击确定回调
   final Function(Map<String, String>) confirmCallback;
@@ -76,7 +76,7 @@ class _BrnFlatSelectionState extends State<BrnFlatSelection>
 
     if (widget.isNeedConfigChild ?? true) {
       widget.entityDataList
-          .forEach((f) => f.configRelationshipAndDefaultValue());
+          ?.forEach((f) => f.configRelationshipAndDefaultValue());
     }
     _controller.addListener(_handleFlatControllerTick);
 
@@ -84,26 +84,24 @@ class _BrnFlatSelectionState extends State<BrnFlatSelection>
     _originalSelectedItemsList.clear();
 
     List<BrnSelectionEntity> firstColumn = [];
-    if (widget.entityDataList != null && widget.entityDataList.length > 0) {
-      for (BrnSelectionEntity entity in widget.entityDataList) {
+    if (widget.entityDataList != null && widget.entityDataList!.length > 0) {
+      for (BrnSelectionEntity entity in widget.entityDataList!) {
         if (entity.isSelected) {
           firstColumn.add(entity);
         }
       }
     }
     _originalSelectedItemsList.addAll(firstColumn);
-    if (firstColumn != null && firstColumn.length > 0) {
+    if (firstColumn.length > 0) {
       for (BrnSelectionEntity firstEntity in firstColumn) {
-        if (firstEntity != null) {
-          List<BrnSelectionEntity> secondColumn =
-              BrnSelectionUtil.currentSelectListForEntity(firstEntity);
-          _originalSelectedItemsList.addAll(secondColumn);
-          if (secondColumn != null && secondColumn.length > 0) {
-            for (BrnSelectionEntity secondEntity in secondColumn) {
-              List<BrnSelectionEntity> thirdColumn =
-                  BrnSelectionUtil.currentSelectListForEntity(secondEntity);
-              _originalSelectedItemsList.addAll(thirdColumn);
-            }
+        List<BrnSelectionEntity> secondColumn =
+            BrnSelectionUtil.currentSelectListForEntity(firstEntity);
+        _originalSelectedItemsList.addAll(secondColumn);
+        if (secondColumn.length > 0) {
+          for (BrnSelectionEntity secondEntity in secondColumn) {
+            List<BrnSelectionEntity> thirdColumn =
+                BrnSelectionUtil.currentSelectListForEntity(secondEntity);
+            _originalSelectedItemsList.addAll(thirdColumn);
           }
         }
       }
@@ -157,10 +155,10 @@ class _BrnFlatSelectionState extends State<BrnFlatSelection>
 
   /// 取消
   _cancelSelectedOptions() {
-    if (widget.entityDataList == null || widget.entityDataList.length <= 0) {
+    if (widget.entityDataList == null || widget.entityDataList!.length <= 0) {
       return;
     }
-    for (BrnSelectionEntity entity in widget.entityDataList) {
+    for (BrnSelectionEntity entity in widget.entityDataList!) {
       BrnSelectionUtil.resetSelectionDatas(entity);
     }
     //把数据还原
@@ -170,7 +168,7 @@ class _BrnFlatSelectionState extends State<BrnFlatSelection>
         //ori 是存数据     customMap是用来展示ui的
         data.customMap = Map<String, String>();
         if (data.originalCustomMap != null) {
-          data.originalCustomMap.forEach((key, value) {
+          data.originalCustomMap!.forEach((key, value) {
             data.customMap![key.toString()] = value.toString();
           });
         }
@@ -181,8 +179,8 @@ class _BrnFlatSelectionState extends State<BrnFlatSelection>
   /// 重置
   _resetSelectedOptions() {
     clearController.add(FlatClearEvent());
-    if (widget.entityDataList != null && widget.entityDataList.length > 0) {
-      for (BrnSelectionEntity entity in widget.entityDataList) {
+    if (widget.entityDataList != null && widget.entityDataList!.length > 0) {
+      for (BrnSelectionEntity entity in widget.entityDataList!) {
         _clearUIData(entity);
       }
     }
@@ -196,7 +194,7 @@ class _BrnFlatSelectionState extends State<BrnFlatSelection>
       return;
     }
 
-    widget.entityDataList.forEach((data) {
+    widget.entityDataList?.forEach((data) {
       if (data.selectedList().isNotEmpty) {
         data.isSelected = true;
       } else {
@@ -219,14 +217,14 @@ class _BrnFlatSelectionState extends State<BrnFlatSelection>
             itemBuilder: (context, index) {
               return BrnFlatMoreSelection(
                 clearController: clearController,
-                selectionEntity: widget.entityDataList[index],
+                selectionEntity: widget.entityDataList![index],
                 onCustomFloatingLayerClick: widget.onCustomFloatingLayerClick,
                 preLineTagSize: widget.preLineTagSize,
                 parentWidth: _lineWidth,
                 themeData: widget.themeData!,
               );
             },
-            itemCount: widget.entityDataList.length,
+            itemCount: widget.entityDataList!.length,
           ),
         ));
 
@@ -250,7 +248,7 @@ class _BrnFlatSelectionState extends State<BrnFlatSelection>
   void _clearSelectedEntity() {
     List<BrnSelectionEntity> tmp = [];
     BrnSelectionEntity node;
-    tmp.addAll(widget.entityDataList);
+    tmp.addAll(widget.entityDataList!);
     while (tmp.isNotEmpty) {
       node = tmp.removeLast();
       if (!node.isValidRange()) {

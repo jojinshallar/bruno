@@ -147,7 +147,7 @@ class _BrnMoreSelectionPageState extends State<BrnMoreSelectionPage>
               //ori 是存数据     customMap是用来展示ui的
               data.customMap = Map<String, String>();
               if (data.originalCustomMap != null) {
-                data.originalCustomMap.forEach((key, value) {
+                data.originalCustomMap!.forEach((key, value) {
                   data.customMap![key.toString()] = value.toString();
                 });
               }
@@ -268,7 +268,7 @@ class _BrnMoreSelectionPageState extends State<BrnMoreSelectionPage>
           node.isSelected = false;
         }
       }
-      node.children!.forEach((data) {
+      node.children?.forEach((data) {
         tmp.add(data);
       });
     }

@@ -55,10 +55,6 @@ class _BrnSelectionDatePickerAnimationWidgetState
   }
 
   _showListViewWidget() {
-    if (widget.view == null) {
-      return;
-    }
-
     _animation = Tween(begin: widget.controller.screenHeight, end: 300.0)
         .animate(_controller)
       ..addListener(() {

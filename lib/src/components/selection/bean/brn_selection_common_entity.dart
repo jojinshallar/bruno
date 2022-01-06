@@ -88,7 +88,7 @@ class BrnSelectionEntity {
   Map<String, String>? customMap;
 
   /// 用于临时存储原有自定义字段数据，在筛选数据变化后未点击【确定】按钮时还原。
-  late Map originalCustomMap;
+  Map? originalCustomMap;
 
   /// 最大可选数量，默认支持最大选中个数为 65535
   int? maxSelectedCount;
@@ -114,20 +114,19 @@ class BrnSelectionEntity {
   /// 临时字段用于判断是否要将筛选项 [name] 字段拼接展示
   bool canJoinTitle = false;
 
-  BrnSelectionEntity(
-      {this.key,
-      this.value,
-      this.defaultValue,
-      this.title = "",
-      this.subTitle,
-      this.children,
-      this.isSelected = false,
-      this.unit,
-      this.extMap,
-      this.customMap,
-      this.type,
-      this.showType,
-      this.maxSelectedCount}) {
+  BrnSelectionEntity({this.key,
+    this.value,
+    this.defaultValue,
+    this.title = "",
+    this.subTitle,
+    this.children,
+    this.isSelected = false,
+    this.unit,
+    this.extMap,
+    this.customMap,
+    this.type,
+    this.showType,
+    this.maxSelectedCount}) {
     this.filterType = this.parserFilterTypeWithType(this.type);
     this.filterShowType = this.parserShowType(this.showType);
     this.originalCustomMap = Map();
@@ -169,8 +168,9 @@ class BrnSelectionEntity {
       maxSelectedCount = BrnSelectionConstant.MAX_SELECT_COUNT;
     }
     extMap = map['ext'] ?? {};
-    children = []..addAll((map['children'] as List? ?? [])
-        .map((o) => BrnSelectionEntity.fromMap(o)));
+    children = []
+      ..addAll((map['children'] as List? ?? [])
+          .map((o) => BrnSelectionEntity.fromMap(o)));
     filterType = parserFilterTypeWithType(map['type'] ?? "");
     isSelected = false;
   }
@@ -191,8 +191,9 @@ class BrnSelectionEntity {
       entity.maxSelectedCount = BrnSelectionConstant.MAX_SELECT_COUNT;
     }
     entity.extMap = map['ext'] ?? {};
-    entity.children = []..addAll((map['children'] as List? ?? [])
-        .map((o) => BrnSelectionEntity.fromMap(o)));
+    entity.children = []
+      ..addAll((map['children'] as List? ?? [])
+          .map((o) => BrnSelectionEntity.fromMap(o)));
     entity.filterType = entity.parserFilterTypeWithType(map['type'] ?? "");
     return entity;
   }
@@ -218,23 +219,25 @@ class BrnSelectionEntity {
       for (BrnSelectionEntity entity in this.children!) {
         if (!BrunoTools.isEmpty(this.defaultValue)) {
           List<String> values = this.defaultValue!.split(',');
-          entity.isSelected = values != null && values.contains(entity.value);
+          entity.isSelected = values.contains(entity.value);
         }
       }
 
       /// 当 default 不在普通 Item 类型中时，尝试填充 同级别 Range Item.
-      if (children?.where((_) => _.isSelected).toList().length == 0) {
+      if (children
+          ?.where((_) => _.isSelected)
+          .toList()
+          .length == 0) {
         List<BrnSelectionEntity>? tempList = this.children?.where((_) {
           return (_.filterType == BrnSelectionFilterType.Range ||
               _.filterType == BrnSelectionFilterType.DateRange ||
               _.filterType == BrnSelectionFilterType.DateRangeCalendar);
         }).toList();
         BrnSelectionEntity? rangeEntity =
-            (tempList != null && tempList.length > 0) ? tempList.first : null;
+        (tempList != null && tempList.length > 0) ? tempList.first : null;
         if (rangeEntity != null && !BrunoTools.isEmpty(this.defaultValue)) {
           List<String> values = this.defaultValue!.split(':');
-          if (values != null &&
-              values.length == 2 &&
+          if (values.length == 2 &&
               int.tryParse(values[0]) != null &&
               int.tryParse(values[1]) != null) {
             rangeEntity.customMap = {};
@@ -315,27 +318,25 @@ class BrnSelectionEntity {
     if (this.children != null && this.children!.length > 0) {
       List<BrnSelectionEntity> firstList = [];
       for (BrnSelectionEntity firstEntity in this.children!) {
-        if (firstEntity != null &&
-            firstEntity.children != null &&
+        if (firstEntity.children != null &&
             firstEntity.children!.length > 0) {
           List<BrnSelectionEntity> secondList = [];
           for (BrnSelectionEntity secondEntity in firstEntity.children!) {
-            if (secondEntity != null &&
-                secondEntity.children != null &&
+            if (secondEntity.children != null &&
                 secondEntity.children!.length > 0) {
               List<BrnSelectionEntity> thirds =
-                  BrnSelectionUtil.currentSelectListForEntity(secondEntity);
+              BrnSelectionUtil.currentSelectListForEntity(secondEntity);
               if (thirds.length > 0) {
                 list.addAll(thirds);
               } else if (secondEntity.isSelected) {
                 secondList.add(secondEntity);
               }
-            } else if (secondEntity != null && secondEntity.isSelected) {
+            } else if (secondEntity.isSelected) {
               secondList.add(secondEntity);
             }
           }
           list.addAll(secondList);
-        } else if (firstEntity != null && firstEntity.isSelected) {
+        } else if (firstEntity.isSelected) {
           firstList.add(firstEntity);
         }
       }
@@ -349,17 +350,17 @@ class BrnSelectionEntity {
     return selected
         .where((_) => !_.isUnLimit())
         .where((_) =>
-            (_.filterType != BrnSelectionFilterType.Range) ||
-            (_.filterType == BrnSelectionFilterType.Range &&
-                !BrunoTools.isEmpty(_.customMap)))
+    (_.filterType != BrnSelectionFilterType.Range) ||
+        (_.filterType == BrnSelectionFilterType.Range &&
+            !BrunoTools.isEmpty(_.customMap)))
         .where((_) =>
-            (_.filterType != BrnSelectionFilterType.DateRange) ||
-            (_.filterType == BrnSelectionFilterType.DateRange &&
-                !BrunoTools.isEmpty(_.customMap)))
+    (_.filterType != BrnSelectionFilterType.DateRange) ||
+        (_.filterType == BrnSelectionFilterType.DateRange &&
+            !BrunoTools.isEmpty(_.customMap)))
         .where((_) =>
-            (_.filterType != BrnSelectionFilterType.DateRangeCalendar) ||
-            (_.filterType == BrnSelectionFilterType.DateRangeCalendar &&
-                !BrunoTools.isEmpty(_.customMap)))
+    (_.filterType != BrnSelectionFilterType.DateRangeCalendar) ||
+        (_.filterType == BrnSelectionFilterType.DateRangeCalendar &&
+            !BrunoTools.isEmpty(_.customMap)))
         .toList();
   }
 
@@ -369,20 +370,18 @@ class BrnSelectionEntity {
     } else {
       List<BrnSelectionEntity> results = [];
       List<BrnSelectionEntity> firstColumn =
-          BrnSelectionUtil.currentSelectListForEntity(this);
+      BrnSelectionUtil.currentSelectListForEntity(this);
       results.addAll(firstColumn);
-      if (firstColumn != null && firstColumn.length > 0) {
+      if (firstColumn.length > 0) {
         for (BrnSelectionEntity firstEntity in firstColumn) {
-          if (firstEntity != null) {
-            List<BrnSelectionEntity> secondColumn =
-                BrnSelectionUtil.currentSelectListForEntity(firstEntity);
-            results.addAll(secondColumn);
-            if (secondColumn != null && secondColumn.length > 0) {
-              for (BrnSelectionEntity secondEntity in secondColumn) {
-                List<BrnSelectionEntity> thirdColumn =
-                    BrnSelectionUtil.currentSelectListForEntity(secondEntity);
-                results.addAll(thirdColumn);
-              }
+          List<BrnSelectionEntity> secondColumn =
+          BrnSelectionUtil.currentSelectListForEntity(firstEntity);
+          results.addAll(secondColumn);
+          if (secondColumn.length > 0) {
+            for (BrnSelectionEntity secondEntity in secondColumn) {
+              List<BrnSelectionEntity> thirdColumn =
+              BrnSelectionUtil.currentSelectListForEntity(secondEntity);
+              results.addAll(thirdColumn);
             }
           }
         }
@@ -394,20 +393,18 @@ class BrnSelectionEntity {
   List<BrnSelectionEntity> allSelectedList() {
     List<BrnSelectionEntity> results = [];
     List<BrnSelectionEntity> firstColumn =
-        BrnSelectionUtil.currentSelectListForEntity(this);
+    BrnSelectionUtil.currentSelectListForEntity(this);
     results.addAll(firstColumn);
-    if (firstColumn != null && firstColumn.length > 0) {
+    if (firstColumn.length > 0) {
       for (BrnSelectionEntity firstEntity in firstColumn) {
-        if (firstEntity != null) {
-          List<BrnSelectionEntity> secondColumn =
-              BrnSelectionUtil.currentSelectListForEntity(firstEntity);
-          results.addAll(secondColumn);
-          if (secondColumn != null && secondColumn.length > 0) {
-            for (BrnSelectionEntity secondEntity in secondColumn) {
-              List<BrnSelectionEntity> thirdColumn =
-                  BrnSelectionUtil.currentSelectListForEntity(secondEntity);
-              results.addAll(thirdColumn);
-            }
+        List<BrnSelectionEntity> secondColumn =
+        BrnSelectionUtil.currentSelectListForEntity(firstEntity);
+        results.addAll(secondColumn);
+        if (secondColumn.length > 0) {
+          for (BrnSelectionEntity secondEntity in secondColumn) {
+            List<BrnSelectionEntity> thirdColumn =
+            BrnSelectionUtil.currentSelectListForEntity(secondEntity);
+            results.addAll(thirdColumn);
           }
         }
       }
@@ -475,7 +472,7 @@ class BrnSelectionEntity {
 
   /// 检查自己的兄弟结点是否存在 checkbox 类型。
   bool hasCheckBoxBrother() {
-    int? count = parent!.children
+    int? count = parent?.children
         ?.where((f) => f.filterType == BrnSelectionFilterType.Checkbox)
         .length;
     return count == null ? false : count > 0;
@@ -557,13 +554,13 @@ class BrnSelectionEntity {
       DateTime maxTime = DateTime.parse(DATE_PICKER_MAX_DATETIME);
       int limitMin = int.tryParse(extMap!['min']?.toString() ?? "") ??
           (this.filterType == BrnSelectionFilterType.DateRange ||
-                  this.filterType == BrnSelectionFilterType.DateRangeCalendar
+              this.filterType == BrnSelectionFilterType.DateRangeCalendar
               ? minTime.millisecondsSinceEpoch
               : 0);
       // 日期最大值没设置 默认是2121年01月01日 08:00:00
       int limitMax = int.tryParse(extMap!['max']?.toString() ?? "") ??
           (this.filterType == BrnSelectionFilterType.DateRange ||
-                  this.filterType == BrnSelectionFilterType.DateRangeCalendar
+              this.filterType == BrnSelectionFilterType.DateRangeCalendar
               ? maxTime.millisecondsSinceEpoch
               : 9999);
 
@@ -605,20 +602,20 @@ class BrnSelectionEntity {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is BrnSelectionEntity &&
-          runtimeType == other.runtimeType &&
-          key == other.key &&
-          value == other.value &&
-          defaultValue == other.defaultValue &&
-          title == other.title &&
-          children == other.children &&
-          isSelected == other.isSelected &&
-          unit == other.unit &&
-          extMap == other.extMap &&
-          customMap == other.customMap &&
-          type == other.type &&
-          parent == other.parent &&
-          filterType == other.filterType;
+          other is BrnSelectionEntity &&
+              runtimeType == other.runtimeType &&
+              key == other.key &&
+              value == other.value &&
+              defaultValue == other.defaultValue &&
+              title == other.title &&
+              children == other.children &&
+              isSelected == other.isSelected &&
+              unit == other.unit &&
+              extMap == other.extMap &&
+              customMap == other.customMap &&
+              type == other.type &&
+              parent == other.parent &&
+              filterType == other.filterType;
 
   @override
   int get hashCode =>

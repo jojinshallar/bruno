@@ -157,15 +157,13 @@ class _BrnScrollAnchorTabWidgetState extends State<BrnAnchorTab>
   }
 
   void fillList() {
-
-      for (int i = 0, n = widget.itemCount; i < n; i++) {
-        bodyWidgetList.add(
-          Container(
-              key: bodyKeyList[i],
-              child: widget.widgetIndexedBuilder(context, i)),
-        );
-      }
-
+    for (int i = 0, n = widget.itemCount; i < n; i++) {
+      bodyWidgetList.add(
+        Container(
+            key: bodyKeyList[i],
+            child: widget.widgetIndexedBuilder(context, i)),
+      );
+    }
   }
 
   void fillKeyList() {
@@ -193,11 +191,9 @@ class _BrnScrollAnchorTabWidgetState extends State<BrnAnchorTab>
   }
 
   void fillTab() {
-
-      for (int i = 0, n = widget.itemCount; i < n; i++) {
-        tabList.add(widget.tabIndexedBuilder(context, i));
-      }
-
+    for (int i = 0, n = widget.itemCount; i < n; i++) {
+      tabList.add(widget.tabIndexedBuilder(context, i));
+    }
   }
 
   void updateOffset() {

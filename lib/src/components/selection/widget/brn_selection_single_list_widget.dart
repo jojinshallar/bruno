@@ -43,9 +43,6 @@ class BrnSelectionSingleListWidget extends StatefulWidget {
         items.length > 0 ? items[0] : null);
 
     _selectedItems = items.where((f) => f.isSelected).toList();
-    if (_selectedItems == null) {
-      _selectedItems = [];
-    }
   }
 
   @override
@@ -136,7 +133,7 @@ class _BrnSelectionSingleListWidgetState
   }
 
   /// Item 点击之后的数据处理
-  void _processFilterData(BrnSelectionEntity selectedEntity) {
+  void _processFilterData(BrnSelectionEntity? selectedEntity) {
     if (null == selectedEntity) {
       return;
     }
@@ -158,7 +155,7 @@ class _BrnSelectionSingleListWidgetState
     /// Warning !!!
     /// （两列、三列时）第一列节点是否被选中取决于它的子节点是否被选中，
     /// 只有当它子节点被选中时才会认为第一列的节点相应被选中。
-    if (widget.items != null && widget.items.length > 0) {
+    if (widget.items.length > 0) {
       widget.items[0].parent!.isSelected = widget.items[0].parent!.children!
               .where((BrnSelectionEntity f) => f.isSelected)
               .length >

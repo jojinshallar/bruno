@@ -201,6 +201,7 @@ class _BrnGalleryDetailPageState extends State<BrnGalleryDetailPage>
           indicatorColor: _tabBarConfig.labelStyle.color,
           labelStyle: _tabBarConfig.labelStyle.generateTextStyle(),
           tabs: _tabs,
+          tabHeight: _tabBarConfig.tagHeight,
           controller: _tabController,
           onTap: (state, index) {
             _pageController?.animateToPage(_getPagePosition(index, 0),

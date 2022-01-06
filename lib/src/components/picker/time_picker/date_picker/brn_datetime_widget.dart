@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'dart:math';
 
 import 'package:bruno/src/components/picker/base/brn_picker.dart';
@@ -17,7 +15,7 @@ enum ColumnType { Year, Month, Day, Hour, Minute, Second }
 // ignore: must_be_immutable
 class BrnDateTimeWidget extends StatefulWidget {
   BrnDateTimeWidget({
-    Key key,
+    Key? key,
     this.minDateTime,
     this.maxDateTime,
     this.initDateTime,
@@ -35,20 +33,20 @@ class BrnDateTimeWidget extends StatefulWidget {
     assert(minTime.compareTo(maxTime) < 0);
     this.themeData ??= BrnPickerConfig();
     this.themeData = BrnThemeConfigurator.instance
-        .getConfig(configId: this.themeData.configId)
+        .getConfig(configId: this.themeData!.configId)
         .pickerConfig
         .merge(this.themeData);
   }
 
-  final DateTime minDateTime, maxDateTime, initDateTime;
-  final int minuteDivider;
+  final DateTime? minDateTime, maxDateTime, initDateTime;
+  final int? minuteDivider;
   final String dateFormat;
   final DateTimePickerLocale locale;
   final BrnPickerTitleConfig pickerTitleConfig;
 
-  final DateVoidCallback onCancel;
-  final DateValueCallback onChange, onConfirm;
-  BrnPickerConfig themeData;
+  final DateVoidCallback? onCancel;
+  final DateValueCallback? onChange, onConfirm;
+  BrnPickerConfig? themeData;
 
   @override
   State<StatefulWidget> createState() => _BrnDateTimeWidgetState(
@@ -58,30 +56,30 @@ class BrnDateTimeWidget extends StatefulWidget {
 class _BrnDateTimeWidgetState extends State<BrnDateTimeWidget> {
   final int _defaultMinuteDivider = 1;
 
-  DateTime _minTime, _maxTime;
-  int _currYear, _currMonth, _currDay, _currHour, _currMinute, _currSecond;
-  List<int> _yearRange,
+  late DateTime _minTime, _maxTime;
+  late int _currYear, _currMonth, _currDay, _currHour, _currMinute, _currSecond;
+  late List<int> _yearRange,
       _monthRange,
       _dayRange,
       _hourRange,
       _minuteRange,
       _secondRange;
-  FixedExtentScrollController _yearScrollCtrl,
+  late FixedExtentScrollController _yearScrollCtrl,
       _monthScrollCtrl,
       _dayScrollCtrl,
       _hourScrollCtrl,
       _minuteScrollCtrl,
       _secondScrollCtrl;
 
-  Map<String, FixedExtentScrollController> _scrollCtrlMap;
-  Map<String, List<int>> _valueRangeMap;
+  late Map<String, FixedExtentScrollController> _scrollCtrlMap;
+  late Map<String, List<int>> _valueRangeMap;
 
   bool _isChangeTimeRange = false;
 
-  int _minuteDivider;
+  late int _minuteDivider;
 
-  _BrnDateTimeWidgetState(DateTime minTime, DateTime maxTime, DateTime initTime,
-      int minuteDivider) {
+  _BrnDateTimeWidgetState(DateTime? minTime, DateTime? maxTime,
+      DateTime? initTime, int? minuteDivider) {
     // check minTime value
     if (minTime == null) {
       minTime = DateTime.parse(DATE_PICKER_MIN_DATETIME);
@@ -202,7 +200,7 @@ class _BrnDateTimeWidgetState extends State<BrnDateTimeWidget> {
   /// pressed cancel widget
   void _onPressedCancel() {
     if (widget.onCancel != null) {
-      widget.onCancel();
+      widget.onCancel!();
     }
     Navigator.pop(context);
   }
@@ -216,33 +214,23 @@ class _BrnDateTimeWidgetState extends State<BrnDateTimeWidget> {
       /// 如果传入的时间格式不包含 月、天、小时、分钟、秒。则相对应的时间置为 1,1,0,0,0；
       DateTime dateTime = DateTime(
         _currYear,
-        (formatArr?.where((format) => format.contains('M'))?.toList() ?? List())
-                    .length >
-                0
+        (formatArr.where((format) => format.contains('M')).toList()).length > 0
             ? _currMonth
             : 1,
-        (formatArr?.where((format) => format.contains('d'))?.toList() ?? List())
-                    .length >
-                0
+        (formatArr.where((format) => format.contains('d')).toList()).length > 0
             ? _currDay
             : 1,
-        (formatArr?.where((format) => format.contains('H'))?.toList() ?? List())
-                    .length >
-                0
+        (formatArr.where((format) => format.contains('H')).toList()).length > 0
             ? _currHour
             : 0,
-        (formatArr?.where((format) => format.contains('m'))?.toList() ?? List())
-                    .length >
-                0
+        (formatArr.where((format) => format.contains('m')).toList()).length > 0
             ? _currMinute
             : 0,
-        (formatArr?.where((format) => format.contains('s'))?.toList() ?? List())
-                    .length >
-                0
+        (formatArr.where((format) => format.contains('s')).toList()).length > 0
             ? _currSecond
             : 0,
       );
-      widget.onConfirm(dateTime, _calcSelectIndexList());
+      widget.onConfirm!(dateTime, _calcSelectIndexList());
     }
     Navigator.pop(context);
   }
@@ -252,13 +240,13 @@ class _BrnDateTimeWidgetState extends State<BrnDateTimeWidget> {
     if (widget.onChange != null) {
       DateTime dateTime = DateTime(
           _currYear, _currMonth, _currDay, _currHour, _currMinute, _currSecond);
-      widget.onChange(dateTime, _calcSelectIndexList());
+      widget.onChange!(dateTime, _calcSelectIndexList());
     }
   }
 
   /// find scroll controller by specified format
-  FixedExtentScrollController _findScrollCtrl(String format) {
-    FixedExtentScrollController scrollCtrl;
+  FixedExtentScrollController? _findScrollCtrl(String format) {
+    FixedExtentScrollController? scrollCtrl;
     _scrollCtrlMap.forEach((key, value) {
       if (format.contains(key)) {
         scrollCtrl = value;
@@ -269,7 +257,7 @@ class _BrnDateTimeWidgetState extends State<BrnDateTimeWidget> {
 
   /// find item value range by specified format
   List<int> _findPickerItemRange(String format) {
-    List<int> valueRange;
+    List<int> valueRange = [];
     _valueRangeMap.forEach((key, value) {
       if (format.contains(key)) {
         valueRange = value;
@@ -280,7 +268,7 @@ class _BrnDateTimeWidgetState extends State<BrnDateTimeWidget> {
 
   /// render the picker widget of year、month and day
   Widget _renderDatePickerWidget() {
-    List<Widget> pickers = List<Widget>();
+    List<Widget> pickers = <Widget>[];
     List<String> formatArr =
         DateTimeFormatter.splitDateFormat(widget.dateFormat);
 
@@ -316,21 +304,21 @@ class _BrnDateTimeWidgetState extends State<BrnDateTimeWidget> {
   }
 
   Widget _renderDatePickerColumnComponent(
-      {@required FixedExtentScrollController scrollCtrl,
-      @required List<int> valueRange,
-      @required String format,
-      @required ValueChanged<int> valueChanged,
-      int flex,
-      IndexedWidgetBuilder itemBuilder}) {
+      {FixedExtentScrollController? scrollCtrl,
+      required List<int> valueRange,
+      required String format,
+      required ValueChanged<int> valueChanged,
+      int flex = 1,
+      IndexedWidgetBuilder? itemBuilder}) {
     Widget columnWidget = Container(
       width: double.infinity,
-      height: widget.themeData.pickerHeight,
-      decoration: BoxDecoration(color: widget.themeData.backgroundColor),
+      height: widget.themeData!.pickerHeight,
+      decoration: BoxDecoration(color: widget.themeData!.backgroundColor),
       child: BrnPicker.builder(
-        backgroundColor: widget.themeData.backgroundColor,
-        lineColor: widget.themeData.dividerColor,
+        backgroundColor: widget.themeData!.backgroundColor,
+        lineColor: widget.themeData!.dividerColor,
         scrollController: scrollCtrl,
-        itemExtent: widget.themeData.itemHeight,
+        itemExtent: widget.themeData!.itemHeight,
         onSelectedItemChanged: valueChanged,
         childCount: format.contains('m')
             ? _calculateMinuteChildCount(valueRange, _minuteDivider)
@@ -377,7 +365,7 @@ class _BrnDateTimeWidgetState extends State<BrnDateTimeWidget> {
     } else if (format.contains('s')) {
       return ColumnType.Second;
     }
-    return null;
+    throw ArgumentError('Unexpected format');
   }
 
   /// change the selection of year picker
@@ -466,7 +454,7 @@ class _BrnDateTimeWidgetState extends State<BrnDateTimeWidget> {
   /// render hour、minute、second picker item
   Widget _renderDatePickerItemComponent(
       ColumnType columnType, int index, int value, String format) {
-    TextStyle textStyle = widget.themeData.itemTextStyle.generateTextStyle();
+    TextStyle textStyle = widget.themeData!.itemTextStyle.generateTextStyle();
     if ((ColumnType.Year == columnType && index == _calcSelectIndexList()[0]) ||
         (ColumnType.Month == columnType &&
             index == _calcSelectIndexList()[1]) ||
@@ -476,11 +464,11 @@ class _BrnDateTimeWidgetState extends State<BrnDateTimeWidget> {
             index == _calcSelectIndexList()[4]) ||
         (ColumnType.Second == columnType &&
             index == _calcSelectIndexList()[5])) {
-      textStyle = widget.themeData.itemTextSelectedStyle.generateTextStyle();
+      textStyle = widget.themeData!.itemTextSelectedStyle.generateTextStyle();
     }
 
     return Container(
-      height: widget.themeData.itemHeight,
+      height: widget.themeData!.itemHeight,
       alignment: Alignment.center,
       child: Text(
           DateTimeFormatter.formatDateTime(value, format, widget.locale),

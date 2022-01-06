@@ -36,10 +36,6 @@ class BrnBottomTabBar extends StatefulWidget {
     this.badgeColor,
     this.isInkResponse = false,
   })  : assert(items.length >= 1),
-        assert(
-          items.every((BrnBottomTabBarItem item) => item.title != null) == true,
-          'Every item must have a non-null title',
-        ),
         assert(0 <= currentIndex && currentIndex < items.length),
         super(key: key);
 

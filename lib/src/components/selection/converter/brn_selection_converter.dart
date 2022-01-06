@@ -75,13 +75,13 @@ Map<String, String> getSelectionParams(
         params.addAll(getCurrentSelectionEntityParams(menuItemEntity));
       } else if (levelCount == 2) {
         params.addAll(getCurrentSelectionEntityParams(menuItemEntity));
-        menuItemEntity.children!.forEach((firstLevelItem) =>
+        menuItemEntity.children?.forEach((firstLevelItem) =>
             params.addAll(getCurrentSelectionEntityParams(firstLevelItem)));
       } else if (levelCount == 3) {
         params.addAll(getCurrentSelectionEntityParams(menuItemEntity));
-        menuItemEntity.children!.forEach((firstLevelItem) {
+        menuItemEntity.children?.forEach((firstLevelItem) {
           params.addAll(getCurrentSelectionEntityParams(firstLevelItem));
-          firstLevelItem.children!.forEach((secondLevelItem) {
+          firstLevelItem.children?.forEach((secondLevelItem) {
             params.addAll(getCurrentSelectionEntityParams(secondLevelItem));
           });
         });
@@ -95,8 +95,8 @@ Map<String, String> getCurrentSelectionEntityParams(
     BrnSelectionEntity selectionEntity) {
   Map<String, String> params = Map();
   String? parentKey = selectionEntity.key;
-  var selectedEntity = selectionEntity.children!
-      .where((BrnSelectionEntity f) => f.isSelected)
+  var selectedEntity = selectionEntity.children
+      ?.where((BrnSelectionEntity f) => f.isSelected)
       .where((BrnSelectionEntity f) => !BrunoTools.isEmpty(f.value))
       .map((BrnSelectionEntity f) => f.value)
       .toList();

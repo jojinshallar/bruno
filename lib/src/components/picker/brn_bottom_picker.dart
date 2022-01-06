@@ -1,11 +1,8 @@
-// @dart=2.9
-
 import 'package:bruno/src/components/picker/base/brn_picker_title.dart';
 import 'package:bruno/src/components/picker/base/brn_picker_title_config.dart';
 import 'package:bruno/src/components/picker/brn_picker_cliprrect.dart';
 import 'package:bruno/src/theme/brn_theme_configurator.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 /// 该picker用于显示自定的底部弹出框: 对话框结构如下：
 ///              column
@@ -26,16 +23,16 @@ import 'package:flutter/rendering.dart';
 class BrnBottomPicker {
   static void show(
     BuildContext context, {
-    @required contentWidget,
+    required contentWidget,
     String title = '请选择',
     dynamic confirm,
     dynamic cancel,
-    VoidCallback onConfirm,
-    VoidCallback onCancel,
+    VoidCallback? onConfirm,
+    VoidCallback? onCancel,
     bool barrierDismissible = true,
     bool showTitle = true,
   }) {
-    final ThemeData theme = Theme.of(context);
+    final ThemeData? theme = Theme.of(context);
     showGeneralDialog(
       context: context,
       pageBuilder: (BuildContext buildContext, Animation<double> animation,
@@ -75,14 +72,14 @@ class BrnBottomPickerWidget extends StatefulWidget {
   final Widget contentWidget;
   final dynamic confirm;
   final dynamic cancel;
-  final Function() onConfirmPressed;
-  final Function() onCancelPressed;
+  final Function()? onConfirmPressed;
+  final Function()? onCancelPressed;
   final barrierDismissible;
   final BrnPickerTitleConfig pickerTitleConfig;
 
   const BrnBottomPickerWidget({
-    Key key,
-    this.contentWidget,
+    Key? key,
+    required this.contentWidget,
     this.confirm,
     this.cancel,
     this.onConfirmPressed,
@@ -99,8 +96,8 @@ class BrnBottomPickerWidget extends StatefulWidget {
 
 class BrnBottomPickerWidgetState extends State<BrnBottomPickerWidget>
     with TickerProviderStateMixin {
-  AnimationController _controller;
-  Animation _animation;
+  late AnimationController _controller;
+  late Animation<Offset> _animation;
 
   @override
   void initState() {
@@ -117,7 +114,7 @@ class BrnBottomPickerWidgetState extends State<BrnBottomPickerWidget>
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        _controller?.reverse();
+        _controller.reverse();
         return true;
       },
       child: Scaffold(
@@ -135,8 +132,8 @@ class BrnBottomPickerWidgetState extends State<BrnBottomPickerWidget>
 
   @override
   void dispose() {
+    _controller.dispose();
     super.dispose();
-    _controller?.dispose();
   }
 
   Widget _buildBottomWidget() {
@@ -177,14 +174,14 @@ class BrnBottomPickerWidgetState extends State<BrnBottomPickerWidget>
         if (widget.onCancelPressed == null) {
           _closeDialog();
         } else {
-          widget.onCancelPressed();
+          widget.onCancelPressed!();
         }
       },
       onConfirm: () {
         if (widget.onConfirmPressed == null) {
           _closeDialog();
         } else {
-          widget.onConfirmPressed();
+          widget.onConfirmPressed!();
         }
       },
       pickerTitleConfig: BrnPickerTitleConfig(
@@ -231,7 +228,7 @@ class BrnBottomPickerWidgetState extends State<BrnBottomPickerWidget>
     );
   }
 
-  Widget _buildDefaultCancel(String string) {
+  Widget _buildDefaultCancel(String? string) {
     return Text(
       string ?? '取消',
       style: TextStyle(

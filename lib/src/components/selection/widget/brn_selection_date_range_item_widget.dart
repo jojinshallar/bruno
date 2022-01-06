@@ -170,9 +170,9 @@ class _BrnSelectionDateRangeItemWidgetState
   void onTextTapped(bool isMax) {
     if (_datePickerController.isShow) return;
     String format = 'yyyy年,MM月,dd日';
-    DateTime minDate = DateTimeFormatter.convertIntValueToDateTime(
+    DateTime? minDate = DateTimeFormatter.convertIntValueToDateTime(
         (widget.item.extMap ?? Map())['min']);
-    DateTime maxDate = DateTimeFormatter.convertIntValueToDateTime(
+    DateTime? maxDate = DateTimeFormatter.convertIntValueToDateTime(
         (widget.item.extMap ?? Map())['max']);
 
     DateTime? minSelectedDateTime = BrunoTools.isEmpty(widget.item.customMap)
@@ -184,8 +184,8 @@ class _BrnSelectionDateRangeItemWidgetState
         : DateTimeFormatter.convertIntValueToDateTime(
             widget.item.customMap!['max']);
 
-    DateTime _minDateTime;
-    DateTime _maxDateTime;
+    DateTime? _minDateTime;
+    DateTime? _maxDateTime;
     if (widget.item.customMap == null ||
         (widget.item.customMap!['min'] == null &&
             widget.item.customMap!['max'] == null)) {

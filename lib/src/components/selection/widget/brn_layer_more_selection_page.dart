@@ -365,7 +365,7 @@ class _BrnLayerMoreSelectionPageState extends State<BrnLayerMoreSelectionPage>
           } else {
             currentFirstEntity.children?.where((data) {
               return data.filterType != BrnSelectionFilterType.Checkbox;
-            })?.forEach((data) {
+            }).forEach((data) {
               data.isSelected = false;
             });
             if (!currentFirstEntity.children![index].isSelected) {

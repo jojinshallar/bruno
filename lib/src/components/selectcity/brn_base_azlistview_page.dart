@@ -136,7 +136,7 @@ class _BaseAZListViewPageState extends State<BaseAZListViewPage> {
     );
   }
 
-  void _handleList(List<ISuspensionBean> list) {
+  void _handleList(List<ISuspensionBean>? list) {
     if (list == null || list.isEmpty) return;
     for (int i = 0, length = list.length; i < length; i++) {
       String tag = widget.createTagByModal(list[i]);

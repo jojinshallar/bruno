@@ -193,9 +193,9 @@ class BrnSelectionViewState extends State<BrnSelectionView> {
                 menuIndex, _selectionData[menuIndex],
                 (Map<String, String> customParams) {
               _customParams.clear();
-              if (customParams != null) {
-                _customParams.addAll(customParams);
-              }
+
+              _customParams.addAll(customParams);
+
               _onSelectionChanged(menuIndex);
               setState(() {});
             });

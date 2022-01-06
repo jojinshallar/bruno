@@ -93,7 +93,7 @@ class _BrnSelectionGroupViewState extends State<BrnListSelectionGroupWidget> {
 
     widgetList.add(_listWidget());
     // TODO 判断是否添加 Bottom
-    if (_firstList != null) {
+    if (_firstList.isNotEmpty) {
       if (totalLevel == 1 &&
           widget.entity.filterType == BrnSelectionFilterType.Radio) {
       } else {
@@ -339,11 +339,13 @@ class _BrnSelectionGroupViewState extends State<BrnListSelectionGroupWidget> {
   void _refreshDataSource() {
     _firstList = widget.entity.children!;
     if (_firstIndex >= 0 && _firstList.length > _firstIndex) {
-      _secondList = _firstList[_firstIndex].children!;
-      if (_secondIndex >= 0 && _secondList.length > _secondIndex) {
-        _thirdList = _secondList[_secondIndex].children!;
-      } else {
-        _thirdList = [];
+      if (_firstList[_firstIndex].children != null) {
+        _secondList = _firstList[_firstIndex].children!;
+        if (_secondIndex >= 0 && _secondList.length > _secondIndex) {
+          _thirdList = _secondList[_secondIndex].children!;
+        } else {
+          _thirdList = [];
+        }
       }
     } else {
       _secondList = [];
@@ -366,13 +368,15 @@ class _BrnSelectionGroupViewState extends State<BrnListSelectionGroupWidget> {
     _firstIndex = getInitialSelectIndex(_firstList);
 
     if (_firstIndex >= 0 && _firstIndex < _firstList.length) {
-      _secondList = _firstList[_firstIndex].children!;
-      if (_secondList != null) {
-        _secondIndex = getInitialSelectIndex(_secondList);
+      if (_firstList[_firstIndex].children != null) {
+        _secondList = _firstList[_firstIndex].children!;
+        if (_secondList.isNotEmpty) {
+          _secondIndex = getInitialSelectIndex(_secondList);
+        }
       }
     }
 
-    if (_secondList == null) {
+    if (_secondList.isEmpty) {
       _thirdIndex = -1;
       _thirdList = [];
       return;
@@ -404,7 +408,7 @@ class _BrnSelectionGroupViewState extends State<BrnListSelectionGroupWidget> {
     for (BrnSelectionEntity commonEntity in _originalSelectedItemsList) {
       commonEntity.isSelected = true;
       if (commonEntity.originalCustomMap != null) {
-        commonEntity.customMap = Map.from(commonEntity.originalCustomMap);
+        commonEntity.customMap = Map.from(commonEntity.originalCustomMap!);
       }
     }
   }
@@ -415,8 +419,8 @@ class _BrnSelectionGroupViewState extends State<BrnListSelectionGroupWidget> {
     _firstIndex = firstIndex;
     _secondIndex = -1;
     if (widget.entity.children!.length > _firstIndex) {
-      List<BrnSelectionEntity> seconds =
-          widget.entity.children![_firstIndex].children!;
+      List<BrnSelectionEntity>? seconds =
+          widget.entity.children![_firstIndex].children;
       if (seconds != null) {
         _secondIndex = getInitialSelectIndex(seconds);
 
@@ -436,7 +440,7 @@ class _BrnSelectionGroupViewState extends State<BrnListSelectionGroupWidget> {
     List<BrnSelectionEntity> seconds =
         widget.entity.children![_firstIndex].children!;
     if (seconds.length > _secondIndex) {
-      List<BrnSelectionEntity> thirds = seconds[_secondIndex].children!;
+      List<BrnSelectionEntity>? thirds = seconds[_secondIndex].children;
       if (thirds != null) {
         _thirdIndex = getInitialSelectIndex(thirds);
       }
@@ -448,7 +452,7 @@ class _BrnSelectionGroupViewState extends State<BrnListSelectionGroupWidget> {
 
   int getInitialSelectIndex(List<BrnSelectionEntity> levelList) {
     int index = -1;
-    if (levelList == null || levelList.length == 0) {
+    if (levelList.isEmpty) {
       return index;
     }
 
@@ -484,7 +488,7 @@ class _BrnSelectionGroupViewState extends State<BrnListSelectionGroupWidget> {
       if (listIndex == 1) {
         flex = 3;
       } else if (listIndex == 2) {
-        if (_thirdList == null) {
+        if (_thirdList.isEmpty) {
           flex = 7;
         } else {
           flex = 3;
@@ -559,7 +563,7 @@ class _BrnSelectionGroupViewState extends State<BrnListSelectionGroupWidget> {
     for (BrnSelectionEntity commonEntity in _originalSelectedItemsList) {
       commonEntity.isSelected = true;
       if (commonEntity.originalCustomMap != null) {
-        commonEntity.customMap = Map.from(commonEntity.originalCustomMap);
+        commonEntity.customMap = Map.from(commonEntity.originalCustomMap!);
       }
     }
   }
@@ -572,7 +576,7 @@ class _BrnSelectionGroupViewState extends State<BrnListSelectionGroupWidget> {
     }
   }
 
-  _processSelectedStatus(BrnSelectionEntity entity) {
+  _processSelectedStatus(BrnSelectionEntity? entity) {
     if (entity != null &&
         entity.children != null &&
         entity.children!.length > 0) {

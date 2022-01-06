@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 /// ignore: must_be_immutable
 class BrnDeleteTag extends StatefulWidget {
   /// 初始传入的标签，当传入controller的时候，应把初始标签放入controller的构造中
-  final List<String> tags;
+  final List<String>? tags;
 
   /// 标签控制器，用于主动添加和删除标签，如果使用场景只需要删除标签并进行回调可以不传控制器
   final BrnDeleteTagController? controller;
@@ -54,7 +54,7 @@ class BrnDeleteTag extends StatefulWidget {
 
   BrnDeleteTag(
       {Key? key,
-      required this.tags,
+      this.tags,
       this.controller,
       this.onTagDelete,
       this.verticalSpacing,
@@ -229,8 +229,10 @@ class BrnDeleteTagController {
 
   List<String> get tags => notifier.value;
 
-  BrnDeleteTagController({required List<String> initTags}) {
-    _tags = initTags;
+  BrnDeleteTagController({List<String>? initTags}) {
+    if (initTags != null) {
+      _tags = initTags;
+    }
     notifier = ValueNotifier(_tags);
   }
 

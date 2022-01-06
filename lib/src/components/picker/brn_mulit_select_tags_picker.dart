@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'package:bruno/src/components/picker/base/brn_picker_title_config.dart';
 import 'package:bruno/src/components/picker/brn_tags_common_picker.dart';
 import 'package:bruno/src/components/picker/brn_tags_picker_config.dart';
@@ -27,12 +25,12 @@ typedef BrnMultiSelectTagOnItemClick = void Function(
 /// 可自定义标题、默认选中、字体大小等。
 class BrnMultiSelectTagsPicker extends CommonTagsPicker {
   BrnMultiSelectTagsPicker({
-    Key key,
-    @required this.context,
-    @required this.onConfirm,
+    Key? key,
+    required this.context,
+    required this.onConfirm,
     this.onCancel,
-    @required this.tagPickerConfig,
-    @required this.onTagValueGetter,
+    required this.tagPickerConfig,
+    required this.onTagValueGetter,
     this.onMaxSelectClick,
     this.onItemClick,
     this.maxSelectItemCount = 0,
@@ -40,7 +38,7 @@ class BrnMultiSelectTagsPicker extends CommonTagsPicker {
     this.itemHeight = 34.0,
     this.layoutStyle = BrnMultiSelectTagsLayoutStyle.average,
     BrnPickerTitleConfig pickerTitleConfig = BrnPickerTitleConfig.Default,
-    BrnPickerConfig themeData,
+    BrnPickerConfig? themeData,
   }) : super(
             key: key,
             context: context,
@@ -53,19 +51,19 @@ class BrnMultiSelectTagsPicker extends CommonTagsPicker {
   final BuildContext context;
 
   /// 点击提交功能
-  final ValueChanged onConfirm;
+  final ValueChanged? onConfirm;
 
   /// 点击取消按钮
-  final VoidCallback onCancel;
+  final VoidCallback? onCancel;
 
   /// 当点击到最大数目时的点击事件
-  final VoidCallback onMaxSelectClick;
+  final VoidCallback? onMaxSelectClick;
 
   /// 点击某个按钮的回调
-  final BrnMultiSelectTagOnItemClick onItemClick;
+  final BrnMultiSelectTagOnItemClick? onItemClick;
 
   /// 一行多少个数据，默认4个
-  final int crossAxisCount;
+  final int? crossAxisCount;
 
   /// 最多选择多少个item，默认可以无限选
   final int maxSelectItemCount;
@@ -78,14 +76,14 @@ class BrnMultiSelectTagsPicker extends CommonTagsPicker {
   final BrnMultiSelectTagStringBuilder<BrnTagItemBean> onTagValueGetter;
 
   /// 是等分样式还是流式布局样式，[BrnMultiSelectTagsLayoutStyle]，默认等分
-  final BrnMultiSelectTagsLayoutStyle layoutStyle;
+  final BrnMultiSelectTagsLayoutStyle? layoutStyle;
 
   /// item的高度, 默认数值是34
   final double itemHeight;
 
   /// 操作类型属性
-  List _selectedTags;
-  List _sourceTags;
+  late List _selectedTags;
+  late List _sourceTags;
 
   @override
   void show() {
@@ -99,8 +97,8 @@ class BrnMultiSelectTagsPicker extends CommonTagsPicker {
   }
 
   @override
-  Widget createBuilder(BuildContext context, VoidCallback onUpdate) {
-    if (this.tagPickerConfig?.tagItemSource?.isNotEmpty ?? false) {
+  Widget createBuilder(BuildContext context, VoidCallback? onUpdate) {
+    if (this.tagPickerConfig.tagItemSource.isNotEmpty) {
       return _buildContent(context, onUpdate);
     } else {
       return Container(
@@ -112,7 +110,7 @@ class BrnMultiSelectTagsPicker extends CommonTagsPicker {
     }
   }
 
-  Widget _buildContent(BuildContext context, VoidCallback onUpdate) {
+  Widget _buildContent(BuildContext context, VoidCallback? onUpdate) {
     if (this.layoutStyle == BrnMultiSelectTagsLayoutStyle.average) {
       return LayoutBuilder(
         builder: (_, constraints) {
@@ -127,11 +125,11 @@ class BrnMultiSelectTagsPicker extends CommonTagsPicker {
 
   ///等宽度的布局
   Widget _buildGridViewWidget(
-      BuildContext context, VoidCallback onUpdate, double maxWidth) {
+      BuildContext context, VoidCallback? onUpdate, double maxWidth) {
     int brnCrossAxisCount =
-        (this.crossAxisCount == 0 || this.crossAxisCount == null)
+        (this.crossAxisCount == null || this.crossAxisCount == 0)
             ? 4
-            : this.crossAxisCount;
+            : this.crossAxisCount!;
     double width =
         (maxWidth - (brnCrossAxisCount - 1) * 12 - 40) / brnCrossAxisCount;
     //计算宽高比
@@ -201,12 +199,14 @@ class BrnMultiSelectTagsPicker extends CommonTagsPicker {
                   value == true) {
                 if (this.onMaxSelectClick != null) {
                   // ignore: unnecessary_statements
-                  this.onMaxSelectClick();
+                  this.onMaxSelectClick!();
                 }
                 return;
               }
               _clickTag(value, choice);
-              onUpdate();
+              if (onUpdate != null) {
+                onUpdate();
+              }
             },
           );
         }).toList(),
@@ -215,7 +215,7 @@ class BrnMultiSelectTagsPicker extends CommonTagsPicker {
   }
 
   ///流式布局
-  Widget _buildWrapViewWidget(BuildContext context, VoidCallback onUpdate) {
+  Widget _buildWrapViewWidget(BuildContext context, VoidCallback? onUpdate) {
     Color selectedTagTitleColor = this.tagPickerConfig.selectedTagTitleColor ??
         BrnThemeConfigurator.instance.getConfig().commonConfig.brandPrimary;
     Color tagTitleColor = this.tagPickerConfig.tagTitleColor ??
@@ -268,12 +268,14 @@ class BrnMultiSelectTagsPicker extends CommonTagsPicker {
                     value == true) {
                   if (this.onMaxSelectClick != null) {
                     // ignore: unnecessary_statements
-                    this.onMaxSelectClick();
+                    this.onMaxSelectClick!();
                   }
                   return;
                 }
                 _clickTag(value, choice);
-                onUpdate();
+                if (onUpdate != null) {
+                  onUpdate();
+                }
               },
             );
           }).toList(),
@@ -281,12 +283,12 @@ class BrnMultiSelectTagsPicker extends CommonTagsPicker {
   }
 
   void _dataSetup() {
-    List tagItems = List();
-    List tagSelectItems = List();
+    List tagItems = [];
+    List tagSelectItems = [];
     for (BrnTagItemBean item in this.tagPickerConfig.tagItemSource) {
       tagItems.add(item);
       //选中的按钮
-      if (item.isSelect == true && item.name != null) {
+      if (item.isSelect == true) {
         tagSelectItems.add(item);
       }
     }
@@ -308,7 +310,7 @@ class BrnMultiSelectTagsPicker extends CommonTagsPicker {
 
     ///点击tag
     if (this.onItemClick != null) {
-      this.onItemClick(tagName, selected);
+      this.onItemClick!(tagName, selected);
     }
   }
 }

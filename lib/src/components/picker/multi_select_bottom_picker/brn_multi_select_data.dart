@@ -1,5 +1,3 @@
-// @dart=2.9
-
 class BrnMultiSelectBottomPickerItem {
   String code; //选项编号
 

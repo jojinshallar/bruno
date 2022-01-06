@@ -66,7 +66,7 @@ class _BrnSubSwitchTitleState extends State<BrnSubSwitchTitle>
   }
 
   Widget _toggleButtonsWidget(context) {
-    if (widget.nameList == null || widget.nameList.isEmpty) {
+    if (widget.nameList.isEmpty) {
       return Container(
         height: 0,
         width: 0,

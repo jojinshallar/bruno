@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ui';
 
 import 'package:bruno/src/components/line/brn_line.dart';
 import 'package:bruno/src/components/picker/base/brn_picker_title_config.dart';
@@ -364,10 +363,10 @@ class __FilterCommonTypeWidgetState extends State<_FilterCommonTypeWidget> {
 // ignore: must_be_immutable
 class _MoreArrow extends StatefulWidget {
   ///用于通知 展开和收起
-  final ValueNotifier valueNotifier;
+  final ValueNotifier? valueNotifier;
   BrnSelectionConfig themeData;
 
-  _MoreArrow({required this.valueNotifier, required this.themeData});
+  _MoreArrow({this.valueNotifier, required this.themeData});
 
   @override
   __MoreArrowState createState() => __MoreArrowState();
@@ -387,7 +386,7 @@ class __MoreArrowState extends State<_MoreArrow> {
         setState(() {
           isExpanded = !isExpanded;
           if (widget.valueNotifier != null) {
-            widget.valueNotifier.value = isExpanded;
+            widget.valueNotifier!.value = isExpanded;
           }
         });
       },
@@ -718,7 +717,7 @@ class _FilterLayerTypeWidgetState extends State<FilterLayerTypeWidget> {
 
   bool isEmptyCondition() {
     String condition = getCondition();
-    return condition == null || condition.isEmpty;
+    return condition.isEmpty;
   }
 
   String getCondition() {

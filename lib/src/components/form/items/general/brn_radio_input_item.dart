@@ -286,7 +286,7 @@ class BrnRadioInputFormItemState extends State<BrnRadioInputFormItem> {
 
   Widget _buildTitleTextWidget() {
     return Text(widget.title ?? "",
-        overflow: widget.titleMaxLines ==0
+        overflow: widget.titleMaxLines == 0
             ? TextOverflow.clip
             : TextOverflow.ellipsis,
         maxLines: widget.titleMaxLines,

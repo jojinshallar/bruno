@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'package:bruno/src/components/picker/base/brn_picker_title_config.dart';
 import 'package:bruno/src/components/picker/brn_picker_cliprrect.dart';
 import 'package:bruno/src/components/picker/time_picker/brn_date_picker_constants.dart';
@@ -39,21 +37,21 @@ class BrnDateRangePicker {
   static void showDatePicker(
     BuildContext context, {
     bool isDismissible = true,
-    DateTime minDateTime,
-    DateTime maxDateTime,
+    DateTime? minDateTime,
+    DateTime? maxDateTime,
     bool isLimitTimeRange = true,
-    DateTime initialStartDateTime,
-    DateTime initialEndDateTime,
-    String dateFormat,
-    int minuteDivider,
+    DateTime? initialStartDateTime,
+    DateTime? initialEndDateTime,
+    String? dateFormat,
+    int minuteDivider = 1,
     DateTimePickerLocale locale: DATETIME_PICKER_LOCALE_DEFAULT,
     BrnDateTimeRangePickerMode pickerMode: BrnDateTimeRangePickerMode.date,
     BrnPickerTitleConfig pickerTitleConfig: BrnPickerTitleConfig.Default,
-    DateVoidCallback onCancel,
-    DateVoidCallback onClose,
-    DateRangeValueCallback onChange,
-    DateRangeValueCallback onConfirm,
-    BrnPickerConfig themeData,
+    DateVoidCallback? onCancel,
+    required DateVoidCallback onClose,
+    DateRangeValueCallback? onChange,
+    DateRangeValueCallback? onConfirm,
+    BrnPickerConfig? themeData,
   }) {
     // handle the range of datetime
     if (minDateTime == null) {
@@ -98,7 +96,7 @@ class BrnDateRangePicker {
 }
 
 class _DatePickerRoute<T> extends PopupRoute<T> {
-  final DateTime minDateTime,
+  final DateTime? minDateTime,
       maxDateTime,
       initialStartDateTime,
       initialEndDateTime;
@@ -107,13 +105,13 @@ class _DatePickerRoute<T> extends PopupRoute<T> {
   final DateTimePickerLocale locale;
   final BrnDateTimeRangePickerMode pickerMode;
   final BrnPickerTitleConfig pickerTitleConfig;
-  final VoidCallback onCancel;
-  final DateRangeValueCallback onChange;
-  final DateRangeValueCallback onConfirm;
+  final VoidCallback? onCancel;
+  final DateRangeValueCallback? onChange;
+  final DateRangeValueCallback? onConfirm;
   final int minuteDivider;
-  final ThemeData theme;
-  final bool isDismissible;
-  BrnPickerConfig themeData;
+  final ThemeData? theme;
+  final bool? isDismissible;
+  BrnPickerConfig? themeData;
 
   _DatePickerRoute({
     this.minDateTime,
@@ -122,10 +120,10 @@ class _DatePickerRoute<T> extends PopupRoute<T> {
     this.initialStartDateTime,
     this.initialEndDateTime,
     this.minuteDivider = 1,
-    this.dateFormat,
-    this.locale,
-    this.pickerMode,
-    this.pickerTitleConfig,
+    required this.dateFormat,
+    required this.locale,
+    required this.pickerMode,
+    required this.pickerTitleConfig,
     this.onCancel,
     this.onChange,
     this.onConfirm,
@@ -133,11 +131,11 @@ class _DatePickerRoute<T> extends PopupRoute<T> {
     this.barrierLabel,
     this.isDismissible,
     this.themeData,
-    RouteSettings settings,
+    RouteSettings? settings,
   }) : super(settings: settings) {
     this.themeData ??= BrnPickerConfig();
     this.themeData = BrnThemeConfigurator.instance
-        .getConfig(configId: this.themeData.configId)
+        .getConfig(configId: this.themeData!.configId)
         .pickerConfig
         .merge(this.themeData);
   }
@@ -149,27 +147,26 @@ class _DatePickerRoute<T> extends PopupRoute<T> {
   bool get barrierDismissible => isDismissible ?? true;
 
   @override
-  final String barrierLabel;
+  final String? barrierLabel;
 
   @override
   Color get barrierColor => Colors.black54;
 
-  AnimationController _animationController;
+  late AnimationController _animationController;
 
   @override
   AnimationController createAnimationController() {
-    assert(_animationController == null);
     _animationController =
-        BottomSheet.createAnimationController(navigator.overlay);
+        BottomSheet.createAnimationController(navigator!.overlay!);
     return _animationController;
   }
 
   @override
   Widget buildPage(BuildContext context, Animation<double> animation,
       Animation<double> secondaryAnimation) {
-    double height = themeData.pickerHeight;
+    double height = themeData!.pickerHeight;
     if (pickerTitleConfig.title != null || pickerTitleConfig.showTitle) {
-      height += themeData.titleHeight;
+      height += themeData!.titleHeight;
     }
 
     Widget bottomSheet = MediaQuery.removePadding(
@@ -182,7 +179,7 @@ class _DatePickerRoute<T> extends PopupRoute<T> {
     );
 
     if (theme != null) {
-      bottomSheet = Theme(data: theme, child: bottomSheet);
+      bottomSheet = Theme(data: theme!, child: bottomSheet);
     }
     return bottomSheet;
   }
@@ -192,12 +189,12 @@ class _DatePickerComponent extends StatelessWidget {
   final _DatePickerRoute route;
   final double _pickerHeight;
 
-  _DatePickerComponent({@required this.route, @required pickerHeight})
+  _DatePickerComponent({required this.route, required pickerHeight})
       : this._pickerHeight = pickerHeight;
 
   @override
   Widget build(BuildContext context) {
-    Widget pickerWidget;
+    Widget? pickerWidget;
     switch (route.pickerMode) {
       case BrnDateTimeRangePickerMode.date:
         pickerWidget = BrnDateRangeWidget(
@@ -234,16 +231,16 @@ class _DatePickerComponent extends StatelessWidget {
     }
     return GestureDetector(
       child: AnimatedBuilder(
-        animation: route.animation,
-        builder: (BuildContext context, Widget child) {
+        animation: route.animation!,
+        builder: (BuildContext context, Widget? child) {
           return ClipRect(
             child: CustomSingleChildLayout(
-              delegate: _BottomPickerLayout(route.animation.value,
+              delegate: _BottomPickerLayout(route.animation!.value,
                   contentHeight: _pickerHeight),
               child: BrnPickerClipRRect(
                 borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(route.themeData.cornerRadius),
-                  topRight: Radius.circular(route.themeData.cornerRadius),
+                  topLeft: Radius.circular(route.themeData!.cornerRadius),
+                  topRight: Radius.circular(route.themeData!.cornerRadius),
                 ),
                 child: pickerWidget,
               ),
@@ -256,7 +253,7 @@ class _DatePickerComponent extends StatelessWidget {
 }
 
 class _BottomPickerLayout extends SingleChildLayoutDelegate {
-  _BottomPickerLayout(this.progress, {this.contentHeight});
+  _BottomPickerLayout(this.progress, {required this.contentHeight});
 
   final double progress;
   final double contentHeight;

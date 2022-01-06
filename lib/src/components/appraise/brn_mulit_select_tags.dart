@@ -90,7 +90,7 @@ class _BrnMultiSelectTagsState extends State<BrnMultiSelectTags> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.tagPickerBean.tagItemSource?.isNotEmpty ?? false) {
+    if (widget.tagPickerBean.tagItemSource.isNotEmpty) {
       return _buildContent(context);
     } else {
       return widget.emptyWidget ??
@@ -163,7 +163,7 @@ class _BrnMultiSelectTagsState extends State<BrnMultiSelectTags> {
     for (BrnTagItemBean item in widget.tagPickerBean.tagItemSource) {
       tagItems.add(item);
       //选中的按钮
-      if (item.isSelect == true && item.name != null) {
+      if (item.isSelect == true) {
         tagSelectItems.add(item);
       }
     }

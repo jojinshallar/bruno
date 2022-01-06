@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'package:bruno/src/components/picker/multi_range_picker/bean/brn_multi_column_picker_entity.dart';
 import 'package:bruno/src/components/picker/multi_range_picker/brn_multi_column_picker_util.dart';
 import 'package:bruno/src/constants/brn_asset_constants.dart';
@@ -12,17 +10,17 @@ class BrnMultiRangePickerCommonItem extends StatelessWidget {
   final BrnPickerEntity item;
   final Color normalColor;
   final Color selectColor;
-  final Color backgroundColor;
-  final Color selectedBackgroundColor;
+  final Color? backgroundColor;
+  final Color? selectedBackgroundColor;
   final bool isCurrentFocused;
   final bool isFirstLevel;
 
   final bool isMoreSelectionListType;
 
-  final ItemSelectFunction itemSelectFunction;
+  final ItemSelectFunction? itemSelectFunction;
 
   BrnMultiRangePickerCommonItem({
-    @required this.item,
+    required this.item,
     this.normalColor = const Color(0Xff4a4e59),
     this.selectColor = const Color(0xff41bc6a),
     this.backgroundColor,
@@ -30,14 +28,14 @@ class BrnMultiRangePickerCommonItem extends StatelessWidget {
     this.isMoreSelectionListType = false,
     this.itemSelectFunction,
     this.selectedBackgroundColor,
-    this.isCurrentFocused,
+    required this.isCurrentFocused,
   });
 
   @override
   Widget build(BuildContext context) {
     var checkbox;
     if (!item.isUnLimit() &&
-        (item.children == null || item.children.length == 0)) {
+        (item.children == null || item.children!.length == 0)) {
       if (item.isInLastLevel() && _hasCheckBoxBrother(item)) {
         checkbox = Container(
           padding: EdgeInsets.only(left: 6),
@@ -57,7 +55,7 @@ class BrnMultiRangePickerCommonItem extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         if (itemSelectFunction != null) {
-          itemSelectFunction(item);
+          itemSelectFunction!(item);
         }
       },
       child: Container(
@@ -71,7 +69,7 @@ class BrnMultiRangePickerCommonItem extends StatelessWidget {
               Container(
                   child: Expanded(
                 child: Text(
-                  item.name + _getSelectedItemCount(item),
+                  item.name ?? "" + _getSelectedItemCount(item),
                   softWrap: true,
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.left,
@@ -90,7 +88,7 @@ class BrnMultiRangePickerCommonItem extends StatelessWidget {
     );
   }
 
-  Color _getItemBGColor() {
+  Color? _getItemBGColor() {
     if (isCurrentFocused) {
       return this.selectedBackgroundColor;
     } else {
@@ -126,7 +124,7 @@ class BrnMultiRangePickerCommonItem extends StatelessWidget {
             !isFirstLevel) &&
         item.children != null) {
       int count =
-          item.children.where((f) => f.isSelected && !f.isUnLimit()).length;
+          item.children!.where((f) => f.isSelected && !f.isUnLimit()).length;
       if (count > 1) {
         return '($count)';
       }
@@ -135,9 +133,9 @@ class BrnMultiRangePickerCommonItem extends StatelessWidget {
   }
 
   bool _hasCheckBoxBrother(BrnPickerEntity item) {
-    int count = item.parent.children
+    int? count = item.parent?.children
         ?.where((f) => f.filterType == PickerFilterType.Checkbox)
-        ?.length;
+        .length;
     return count == null ? false : count > 0;
   }
 }

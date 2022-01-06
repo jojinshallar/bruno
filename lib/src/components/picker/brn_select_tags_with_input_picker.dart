@@ -1,11 +1,8 @@
-// @dart=2.9
-
 import 'package:bruno/src/components/picker/brn_picker_cliprrect.dart';
 import 'package:bruno/src/constants/brn_asset_constants.dart';
 import 'package:bruno/src/theme/brn_theme_configurator.dart';
 import 'package:bruno/src/utils/brn_tools.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 ///传入的泛型数据转换为值 以填充Widget
 typedef SelectTagWithInputValueGetter<V> = String Function(V data);
@@ -31,19 +28,19 @@ class BrnSelectTagsWithInputPicker extends Dialog {
   final int maxLength;
 
   ///输入内容事件回调
-  final BrnTagInputConfirmClickCallback confirm;
+  final BrnTagInputConfirmClickCallback? confirm;
 
   ///关闭 picker 回调
-  final BrnTagInputCancelClickCallBack cancelCallBack;
+  final BrnTagInputCancelClickCallBack? cancelCallBack;
 
   ///光标颜色
-  final Color cursorColor;
+  final Color? cursorColor;
 
   /// 默认文本
-  final String defaultText;
+  final String? defaultText;
 
   /// 用于对 TextField 更精细的控制，若传入该字段，[defaultText] 参数将失效，可使用 TextEditingController.text 进行赋值。
-  final TextEditingController textEditingController;
+  final TextEditingController? textEditingController;
 
   /// 强制显示文本框
   final bool forceShowTextInput;
@@ -68,8 +65,8 @@ class BrnSelectTagsWithInputPicker extends Dialog {
       this.multiSelect = false,
       this.defaultText,
       this.textEditingController,
-      @required this.tagPickerConfig,
-      @required this.onTagValueGetter});
+      required this.tagPickerConfig,
+      required this.onTagValueGetter});
 
   @override
   Widget build(BuildContext context) {
@@ -92,32 +89,32 @@ class BrnSelectTagsWithInputPicker extends Dialog {
 
 class BrnSelectTagsWithInputPickerWidget extends StatefulWidget {
   final String title;
-  final BrnTagInputConfirmClickCallback confirm;
-  final BrnTagInputCancelClickCallBack cancelCallBack;
-  final int maxLength;
-  final String hintText;
-  final Color cursorColor;
+  final BrnTagInputConfirmClickCallback? confirm;
+  final BrnTagInputCancelClickCallBack? cancelCallBack;
+  final int? maxLength;
+  final String? hintText;
+  final Color? cursorColor;
   final bool forceShowTextInput;
   final bool multiSelect;
-  final String defaultText;
-  final TextEditingController textEditingController;
+  final String? defaultText;
+  final TextEditingController? textEditingController;
   final BrnTagsInputPickerConfig tagPickerBean;
   final SelectTagWithInputValueGetter<BrnTagInputItemBean> onTagValueGetter;
 
   const BrnSelectTagsWithInputPickerWidget(
-      {Key key,
-      this.title,
+      {Key? key,
+      required this.title,
       this.confirm,
       this.cancelCallBack,
       this.maxLength,
       this.hintText,
       this.cursorColor,
-      this.forceShowTextInput,
-      this.multiSelect,
+      required this.forceShowTextInput,
+      required this.multiSelect,
       this.defaultText,
       this.textEditingController,
-      this.tagPickerBean,
-      this.onTagValueGetter})
+      required this.tagPickerBean,
+      required this.onTagValueGetter})
       : super(key: key);
 
   @override
@@ -128,13 +125,13 @@ class BrnSelectTagsWithInputPickerWidget extends StatefulWidget {
 class _BrnSelectTagsWithInputPickerWidgetState
     extends State<BrnSelectTagsWithInputPickerWidget>
     with AutomaticKeepAliveClientMixin {
-  TextEditingController _textEditingController;
+  late TextEditingController _textEditingController;
 
   /// 暂定只支持两列标签
   int brnCrossAxisCount = 2;
 
-  List<BrnTagInputItemBean> _selectedTags;
-  List<BrnTagInputItemBean> _sourceTags;
+  late List<BrnTagInputItemBean> _selectedTags;
+  late List<BrnTagInputItemBean> _sourceTags;
 
   @override
   void initState() {
@@ -142,11 +139,11 @@ class _BrnSelectTagsWithInputPickerWidgetState
     _dataSetup();
     _textEditingController = widget.textEditingController ??
         TextEditingController.fromValue(TextEditingValue(
-            text: widget.defaultText == null ? "" : widget.defaultText,
+            text: widget.defaultText ?? "",
             selection: TextSelection.fromPosition(TextPosition(
                 affinity: TextAffinity.downstream,
                 offset: widget.defaultText != null
-                    ? widget.defaultText.length
+                    ? widget.defaultText!.length
                     : 0))));
   }
 
@@ -171,7 +168,7 @@ class _BrnSelectTagsWithInputPickerWidgetState
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            children: (widget.tagPickerBean?.tagItemSource?.isNotEmpty ?? false)
+            children: (widget.tagPickerBean.tagItemSource.isNotEmpty)
                 ? _buildBody(context)
                 : _buildNoTagsBody(context),
           ),
@@ -218,12 +215,12 @@ class _BrnSelectTagsWithInputPickerWidgetState
   }
 
   void _dataSetup() {
-    List<BrnTagInputItemBean> tagItems = List();
-    List<BrnTagInputItemBean> tagSelectedItems = List();
+    List<BrnTagInputItemBean> tagItems = [];
+    List<BrnTagInputItemBean> tagSelectedItems = [];
     for (BrnTagInputItemBean item in widget.tagPickerBean.tagItemSource) {
       tagItems.add(item);
       //选中的按钮
-      if (item.isSelect == true && item.name != null) {
+      if (item.isSelect == true) {
         tagSelectedItems.add(item);
       }
     }
@@ -259,7 +256,7 @@ class _BrnSelectTagsWithInputPickerWidgetState
           InkWell(
               onTap: () {
                 if (widget.cancelCallBack != null) {
-                  widget.cancelCallBack(context);
+                  widget.cancelCallBack!(context);
                 }
                 Navigator.of(context).pop();
               },
@@ -423,7 +420,7 @@ class _BrnSelectTagsWithInputPickerWidgetState
           onTap: () {
             if (!isCommitBtnEnable()) return;
             if (widget.confirm != null) {
-              widget.confirm(
+              widget.confirm!(
                   context, this._selectedTags, _textEditingController.text);
             }
           },
@@ -484,16 +481,16 @@ class BrnTagInputItemBean {
   bool isSelect;
 
   ///选中tag的index
-  int index;
+  int? index;
 
   /// 选中后是否展示文本输入框
   bool needExplane;
 
   /// 附带的更多数据，方便在点击回调中取用。
-  Map ext;
+  Map? ext;
 
   BrnTagInputItemBean({
-    this.name,
+    required this.name,
     this.isSelect = false,
     this.index,
     this.needExplane = false,
@@ -514,10 +511,10 @@ class BrnTagsInputPickerConfig {
   }
 
   double tagTitleFontSize;
-  Color tagTitleColor;
-  Color selectedTagTitleColor;
-  Color tagBackgroudColor;
-  Color selectedTagBackgroudColor;
+  Color? tagTitleColor;
+  Color? selectedTagTitleColor;
+  Color? tagBackgroudColor;
+  Color? selectedTagBackgroudColor;
 
   List<BrnTagInputItemBean> tagItemSource;
 }

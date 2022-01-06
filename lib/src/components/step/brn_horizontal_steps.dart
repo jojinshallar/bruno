@@ -294,11 +294,11 @@ class BrunoStep {
   ///
   /// The [stepContent], [doingIcon] arguments must not be null.
   const BrunoStep({
-    required this.stepContent,
+    this.stepContent,
     required this.stepContentText,
-    required this.doingIcon,
+    this.doingIcon,
     this.completedIcon,
-    required this.state,
+    this.state,
   });
 
   /// The String title of the step that typically describes it.

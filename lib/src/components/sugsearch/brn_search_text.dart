@@ -1,10 +1,7 @@
-
-
 import 'package:bruno/src/constants/brn_asset_constants.dart';
 import 'package:bruno/src/constants/brn_strings_constants.dart';
 import 'package:bruno/src/theme/brn_theme_configurator.dart';
 import 'package:bruno/src/utils/brn_tools.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 /// 搜索框内容变化回调
@@ -276,9 +273,8 @@ class _SearchTextState extends State<BrnSearchText> {
                           }
                           textEditingController!.clear();
                           if (this.widget.onTextChange != null) {
-                            this
-                                .widget
-                                .onTextChange!(textEditingController!.value.text);
+                            this.widget.onTextChange!(
+                                textEditingController!.value.text);
                           }
                           setState(() {});
                         },

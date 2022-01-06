@@ -234,7 +234,7 @@ class _BrnSingleSelectCityPageState extends State<BrnSingleSelectCityPage> {
       hintText: '请输入搜索信息',
       onTextChange: (text) {
         _searchText = text;
-        _showCityStack = (text.length == 0 || text == null) ? true : false;
+        _showCityStack = text.isEmpty;
         setState(() {});
       },
       onTextCommit: (text) {
@@ -275,7 +275,7 @@ class _BrnSingleSelectCityPageState extends State<BrnSingleSelectCityPage> {
           decoration: BoxDecoration(color: Colors.white),
           child: Column(
             children: <Widget>[
-              widget.locationText.isEmpty || widget.locationText == null
+              widget.locationText.isEmpty
                   ? Container()
                   : _buildLocationBar(widget.locationText),
               widget.showSearchBar ? _buildSearchBar() : Container(),

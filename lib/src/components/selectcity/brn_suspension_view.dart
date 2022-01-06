@@ -85,8 +85,7 @@ class _SuspensionWidgetState extends State<SuspensionView> {
 
   int _getIndex(int offset) {
     if (widget.header != null && offset < widget.header!.height) {
-      if (_suspensionTop != -widget.header!.height &&
-          widget.suspensionWidget != null) {
+      if (_suspensionTop != -widget.header!.height) {
         setState(() {
           _suspensionTop = -widget.header!.height;
         });
@@ -100,7 +99,7 @@ class _SuspensionWidgetState extends State<SuspensionView> {
       } else {
         space = 0;
       }
-      if (_suspensionTop != space && widget.suspensionWidget != null) {
+      if (_suspensionTop != space) {
         setState(() {
           _suspensionTop = space;
         });
@@ -149,15 +148,15 @@ class _SuspensionWidgetState extends State<SuspensionView> {
     var children = <Widget>[
       widget.contentWidget,
     ];
-    if (widget.suspensionWidget != null) {
-      children.add(Positioned(
-        ///-0.1修复部分手机丢失精度问题
-        top: _suspensionTop.toDouble() - 0.1,
-        left: 0.0,
-        right: 0.0,
-        child: widget.suspensionWidget,
-      ));
-    }
+
+    children.add(Positioned(
+      ///-0.1修复部分手机丢失精度问题
+      top: _suspensionTop.toDouble() - 0.1,
+      left: 0.0,
+      right: 0.0,
+      child: widget.suspensionWidget,
+    ));
+
     return Stack(children: children);
   }
 }

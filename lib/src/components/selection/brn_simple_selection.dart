@@ -106,7 +106,7 @@ class BrnSimpleSelectionState extends State<BrnSimpleSelection> {
       originalSelectionData: selectionEntityList,
       onSelectionChanged:
           (menuIndex, selectedParams, customParams, setCustomTitleFunction) {
-        if (widget.onSimpleSelectionChanged != null && selectedParams != null) {
+        if (widget.onSimpleSelectionChanged != null) {
           List<ItemEntity> selectedItems = [];
           String? valueStr = selectedParams[widget.menuKey ?? defaultMenuKey];
           if (valueStr != null) {
@@ -115,9 +115,7 @@ class BrnSimpleSelectionState extends State<BrnSimpleSelection> {
             ///遍历获取选中的items
             for (String value in values) {
               for (ItemEntity item in widget.items!) {
-                if (item.value != null &&
-                    value != null &&
-                    item.value == value) {
+                if (item.value == value) {
                   selectedItems.add(item);
                   break;
                 }

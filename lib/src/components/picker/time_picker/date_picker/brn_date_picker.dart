@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'package:bruno/src/components/picker/base/brn_picker_title_config.dart';
 import 'package:bruno/src/components/picker/brn_picker_cliprrect.dart';
 import 'package:bruno/src/components/picker/time_picker/brn_date_picker_constants.dart';
@@ -46,19 +44,19 @@ class BrnDatePicker {
     bool rootNavigator = false,
 
     /// 点击弹框外部区域能否消失
-    bool canBarrierDismissible,
+    bool? canBarrierDismissible,
 
     /// 能滚动到的最小日期
-    DateTime minDateTime,
+    DateTime? minDateTime,
 
     /// 能滚动到的最大日期
-    DateTime maxDateTime,
+    DateTime? maxDateTime,
 
     /// 初始选择的时间。默认当前时间
-    DateTime initialDateTime,
+    DateTime? initialDateTime,
 
     /// 时间格式化的格式
-    String dateFormat,
+    String? dateFormat,
 
     /// 分钟间切换的差值
     int minuteDivider: 1,
@@ -68,20 +66,20 @@ class BrnDatePicker {
     BrnDateTimePickerMode pickerMode: BrnDateTimePickerMode.date,
 
     /// 时间选择组件的主题样式
-    BrnPickerTitleConfig pickerTitleConfig,
+    required BrnPickerTitleConfig pickerTitleConfig,
 
     /// 点击【取消】回调给调用方的回调事件
-    DateVoidCallback onCancel,
+    DateVoidCallback? onCancel,
 
     /// 点击【完成】回调给调用方的数据
-    DateVoidCallback onClose,
+    DateVoidCallback? onClose,
 
     /// 时间滚动选择时候的回调事件
-    DateValueCallback onChange,
+    DateValueCallback? onChange,
 
     /// 弹框点击外围消失的回调事件
-    DateValueCallback onConfirm,
-    BrnPickerConfig themeData,
+    DateValueCallback? onConfirm,
+    BrnPickerConfig? themeData,
   }) {
     // handle the range of datetime
     if (minDateTime == null) {
@@ -129,39 +127,39 @@ class _DatePickerRoute<T> extends PopupRoute<T> {
     this.minDateTime,
     this.maxDateTime,
     this.initialDateTime,
-    this.minuteDivider,
-    this.dateFormat,
-    this.locale,
+    required this.minuteDivider,
+    required this.dateFormat,
+    required this.locale,
     this.pickerMode,
-    this.pickerTitleConfig,
+    required this.pickerTitleConfig,
     this.onCancel,
     this.onChange,
     this.onConfirm,
     this.theme,
     this.barrierLabel,
     this.canBarrierDismissible,
-    RouteSettings settings,
+    RouteSettings? settings,
     this.themeData,
   }) : super(settings: settings) {
     this.themeData ??= BrnPickerConfig();
     this.themeData = BrnThemeConfigurator.instance
-        .getConfig(configId: this.themeData.configId)
+        .getConfig(configId: this.themeData!.configId)
         .pickerConfig
         .merge(this.themeData);
   }
 
-  final DateTime minDateTime, maxDateTime, initialDateTime;
+  final DateTime? minDateTime, maxDateTime, initialDateTime;
   final String dateFormat;
   final DateTimePickerLocale locale;
-  final BrnDateTimePickerMode pickerMode;
+  final BrnDateTimePickerMode? pickerMode;
   final BrnPickerTitleConfig pickerTitleConfig;
-  final VoidCallback onCancel;
-  final DateValueCallback onChange;
-  final DateValueCallback onConfirm;
-  bool canBarrierDismissible;
+  final VoidCallback? onCancel;
+  final DateValueCallback? onChange;
+  final DateValueCallback? onConfirm;
+  bool? canBarrierDismissible;
   final int minuteDivider;
-  final ThemeData theme;
-  BrnPickerConfig themeData;
+  final ThemeData? theme;
+  BrnPickerConfig? themeData;
 
   @override
   Duration get transitionDuration => const Duration(milliseconds: 200);
@@ -170,27 +168,26 @@ class _DatePickerRoute<T> extends PopupRoute<T> {
   bool get barrierDismissible => canBarrierDismissible ?? true;
 
   @override
-  final String barrierLabel;
+  final String? barrierLabel;
 
   @override
   Color get barrierColor => Colors.black54;
 
-  AnimationController _animationController;
+  late AnimationController _animationController;
 
   @override
   AnimationController createAnimationController() {
-    assert(_animationController == null);
     _animationController =
-        BottomSheet.createAnimationController(navigator.overlay);
+        BottomSheet.createAnimationController(navigator!.overlay!);
     return _animationController;
   }
 
   @override
   Widget buildPage(BuildContext context, Animation<double> animation,
       Animation<double> secondaryAnimation) {
-    double height = themeData.pickerHeight;
+    double height = themeData!.pickerHeight;
     if (pickerTitleConfig.title != null || pickerTitleConfig.showTitle) {
-      height += themeData.titleHeight;
+      height += themeData!.titleHeight;
     }
 
     Widget bottomSheet = MediaQuery.removePadding(
@@ -200,7 +197,7 @@ class _DatePickerRoute<T> extends PopupRoute<T> {
     );
 
     if (theme != null) {
-      bottomSheet = Theme(data: theme, child: bottomSheet);
+      bottomSheet = Theme(data: theme!, child: bottomSheet);
     }
     return bottomSheet;
   }
@@ -211,70 +208,72 @@ class _DatePickerComponent extends StatelessWidget {
   final _DatePickerRoute route;
   final double _pickerHeight;
 
-  _DatePickerComponent({@required this.route, @required pickerHeight})
+  _DatePickerComponent({required this.route, required pickerHeight})
       : this._pickerHeight = pickerHeight;
 
   @override
   Widget build(BuildContext context) {
-    Widget pickerWidget;
-    switch (route.pickerMode) {
-      case BrnDateTimePickerMode.date:
-        pickerWidget = BrnDateWidget(
-          minDateTime: route.minDateTime,
-          maxDateTime: route.maxDateTime,
-          initialDateTime: route.initialDateTime,
-          dateFormat: route.dateFormat,
-          locale: route.locale,
-          pickerTitleConfig: route.pickerTitleConfig,
-          onCancel: route.onCancel,
-          onChange: route.onChange,
-          onConfirm: route.onConfirm,
-          themeData: route.themeData,
-        );
-        break;
-      case BrnDateTimePickerMode.time:
-        pickerWidget = BrnTimeWidget(
-          minDateTime: route.minDateTime,
-          maxDateTime: route.maxDateTime,
-          initDateTime: route.initialDateTime,
-          dateFormat: route.dateFormat,
-          locale: route.locale,
-          minuteDivider: route.minuteDivider,
-          pickerTitleConfig: route.pickerTitleConfig,
-          onCancel: route.onCancel,
-          onChange: route.onChange,
-          onConfirm: route.onConfirm,
-          themeData: route.themeData,
-        );
-        break;
-      case BrnDateTimePickerMode.datetime:
-        pickerWidget = BrnDateTimeWidget(
-          minDateTime: route.minDateTime,
-          maxDateTime: route.maxDateTime,
-          initDateTime: route.initialDateTime,
-          dateFormat: route.dateFormat,
-          minuteDivider: route.minuteDivider,
-          locale: route.locale,
-          pickerTitleConfig: route.pickerTitleConfig,
-          onCancel: route.onCancel,
-          onChange: route.onChange,
-          onConfirm: route.onConfirm,
-          themeData: route.themeData,
-        );
-        break;
+    Widget? pickerWidget;
+    if (route.pickerMode != null) {
+      switch (route.pickerMode!) {
+        case BrnDateTimePickerMode.date:
+          pickerWidget = BrnDateWidget(
+            minDateTime: route.minDateTime,
+            maxDateTime: route.maxDateTime,
+            initialDateTime: route.initialDateTime,
+            dateFormat: route.dateFormat,
+            locale: route.locale,
+            pickerTitleConfig: route.pickerTitleConfig,
+            onCancel: route.onCancel,
+            onChange: route.onChange,
+            onConfirm: route.onConfirm,
+            themeData: route.themeData,
+          );
+          break;
+        case BrnDateTimePickerMode.time:
+          pickerWidget = BrnTimeWidget(
+            minDateTime: route.minDateTime,
+            maxDateTime: route.maxDateTime,
+            initDateTime: route.initialDateTime,
+            dateFormat: route.dateFormat,
+            locale: route.locale,
+            minuteDivider: route.minuteDivider,
+            pickerTitleConfig: route.pickerTitleConfig,
+            onCancel: route.onCancel,
+            onChange: route.onChange,
+            onConfirm: route.onConfirm,
+            themeData: route.themeData,
+          );
+          break;
+        case BrnDateTimePickerMode.datetime:
+          pickerWidget = BrnDateTimeWidget(
+            minDateTime: route.minDateTime,
+            maxDateTime: route.maxDateTime,
+            initDateTime: route.initialDateTime,
+            dateFormat: route.dateFormat,
+            minuteDivider: route.minuteDivider,
+            locale: route.locale,
+            pickerTitleConfig: route.pickerTitleConfig,
+            onCancel: route.onCancel,
+            onChange: route.onChange,
+            onConfirm: route.onConfirm,
+            themeData: route.themeData,
+          );
+          break;
+      }
     }
     return GestureDetector(
       child: AnimatedBuilder(
-        animation: route.animation,
-        builder: (BuildContext context, Widget child) {
+        animation: route.animation!,
+        builder: (BuildContext context, Widget? child) {
           return ClipRect(
             child: CustomSingleChildLayout(
-              delegate: _BottomPickerLayout(route.animation.value,
+              delegate: _BottomPickerLayout(route.animation!.value,
                   contentHeight: _pickerHeight),
               child: BrnPickerClipRRect(
                 borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(route.themeData.cornerRadius),
-                  topRight: Radius.circular(route.themeData.cornerRadius),
+                  topLeft: Radius.circular(route.themeData!.cornerRadius),
+                  topRight: Radius.circular(route.themeData!.cornerRadius),
                 ),
                 child: pickerWidget,
               ),
@@ -287,7 +286,7 @@ class _DatePickerComponent extends StatelessWidget {
 }
 
 class _BottomPickerLayout extends SingleChildLayoutDelegate {
-  _BottomPickerLayout(this.progress, {this.contentHeight});
+  _BottomPickerLayout(this.progress, {required this.contentHeight});
 
   final double progress;
   final double contentHeight;

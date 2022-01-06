@@ -32,7 +32,7 @@ class BrnRangeSelectionGroupWidget extends StatefulWidget {
   final BrnOnRangeSelectionBgClick? bgClickFunction;
   final BrnOnRangeSelectionConfirm? onSelectionConfirm;
 
-  final int rowount;
+  final int? rowount;
 
   final double marginTop;
 
@@ -42,7 +42,7 @@ class BrnRangeSelectionGroupWidget extends StatefulWidget {
       {Key? key,
       required this.entity,
       this.maxContentHeight = DESIGN_SELECTION_HEIGHT,
-      required this.rowount,
+      this.rowount,
       this.showSelectedCount = false,
       this.bgClickFunction,
       this.onSelectionConfirm,
@@ -131,11 +131,11 @@ class _BrnRangeSelectionGroupWidgetState
   Widget _listWidget() {
     Widget? rangeWidget;
 
-    if (_firstList != null && _secondList == null) {
+    if (_firstList.isNotEmpty && _secondList.isEmpty) {
       /// 1、仅有一级的情况
       /// 1.2 一级多选 || 存在自定义范围的情况
       rangeWidget = _createNewTagAndRangeWidget(_firstList, null, Colors.white);
-    } else if (_firstList != null && _secondList != null) {
+    } else if (_firstList.isNotEmpty && _secondList.isNotEmpty) {
       /// 2、有二级的情况
       rangeWidget =
           _createNewTagAndRangeWidget(_firstList, _secondList, Colors.white);
@@ -229,10 +229,10 @@ class _BrnRangeSelectionGroupWidgetState
       }
     }
 
-    int tagWidth;
+    int? tagWidth;
 
     ///如果指定展示列，则按照指定列展示，否则动态计算宽度。最大不超过四列。
-    if (widget.rowount == null) {
+    if (widget.rowount == null || widget.rowount == 0) {
       int oneCountTagWidth =
           (BrnRangeSelectionGroupWidget.screenWidth - 40 - 12 * (1 - 1)) ~/ 1;
       int twoCountTagWidth =
@@ -255,8 +255,8 @@ class _BrnRangeSelectionGroupWidgetState
     } else {
       tagWidth = (BrnRangeSelectionGroupWidget.screenWidth -
               40 -
-              12 * (widget.rowount - 1)) ~/
-          widget.rowount;
+              12 * (widget.rowount! - 1)) ~/
+          widget.rowount!;
     }
 
     var tagContainer = (tagFilterList.length > 0)
@@ -311,9 +311,9 @@ class _BrnRangeSelectionGroupWidgetState
             });
         break;
       } else if (item.filterType == BrnSelectionFilterType.Date) {
-        DateTime initialStartDate =
+        DateTime? initialStartDate =
             DateTimeFormatter.convertIntValueToDateTime(item.value);
-        DateTime initialEndDate =
+        DateTime? initialEndDate =
             DateTimeFormatter.convertIntValueToDateTime(item.value);
         content = BrnCalendarView(
           key: GlobalKey(),
@@ -520,16 +520,20 @@ class _BrnRangeSelectionGroupWidgetState
   void _refreshDataSource() {
     _firstList = widget.entity.children!;
     if (_firstIndex >= 0 && _firstList.length > _firstIndex) {
-      _secondList = _firstList[_firstIndex].children!;
+      if (_firstList[_firstIndex].children != null) {
+        _secondList = _firstList[_firstIndex].children!;
+      }
     } else {
       _secondList = [];
     }
   }
 
   void _configDefaultSelectedData() {
-    _firstList = widget.entity.children!;
+    if (widget.entity.children != null) {
+      _firstList = widget.entity.children!;
+    }
     //是否已选择的item里面有第一列的
-    if (_firstList == null) {
+    if (_firstList.isEmpty) {
       _secondIndex = -1;
       _secondList = [];
       return;
@@ -542,8 +546,8 @@ class _BrnRangeSelectionGroupWidgetState
     }
 
     if (_firstIndex >= 0 && _firstIndex < _firstList.length) {
-      _secondList = _firstList[_firstIndex].children!;
-      if (_secondList != null) {
+      if (_firstList[_firstIndex].children != null) {
+        _secondList = _firstList[_firstIndex].children!;
         for (BrnSelectionEntity entity in _secondList) {
           if (entity.isSelected) {
             _secondIndex = _secondList.indexOf(entity);
@@ -630,7 +634,7 @@ class _BrnRangeSelectionGroupWidgetState
     for (BrnSelectionEntity commonEntity in _originalSelectedItemsList) {
       commonEntity.isSelected = true;
       if (commonEntity.originalCustomMap != null) {
-        commonEntity.customMap = Map.from(commonEntity.originalCustomMap);
+        commonEntity.customMap = Map.from(commonEntity.originalCustomMap!);
       }
     }
   }
@@ -665,7 +669,7 @@ class _BrnRangeSelectionGroupWidgetState
     return -1;
   }
 
-  bool hasCalendarItem(BrnSelectionEntity entity) {
+  bool hasCalendarItem(BrnSelectionEntity? entity) {
     bool hasCalendarItem = false;
     if (entity != null && entity.children != null) {
       /// 查找第一层级

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 ///  TextStyle处理类  用来将内部属性重新赋值进行copyWith 和 merge操作
-class BrnTextStyle {
+class BrnTextStyle extends TextStyle {
   BrnTextStyle({
     this.color,
     this.fontSize,
@@ -53,7 +53,7 @@ class BrnTextStyle {
     textBaseline ??= defaultTextStyle.textBaseline;
   }
 
-  BrnTextStyle copyWith({
+  BrnTextStyle brnCopyWith({
     Color? color,
     double? fontSize,
     FontWeight? fontWeight,
@@ -71,9 +71,9 @@ class BrnTextStyle {
     );
   }
 
-  BrnTextStyle merge(BrnTextStyle? other) {
+  BrnTextStyle merge(TextStyle? other) {
     if (other == null) return this;
-    return copyWith(
+    return brnCopyWith(
       color: other.color,
       fontSize: other.fontSize,
       fontWeight: other.fontWeight,

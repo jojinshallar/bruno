@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'package:bruno/src/constants/brn_constants.dart';
 import 'package:bruno/src/utils/brn_tools.dart';
 
@@ -17,20 +15,20 @@ enum PickerWindowType {
 }
 
 class BrnPickerEntity {
-  String uniqueId; //唯一的id
-  String
+  String? uniqueId; //唯一的id
+  String?
       type; //类型 目前支持的类型有不限（unlimit）、单选（radio）、复选（checkbox）, 最终被解析成 PickerFilterType 类型
-  String key; //回传给服务器
-  String value; //回传给服务器
-  String name; //显示的文案
-  String defaultValue;
-  List<BrnPickerEntity> children; //下级筛选项
-  Map extMap; //扩展字段，目前只有min和max
+  String? key; //回传给服务器
+  String? value; //回传给服务器
+  String? name; //显示的文案
+  String? defaultValue;
+  List<BrnPickerEntity>? children; //下级筛选项
+  Map? extMap; //扩展字段，目前只有min和max
 
   bool isSelected; //是否选中
-  int maxSelectedCount;
-  BrnPickerEntity parent; //上级筛选项
-  PickerFilterType filterType; //筛选类型
+  int? maxSelectedCount;
+  BrnPickerEntity? parent; //上级筛选项
+  PickerFilterType? filterType; //筛选类型
 
   BrnPickerEntity(
       {this.uniqueId,
@@ -51,7 +49,6 @@ class BrnPickerEntity {
   }
 
   static BrnPickerEntity fromMap(Map<String, dynamic> map) {
-    if (map == null) return null;
     BrnPickerEntity entity = BrnPickerEntity();
     entity.uniqueId = map['id'] ?? "";
     entity.name = map['name'] ?? "";
@@ -63,15 +60,15 @@ class BrnPickerEntity {
     entity.value = map['value'] ?? "";
     if (map['maxSelectedCount'] != null &&
         int.tryParse(map['maxSelectedCount']) != null) {
-      entity.maxSelectedCount = int.tryParse(map['maxSelectedCount']);
+      entity.maxSelectedCount = int.tryParse(map['maxSelectedCount']) ??
+          BrnSelectionConstant.MAX_SELECT_COUNT;
     } else {
       entity.maxSelectedCount = BrnSelectionConstant.MAX_SELECT_COUNT;
     }
     entity.extMap = map['ext'] ?? {};
 //    entity.children = map['children'] ?? [];
-    entity.children = List()
-      ..addAll((map['children'] as List ?? [])
-          .map((o) => BrnPickerEntity.fromMap(o)));
+    entity.children = []..addAll((map['children'] as List? ?? [])
+        .map((o) => BrnPickerEntity.fromMap(o)));
     return entity;
   }
 
@@ -81,22 +78,23 @@ class BrnPickerEntity {
   }
 
   void configDefaultValue() {
-    if (this.children != null && this.children.length > 0) {
-      for (BrnPickerEntity entity in this.children) {
+    if (this.children != null && this.children!.length > 0) {
+      for (BrnPickerEntity entity in this.children!) {
         if (!BrunoTools.isEmpty(defaultValue)) {
-          List<String> values = defaultValue.split(',');
-          entity.isSelected = values != null && values.contains(entity.value);
+          List<String> values = defaultValue!.split(',');
+          entity.isSelected = values.contains(entity.value);
         }
         entity.configDefaultValue();
       }
 
-      isSelected = isSelected || children.where((_) => _.isSelected).length > 0;
+      isSelected =
+          isSelected || children!.where((_) => _.isSelected).length > 0;
     }
   }
 
   void configRelationship() {
-    if (this.children != null && this.children.length > 0) {
-      for (BrnPickerEntity entity in this.children) {
+    if (this.children != null && this.children!.length > 0) {
+      for (BrnPickerEntity entity in this.children!) {
         entity.parent = this;
         entity.configRelationship();
       }
@@ -112,7 +110,7 @@ class BrnPickerEntity {
     return PickerWindowType.List;
   }
 
-  PickerFilterType parserFilterTypeWithType(String type) {
+  PickerFilterType parserFilterTypeWithType(String? type) {
     if (type == "unlimit") {
       return PickerFilterType.UnLimit;
     } else if (type == "radio") {
@@ -124,8 +122,8 @@ class BrnPickerEntity {
   }
 
   void clearChildSelection() {
-    if (this.children != null && this.children.length > 0) {
-      for (BrnPickerEntity entity in this.children) {
+    if (this.children != null && this.children!.length > 0) {
+      for (BrnPickerEntity entity in this.children!) {
         entity.isSelected = false;
         entity.clearChildSelection();
       }
@@ -133,18 +131,15 @@ class BrnPickerEntity {
   }
 
   List<BrnPickerEntity> selectedLastColumnList() {
-    List<BrnPickerEntity> list = List();
-    if (this.children != null && this.children.length > 0) {
-      List<BrnPickerEntity> firstList = List();
-      for (BrnPickerEntity firstEntity in this.children) {
-        if (firstEntity != null &&
-            firstEntity.children != null &&
-            firstEntity.children.length > 0) {
-          List<BrnPickerEntity> secondList = List();
-          for (BrnPickerEntity secondEntity in firstEntity.children) {
-            if (secondEntity != null &&
-                secondEntity.children != null &&
-                secondEntity.children.length > 0) {
+    List<BrnPickerEntity> list = [];
+    if (this.children != null && this.children!.length > 0) {
+      List<BrnPickerEntity> firstList = [];
+      for (BrnPickerEntity firstEntity in this.children!) {
+        if (firstEntity.children != null && firstEntity.children!.length > 0) {
+          List<BrnPickerEntity> secondList = [];
+          for (BrnPickerEntity secondEntity in firstEntity.children!) {
+            if (secondEntity.children != null &&
+                secondEntity.children!.length > 0) {
               List<BrnPickerEntity> thirds =
                   this.currentSelectListForEntity(secondEntity);
               if (thirds.length > 0) {
@@ -152,12 +147,12 @@ class BrnPickerEntity {
               } else if (secondEntity.isSelected) {
                 secondList.add(secondEntity);
               }
-            } else if (secondEntity != null && secondEntity.isSelected) {
+            } else if (secondEntity.isSelected) {
               secondList.add(secondEntity);
             }
           }
           list.addAll(secondList);
-        } else if (firstEntity != null && firstEntity.isSelected) {
+        } else if (firstEntity.isSelected) {
           firstList.add(firstEntity);
         }
       }
@@ -168,25 +163,23 @@ class BrnPickerEntity {
 
   List<BrnPickerEntity> selectedListWithoutUnlimit() {
     List<BrnPickerEntity> selected = selectedList();
-    return selected?.where((_) => !_.isUnLimit())?.toList() ?? List();
+    return selected.where((_) => !_.isUnLimit()).toList();
   }
 
   List<BrnPickerEntity> selectedList() {
-    List<BrnPickerEntity> results = List();
+    List<BrnPickerEntity> results = [];
     List<BrnPickerEntity> firstColumn = this.currentSelectListForEntity(this);
     results.addAll(firstColumn);
-    if (firstColumn != null && firstColumn.length > 0) {
+    if (firstColumn.length > 0) {
       for (BrnPickerEntity firstEntity in firstColumn) {
-        if (firstEntity != null) {
-          List<BrnPickerEntity> secondColumn =
-              this.currentSelectListForEntity(firstEntity);
-          results.addAll(secondColumn);
-          if (secondColumn != null && secondColumn.length > 0) {
-            for (BrnPickerEntity secondEntity in secondColumn) {
-              List<BrnPickerEntity> thirdColumn =
-                  this.currentSelectListForEntity(secondEntity);
-              results.addAll(thirdColumn);
-            }
+        List<BrnPickerEntity> secondColumn =
+            this.currentSelectListForEntity(firstEntity);
+        results.addAll(secondColumn);
+        if (secondColumn.length > 0) {
+          for (BrnPickerEntity secondEntity in secondColumn) {
+            List<BrnPickerEntity> thirdColumn =
+                this.currentSelectListForEntity(secondEntity);
+            results.addAll(thirdColumn);
           }
         }
       }
@@ -196,9 +189,9 @@ class BrnPickerEntity {
 
   /// 返回状态为选中的子节点
   List<BrnPickerEntity> currentSelectListForEntity(BrnPickerEntity entity) {
-    List<BrnPickerEntity> list = List();
-    if (entity.children != null && entity.children.length > 0) {
-      for (BrnPickerEntity entity in entity.children) {
+    List<BrnPickerEntity> list = [];
+    if (entity.children != null && entity.children!.length > 0) {
+      for (BrnPickerEntity entity in entity.children!) {
         if (entity.isSelected) {
           list.add(entity);
         }
@@ -212,7 +205,7 @@ class BrnPickerEntity {
     if (BrunoTools.isEmpty(children)) return isSelected ? 1 : 0;
 
     int count = 0;
-    for (BrnPickerEntity entity in children) {
+    for (BrnPickerEntity entity in children!) {
       if (!entity.isUnLimit()) {
         count += entity.getSelectedChildCount();
       }
@@ -224,12 +217,12 @@ class BrnPickerEntity {
   /// 用于展开筛选弹窗时显示选中效果。
   int getIndexInCurrentLevel() {
     if (parent == null ||
-        parent.children == null ||
-        parent.children.length == 0) return -1;
+        parent!.children == null ||
+        parent!.children!.length == 0) return -1;
 
-    for (BrnPickerEntity entity in parent.children) {
+    for (BrnPickerEntity entity in parent!.children!) {
       if (entity == this) {
-        return parent.children.indexOf(entity);
+        return parent!.children!.indexOf(entity);
       }
     }
     return -1;
@@ -237,11 +230,11 @@ class BrnPickerEntity {
 
   bool isInLastLevel() {
     if (parent == null ||
-        parent.children == null ||
-        parent.children.length == 0) return true;
+        parent!.children == null ||
+        parent!.children!.length == 0) return true;
 
-    for (BrnPickerEntity entity in parent.children) {
-      if (entity.children != null && entity.children.length > 0) {
+    for (BrnPickerEntity entity in parent!.children!) {
+      if (entity.children != null && entity.children!.length > 0) {
         return false;
       }
     }
@@ -255,7 +248,7 @@ class BrnPickerEntity {
   }
 
   void clearSelectedEntity() {
-    List<BrnPickerEntity> tmp = List();
+    List<BrnPickerEntity> tmp = [];
     BrnPickerEntity node = this;
     tmp.add(node);
     while (tmp.isNotEmpty) {

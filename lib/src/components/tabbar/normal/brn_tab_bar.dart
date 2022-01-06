@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:badges/badges.dart';
 import 'package:bruno/src/components/popup/brn_measure_size.dart';
 import 'package:bruno/src/components/tabbar/indicator/brn_custom_width_indicator.dart';
@@ -29,7 +27,7 @@ class BrnTabBar extends StatefulWidget {
   final bool isScroll;
 
   /// Tabbar的整体高度
-  final double? tabHeight;
+  final double tabHeight;
 
   /// TabBar的padding
   final EdgeInsetsGeometry padding;
@@ -108,7 +106,7 @@ class BrnTabBar extends StatefulWidget {
     required this.tabs,
     this.mode = BrnTabBarBadgeMode.average,
     this.isScroll = false,
-    this.tabHeight,
+    this.tabHeight = 50,
     this.padding = EdgeInsets.zero,
     this.controller,
     this.backgroundcolor = const Color(0xffffffff),
@@ -137,15 +135,13 @@ class BrnTabBar extends StatefulWidget {
   }) {
     this.themeData ??= BrnTabBarConfig();
     this.themeData = this.themeData!.merge(BrnTabBarConfig(
-          tabHeight: tabHeight,
-          indicatorHeight: indicatorWeight,
-          indicatorWidth: indicatorWidth,
-          labelStyle: BrnTextStyle.withStyle(labelStyle),
-          unselectedLabelStyle: BrnTextStyle.withStyle(unselectedLabelStyle),
-          tagSpacing: tagSpacing,
-          preLineTagCount: preLineTagCount,
-          tagHeight: tagHeight,
-        ));
+        tabHeight: tabHeight,
+        indicatorHeight: indicatorWeight,
+        indicatorWidth: indicatorWidth,
+        labelStyle: BrnTextStyle.withStyle(labelStyle),
+        unselectedLabelStyle: BrnTextStyle.withStyle(unselectedLabelStyle),
+        tagSpacing: tagSpacing,
+        preLineTagCount: preLineTagCount));
     this.themeData = BrnThemeConfigurator.instance
         .getConfig(configId: this.themeData!.configId)
         .tabBarConfig
@@ -348,8 +344,8 @@ class BrnTabBarState extends State<BrnTabBar> {
   List<Widget> fillWidgetByDataList() {
     List<Widget> widgets = [];
     List<BadgeTab> tabList = widget.tabs;
-    if (tabList != null && tabList.isNotEmpty) {
-      double minWidth;
+    if (tabList.isNotEmpty) {
+      double minWidth = 0;
       if (widget.tabWidth != null) {
         minWidth = widget.tabWidth!;
       } else {
@@ -674,6 +670,7 @@ class _TabBarOverlayWidgetState extends State<_TabBarOverlayWidget> {
   Widget createMoreWindowView() {
     return MeasureSize(
       onChange: (size) {
+        print("size change call");
         setState(() {
           if (size != null) {
             _parentWidth = size.width;
@@ -731,6 +728,10 @@ class _TabBarOverlayWidgetState extends State<_TabBarOverlayWidget> {
             widget.spacing * (widget.preLineTagCount - 1) -
             _padding * 2) /
         widget.preLineTagCount;
+
+    if (_tagWidth! < 0) {
+      _tagWidth = 0;
+    }
 
     List<Widget> widgets = [];
     List<BadgeTab>? tabList = widget.tabs;
